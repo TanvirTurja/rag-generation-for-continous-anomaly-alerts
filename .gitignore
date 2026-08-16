@@ -1,0 +1,8 @@
+.env
+.ruff_cache/
+.ipynb_checkpoints/
+Dataset/
+chroma_db/
+outputs/models.joblib
+__pycache__/
+project_description.md
