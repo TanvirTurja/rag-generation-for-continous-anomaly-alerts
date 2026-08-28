@@ -1,0 +1,210 @@
+{
+  "device": "cuda",
+  "timestamp": "2026-08-28 14:51:47",
+  "wesad": {
+    "if_pooled_auc_mean": 0.8720537701772706,
+    "if_pooled_auc_sd": 0.008516078231304066
+  },
+  "mitbih": {
+    "train_beats": 45844,
+    "test_beats": 49690,
+    "test_pos": 5452,
+    "symbols": {
+      "N": 75017,
+      "A": 2546,
+      "V": 7129,
+      "Q": 33,
+      "/": 7024,
+      "f": 982,
+      "F": 802,
+      "j": 229,
+      "L": 8071,
+      "a": 150,
+      "J": 83,
+      "R": 7255,
+      "!": 472,
+      "E": 106,
+      "S": 2,
+      "e": 16
+    }
+  },
+  "ptbxl": {
+    "n": 21388,
+    "normal": 9069,
+    "fold10": 2158,
+    "fold10_pos": 1246
+  },
+  "aucdiff_test_WESAD": {
+    "auc_if": 0.7990049751243782,
+    "auc_lof": 0.8272373540856031,
+    "p_paired_bootstrap": 0.008
+  },
+  "aucdiff_test_MIT-BIH": {
+    "auc_if": 0.6538246673590463,
+    "auc_lof": 0.5023238495821161,
+    "p_paired_bootstrap": 0.001
+  },
+  "aucdiff_test_PTB-XL": {
+    "auc_if": 0.6323313550730759,
+    "auc_lof": 0.6824337881219904,
+    "p_paired_bootstrap": 0.001
+  },
+  "rows": [
+    {
+      "dataset": "WESAD",
+      "protocol": "LOSO",
+      "model": "IF",
+      "auc": 0.7990049751243782,
+      "ci_low": 0.7702245121919246,
+      "ci_high": 0.82684428753588,
+      "precision": 0.5196687370600414,
+      "recall": 0.7492537313432835,
+      "f1": 0.6136919315403423,
+      "threshold": "85th pct train"
+    },
+    {
+      "dataset": "WESAD",
+      "protocol": "LOSO",
+      "model": "LOF",
+      "auc": 0.8272373540856031,
+      "ci_low": 0.8003286767860702,
+      "ci_high": 0.8518563270400268,
+      "precision": 0.42160737812911725,
+      "recall": 0.9552238805970149,
+      "f1": 0.5850091407678245,
+      "threshold": "85th pct train"
+    },
+    {
+      "dataset": "WESAD",
+      "protocol": "LOSO",
+      "model": "OCSVM",
+      "auc": 0.8135083338172948,
+      "ci_low": 0.7869795064946761,
+      "ci_high": 0.841842053505722,
+      "precision": 0.4660347551342812,
+      "recall": 0.8805970149253731,
+      "f1": 0.609504132231405,
+      "threshold": "85th pct train"
+    },
+    {
+      "dataset": "WESAD",
+      "protocol": "LOSO",
+      "model": "AE",
+      "auc": 0.854730239851327,
+      "ci_low": 0.8307765509606532,
+      "ci_high": 0.8781144596616323,
+      "precision": 0.45441176470588235,
+      "recall": 0.9223880597014925,
+      "f1": 0.6088669950738916,
+      "threshold": "85th pct train"
+    },
+    {
+      "dataset": "MIT-BIH",
+      "protocol": "inter-patient DS1->DS2 (paced excl.)",
+      "model": "IF",
+      "auc": 0.6695991770254122,
+      "auc_sd_over_seeds": 0.022828029596535477,
+      "auc_seed0": 0.6538246673590463,
+      "ci_low": 0.6449626749305264,
+      "ci_high": 0.6628295950586027,
+      "precision": 0.2471258996167866,
+      "recall": 0.48495964783565665,
+      "f1": 0.3274100674880812,
+      "threshold": "85th pct train"
+    },
+    {
+      "dataset": "MIT-BIH",
+      "protocol": "inter-patient DS1->DS2 (paced excl.)",
+      "model": "LOF",
+      "auc": 0.5023238495821161,
+      "auc_sd_over_seeds": 0.0,
+      "auc_seed0": 0.5023238495821161,
+      "ci_low": 0.49243435214679265,
+      "ci_high": 0.5117827949843216,
+      "precision": 0.09839816933638444,
+      "recall": 0.6625091709464417,
+      "f1": 0.1713472485768501,
+      "threshold": "85th pct train"
+    },
+    {
+      "dataset": "MIT-BIH",
+      "protocol": "inter-patient DS1->DS2 (paced excl.)",
+      "model": "OCSVM",
+      "auc": 0.6751432266413809,
+      "auc_sd_over_seeds": 0.0,
+      "auc_seed0": 0.6751432266413809,
+      "ci_low": 0.666008877938527,
+      "ci_high": 0.6843403867117503,
+      "precision": 0.21714590801616962,
+      "recall": 0.5221936903888481,
+      "f1": 0.30673921241178687,
+      "threshold": "85th pct train"
+    },
+    {
+      "dataset": "MIT-BIH",
+      "protocol": "inter-patient DS1->DS2 (paced excl.)",
+      "model": "AE",
+      "auc": 0.6381259300514721,
+      "auc_sd_over_seeds": 0.0,
+      "auc_seed0": 0.6381259300514721,
+      "ci_low": 0.6280316164119676,
+      "ci_high": 0.6479316049333114,
+      "precision": 0.23869389132635843,
+      "recall": 0.518892149669846,
+      "f1": 0.32697642163661583,
+      "threshold": "85th pct train"
+    },
+    {
+      "dataset": "PTB-XL",
+      "protocol": "thr on fold9 -> fold10",
+      "model": "IF",
+      "auc": 0.6315409309791332,
+      "auc_sd_over_seeds": 0.003975442491906464,
+      "ci_low": 0.6070151143901165,
+      "ci_high": 0.6536881910213118,
+      "precision": 0.5873953717380601,
+      "recall": 0.9574638844301766,
+      "f1": 0.7281049740616418,
+      "threshold": "pct 5 on fold 9 (F1=0.731)"
+    },
+    {
+      "dataset": "PTB-XL",
+      "protocol": "thr on fold9 -> fold10",
+      "model": "LOF",
+      "auc": 0.6824337881219904,
+      "auc_sd_over_seeds": 0.0,
+      "ci_low": 0.6613677520407633,
+      "ci_high": 0.7032243243537891,
+      "precision": 0.5860397479398933,
+      "recall": 0.9703049759229535,
+      "f1": 0.7307343608340888,
+      "threshold": "pct 5 on fold 9 (F1=0.728)"
+    },
+    {
+      "dataset": "PTB-XL",
+      "protocol": "thr on fold9 -> fold10",
+      "model": "OCSVM",
+      "auc": 0.6279700304131114,
+      "auc_sd_over_seeds": 0.0,
+      "ci_low": 0.6061926415636185,
+      "ci_high": 0.6498264856742442,
+      "precision": 0.5780590717299579,
+      "recall": 0.9895666131621188,
+      "f1": 0.7298017164841669,
+      "threshold": "pct 1 on fold 9 (F1=0.731)"
+    },
+    {
+      "dataset": "PTB-XL",
+      "protocol": "thr on fold9 -> fold10",
+      "model": "AE",
+      "auc": 0.6279216299174903,
+      "auc_sd_over_seeds": 0.0,
+      "ci_low": 0.6054949823126994,
+      "ci_high": 0.6505617671573263,
+      "precision": 0.5908644400785854,
+      "recall": 0.9654895666131621,
+      "f1": 0.7330895795246801,
+      "threshold": "pct 5 on fold 9 (F1=0.729)"
+    }
+  ]
+}

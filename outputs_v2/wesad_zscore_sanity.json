@@ -1,0 +1,8 @@
+{
+  "metric": "max |z| of channel means vs subject's own baseline windows",
+  "mean_stress": 43.673,
+  "mean_baseline": 1.53,
+  "mannwhitney_u": 195277.0,
+  "p_value": 2.5367115412710417e-138,
+  "interpretation": "stress windows deviate more than baseline windows under the new reference"
+}
