@@ -243,9 +243,19 @@ With raw generation text preserved and the canonicalizer's identifier capture fi
 
 Two findings. First, the exact judge behind v1's "zero hallucination verdicts" (llama3.1:8b) detects **none** of the injected fabrications — combined with its 397/398 constant scoring in v1, it was a null instrument, and the v1 safety claim was an artifact of asking a question this judge could not answer. Second, the validated local judge (gemma4:e4b, selected by the pre-registered criterion) catches fabricated facts and diagnostic exaggerations well (0.80–0.96) but almost never catches **citation swaps** (0.00) or most fabricated identifiers (0.16): LLM judges of this size verify that text *sounds* supported, not that cited documents *are* the right ones — which is precisely why the objective raw-text citation audit and the human kit remain necessary. (A methodological note we report for reproducibility: gemma4's first validation pass returned empty contents because its default thinking mode consumed the token budget; disabling thinking exposed genuine discrimination. The invalidated artifact is preserved with an `_INVALID` suffix.)
 
-## 4.6 Main judge scores (API judge)
+## 4.6 Main judge scores (validated local judge; API judge pending key renewal)
 
-PENDING-API-KEY: API-judge score distributions over the 546 main + 100 ablation explanations, once the OpenRouter key is renewed. Generation latency: mean 11.0 s per explained alert on the RTX 5060 laptop GPU; retrieval 25 ms (p95 32 ms); local-judge latency re-measured at 8.1 s per call (replacing v1's unarchived 5.6 s figure).
+*Table 7: gemma4:e4b (validated: 48% corruption detection, 1% FP) over all v2 generations. Score 0 = parse failure (excluded from means); parse success 347–353/398 per axis.*
+
+| Group | n | Faithfulness | Relevance | Completeness | Faithfulness = 1 (hallucination verdicts) |
+|---|---|---|---|---|---|
+| PPG-DaLiA alerts | 398 | 2.21 | 2.65 | 2.20 | 2 |
+| Labeled events (all) | 148 | 2.53 | 3.00 | 2.54 | 0 |
+| — WESAD stress | 50 | 2.74 | 3.00 | 2.70 | 0 |
+| — MIT-BIH ectopy | 50 | 2.34 | 3.00 | 2.58 | 0 |
+| — PTB-XL pathology | 48 | 2.50 | 3.00 | 2.33 | 0 |
+
+On the 398 wearable alerts the faithfulness distribution is: 3 → 175 (44%), 2 → 176 (44%), 1 → 2 (hallucination verdicts — the first non-zero hallucination count any judge of this system has produced), 0 → 45 (parse failures). This replaces v1's degenerate "2.99 / zero hallucinations" with a distribution an evaluator can actually use: under a validated judge, **roughly half of the system's explanations contain claims the judge considers vague or slightly extrapolated**, consistent with the atomic-verification results (§4.9) and squarely in the territory that clinician raters should adjudicate. PENDING-API-KEY: API-judge (DeepSeek-V4-Flash) columns and cross-judge agreement statistics, once the OpenRouter key is renewed. System latency: generation 11.0 s mean per alert (RTX 5060 laptop), retrieval 25 ms (p95 32 ms), local judging 8.1 s/call.
 
 ## 4.7 Labeled-event concordance: the integration result
 
@@ -263,9 +273,9 @@ This is the paper's central negative result, and the one the v1 evaluation could
 
 *Before/after query-and-corpus fix (398 wearable alerts, same flags):* effective explanation clusters at cosine 0.9 rise 173 → 237; mean nearest-neighbor similarity falls 0.936 → 0.915; alerts sharing a >0.9-similar twin fall 81.7% → 67.6%; guideline content reaches 17.6% of alert contexts (70/398) versus 6.5% in v1 (one explanation citing the EHRA digital-devices guide verbatim appears in §4.10). One trade-off is reported plainly: the corrected queries concentrate retrieval — 44 unique documents used vs 53 under the (wrong-reference) v1 queries — so deviation-semantic accuracy traded against raw document spread. Duplication remains high in absolute terms: five-channel summary statistics bound the semantic space of queries, and two-thirds of alerts still have a near-identical twin explanation.
 
-## 4.8 Ablations (descriptive; judge scores pending API)
+## 4.8 Ablations
 
-The 300-word-cap variant produces 196.5 mean words vs 127.3 at the 150-word cap — the completeness/brevity mechanism works as designed; its faithfulness/completeness trade-off will be quantified by the API judge and the clinician kit. The generator ablation (llama3.1:8b, same prompts and contexts) yields 99.1 mean words — shorter, more templated outputs from the weaker model.
+**Word cap (50 alerts, 300-word prompt):** mean length rises 127.3 → 196.5 words, but validated-judge faithfulness *falls* (2.21 → 2.02) while completeness barely moves (2.20 → 2.12): the extra text buys length, not verifiable content — the v1 "completeness by design" framing is quantified and partly refuted. **Generator (50 alerts, llama3.1:8b):** mean length 99.1 words with faithfulness 1.78 and completeness 1.52 — the weaker model is shorter, more templated, and less grounded; generator choice dominates prompt choice.
 
 ## 4.9 Atomic-claim verification
 

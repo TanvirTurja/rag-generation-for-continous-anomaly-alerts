@@ -1,0 +1,60 @@
+dropped 50 superseded mitbih rows
+loaded 646 generated explanations
+citation audit: {'raw': {'citations': 1208, 'valid': 1196, 'rows_all_valid': 389, 'accuracy': 0.9901}, 'repaired': {'citations': 1196, 'valid': 1196, 'rows_all_valid': 398, 'accuracy': 1.0}, 'snaps': 0, 'drops': 12}
+  llama3.1:8b: loaded cached validation (200 rows)
+llama3.1:8b: detection 0.00, FP 0.00, by type {'citation_swap': 0.0, 'diagnostic_exaggeration': 0.0, 'fabricated_citation': 0.0, 'fabricated_fact': 0.0}
+  gemma4:e4b: loaded cached validation (200 rows)
+gemma4:e4b: detection 0.48, FP 0.01, by type {'citation_swap': 0.0, 'diagnostic_exaggeration': 0.96, 'fabricated_citation': 0.16, 'fabricated_fact': 0.8}
+API validation failed: HTTP Error 401: Unauthorized
+selected local judge: gemma4:e4b
+api disabled after 3 consecutive failures (last: HTTP Error 401: Unauthorized); continuing with local judge only
+  judged 50/646 (api spent $0.00)
+  judged 100/646 (api spent $0.00)
+  judged 150/646 (api spent $0.00)
+  judged 200/646 (api spent $0.00)
+  judged 250/646 (api spent $0.00)
+  judged 300/646 (api spent $0.00)
+  judged 350/646 (api spent $0.00)
+  judged 400/646 (api spent $0.00)
+  judged 450/646 (api spent $0.00)
+  judged 500/646 (api spent $0.00)
+  judged 550/646 (api spent $0.00)
+  judged 600/646 (api spent $0.00)
+judging done: 646 rows; api $0.00
+concordance: {
+  "wesad": {
+    "n": 50,
+    "concordant": 47,
+    "artifact_conclusion": 28,
+    "insufficient": 0,
+    "other": 1,
+    "by_label": {
+      "stress": {
+        "n": 50,
+        "concordant": 47
+      }
+    }
+  },
+  "mitbih": {
+    "n": 50,
+    "concordant": 6,
+    "artifact_conclusion": 28,
+    "insufficient": 0,
+    "other": 22,
+    "by_label": {
+      "VEB": {
+        "n": 25,
+        "concordant": 1
+      },
+      "SVEB": {
+        "n": 25,
+        "concordant": 5
+      }
+    }
+  },
+  "ptbxl": {
+    "n": 48,
+    "concordant": 3,
+    "artifact_conclusion": 20,
+    "insufficient": 0,
+    
