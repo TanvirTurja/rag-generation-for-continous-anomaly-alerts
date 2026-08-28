@@ -23,9 +23,11 @@ Outputs -> outputs_v2/:
   api_judge_checkpoint_v2.jsonl, api_budget.json
 """
 
+import difflib
 import json
 import random
 import re
+import sys
 import time
 from pathlib import Path
 
@@ -33,6 +35,9 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts" / "v2"))
+from rag_pipeline_v2 import make_retriever  # noqa: E402
+
 OUT = ROOT / "outputs_v2"
 GEN = OUT / "generation_v2.jsonl"
 CKPT = OUT / "api_judge_checkpoint_v2.jsonl"
@@ -43,6 +48,28 @@ BUDGET_CAP_USD = 10.0
 PRICE_IN, PRICE_OUT = 0.068 / 1e6, 0.18 / 1e6  # OpenRouter listed 2026-08-28
 
 JUDGE_PROMPT_V2 = open(ROOT / "scripts" / "v2" / "judge_prompt_v2.txt", encoding="utf-8").read()
+
+
+def canonicalize_fixed(raw_text, sources):
+    """v1-intended canonicalizer with the ID capture fixed: the citation ID is the
+    PMC token only; trailing slug text is display noise, not part of the ID.
+    Returns (repaired_text, snaps) where snaps record before/after."""
+    valid = sorted({s.split("_")[0] for s in sources if s.startswith("PMC")})
+    snaps = []
+
+    def _fix(m):
+        cid = m.group(1)
+        if cid in valid:
+            return f"[{cid}]"
+        close = difflib.get_close_matches(cid, valid, n=1, cutoff=0.75)
+        if close:
+            snaps.append({"before": cid, "after": close[0]})
+            return f"[{close[0]}]"
+        snaps.append({"before": cid, "after": None})
+        return ""
+
+    repaired = re.sub(r"\[(PMC\d+)[^\]]*\]", _fix, raw_text)
+    return repaired, snaps
 
 LEXICONS = {
     "stress": ["stress", "arousal", "sympathetic", "anxiety", "mental load",
@@ -69,23 +96,37 @@ def section(txt, start, end):
 
 # -------------------------------------------------------------- citation audit
 def citation_audit(rows):
+    """Audit on raw text and on text re-canonicalized with the FIXED capture rule.
+    Also counts name-style citations to (non-PMC) guideline sources."""
     cit_re = re.compile(r"\[(PMC\d+)[^\]]*\]")
+    name_re = re.compile(r"\[([^]\[]+)\]")
     res = {"n_rows": len(rows), "raw": {"citations": 0, "valid": 0, "rows_all_valid": 0},
            "repaired": {"citations": 0, "valid": 0, "rows_all_valid": 0},
-           "snaps": 0, "drops": 0}
+           "snaps": 0, "drops": 0,
+           "tier1_name_citations": 0, "tier1_name_unmatched": 0}
     for r in rows:
-        valid_ids = {s.split("_")[0] for s in r["sources"]}
-        for which, txt in [("raw", r["raw_explanation"]), ("repaired", r["explanation"])]:
-            cits = cit_re.findall(txt)
+        valid_ids = {s.split("_")[0] for s in r["sources"] if s.startswith("PMC")}
+        tier1_sources = [s for s in r["sources"] if not s.startswith("PMC")]
+        fixed, snaps = canonicalize_fixed(r["raw_explanation"], r["sources"])
+        res["snaps"] += sum(1 for s in snaps if s["after"])
+        res["drops"] += sum(1 for s in snaps if not s["after"])
+        for which, txt in [("raw", r["raw_explanation"]), ("repaired", fixed)]:
+            cits = [m.group(1) for m in cit_re.finditer(txt)]
             res[which]["citations"] += len(cits)
             ok = sum(1 for c in cits if c in valid_ids)
             res[which]["valid"] += ok
-            res[which]["rows_all_valid"] += int(ok == len(cits) and len(cits) > 0)
-        for s in r.get("canonicalizer_snaps", []):
-            if s.get("after"):
-                res["snaps"] += 1
+            res[which]["rows_all_valid"] += int(ok == len(cits))
+        # name-style citations (guideline sources etc.)
+        for m in name_re.finditer(fixed):
+            tok = m.group(1).strip()
+            if tok.startswith("PMC"):
+                continue
+            if any(s.startswith(tok) or tok.startswith(s) for s in tier1_sources):
+                res["tier1_name_citations"] += 1
+            elif any(s.split("_")[0].lower() in tok.lower() for s in tier1_sources):
+                res["tier1_name_citations"] += 1
             else:
-                res["drops"] += 1
+                res["tier1_name_unmatched"] += 1
     for which in ("raw", "repaired"):
         c, v = res[which]["citations"], res[which]["valid"]
         res[which]["accuracy"] = round(v / c, 4) if c else None
@@ -113,25 +154,28 @@ def build_corruption_set(rows, n=100, seed=7):
         cits = re.findall(r"PMC\d+", txt)
         ctype = i % 4
         corrupted = txt
+        applied = ctype
         if ctype == 0 and len(cits) >= 1:  # citation swap to wrong retrieved doc
-            others = [s.split("_")[0] for s in r["sources"] if s.split("_")[0] not in cits[:1]]
+            others = [s.split("_")[0] for s in r["sources"]
+                      if s.split("_")[0] not in cits[:1]]
             if others:
                 corrupted = txt.replace(f"[{cits[0]}]", f"[{others[0]}]", 1)
-        elif ctype == 1:  # fabricated fact
+            else:  # no distinct doc to swap to -> fall through to fabricated fact
+                applied = 1
+        if applied == 1:  # fabricated fact
             corrupted = txt.replace(
                 "EVIDENCE:",
                 f"EVIDENCE: {rng.choice(FABRICATED_FACTS)} ", 1)
-        elif ctype == 2:  # fabricated citation (non-retrieved id)
+        elif applied == 2:  # fabricated citation (non-retrieved id)
             corrupted = txt.replace(f"[{cits[0]}]", f"[PMC99999999]", 1)
-        else:  # diagnostic exaggeration
+        elif applied == 3:  # diagnostic exaggeration
             corrupted = txt.replace("DETECTED:", "DETECTED: This finding is diagnostic of "
                                     "acute myocardial infarction and requires emergency "
                                     "treatment. ", 1)
         ctype_name = ["citation_swap", "fabricated_fact", "fabricated_citation",
-                      "diagnostic_exaggeration"][ctype] if ctype != 0 or others else "citation_swap"
+                      "diagnostic_exaggeration"][applied]
         out.append({"row": r, "clean": txt, "corrupted": corrupted,
-                    "corruption_type": ["citation_swap", "fabricated_fact",
-                                        "fabricated_citation", "diagnostic_exaggeration"][ctype]})
+                    "corruption_type": ctype_name})
     return out
 
 
@@ -228,7 +272,25 @@ def gwet_ac1(r1, r2):
 # -------------------------------------------------------------- main
 def main():
     rows = [json.loads(l) for l in open(GEN, encoding="utf-8")]
+    sup = OUT / "superseded_keys.json"
+    if sup.exists():
+        drop = set(json.loads(sup.read_text())["superseded_mitbih_keys"])
+        rows = [r for r in rows if r["key"] not in drop]
+        print(f"dropped {len(drop)} superseded mitbih rows", flush=True)
     print(f"loaded {len(rows)} generated explanations", flush=True)
+
+    # Enrich rows: re-canonicalized text with the FIXED capture rule + re-retrieved
+    # context (deterministic: same corpus, same query, same embedder). The stored
+    # v1-style canonicalized text dropped slug-form citations of valid sources.
+    retrieve = make_retriever()
+    ctx_cache = {}
+    for r in rows:
+        fixed, _ = canonicalize_fixed(r["raw_explanation"], r["sources"])
+        r["explanation"] = fixed
+        ck = r["key"]
+        if ck not in ctx_cache:
+            ctx_cache[ck] = retrieve(r["query"])["context"]
+        r["context"] = ctx_cache[ck]
     main_rows = [r for r in rows if r["subgroup"] == "main"]
 
     # 1. citation audit

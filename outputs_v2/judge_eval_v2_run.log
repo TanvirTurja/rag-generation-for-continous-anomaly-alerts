@@ -1,0 +1,6 @@
+dropped 50 superseded mitbih rows
+loaded 646 generated explanations
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: d574b472-c721-48c8-9e0d-c6b4b49d4606)')' thrown while requesting HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/1_Pooling/config.json
+Retrying in 1s [Retry 1/5].
+citation audit: {'raw': {'citations': 1208, 'valid': 1196, 'rows_all_valid': 389, 'accuracy': 0.9901}, 'repaired': {'citations': 1196, 'valid': 1196, 'rows_all_valid': 398, 'accuracy': 1.0}, 'snaps': 0, 'drops': 12}
+  llama3.1:8b: 50/200 (190s)

@@ -102,7 +102,10 @@ def make_retriever():
 
 # ---------------------------------------------------------------- canonicalizer with snap log
 def canonicalize_citations_logged(text, sources):
-    valid = sorted({s.split("_")[0] for s in sources})
+    """v2 fixed capture: citation ID is the PMC token; trailing slug text is
+    display noise. (The v1 regex greedily captured full slugs, dropping valid
+    citations written as [PMC123_full_title].)"""
+    valid = sorted({s.split("_")[0] for s in sources if s.startswith("PMC")})
     snaps = []
 
     def _fix(m):
@@ -113,10 +116,10 @@ def canonicalize_citations_logged(text, sources):
         if close:
             snaps.append({"before": cid, "after": close[0]})
             return f"[{close[0]}]"
-        snaps.append({"before": cid, "after": None})  # dropped
+        snaps.append({"before": cid, "after": None})
         return ""
 
-    repaired = re.sub(r"\[(PMC\d+[^\]]*)\]", _fix, text)
+    repaired = re.sub(r"\[(PMC\d+)[^\]]*\]", _fix, text)
     return repaired, snaps
 
 
@@ -316,6 +319,96 @@ def build_ptbxl_events(retrieve, per_class=12):
     return events
 
 
+def build_mitbih_events_v2(retrieve, n_events=50, min_abnormal=3):
+    """CORRECTED labeled-event selection (v2 of the fix): windows are selected by
+    EXPERT-ANNOTATED arrhythmia content (>= min_abnormal abnormal beats, stratified
+    VEB/SVEB, ranked by abnormal-beat count) — the detector-flag ranking of the
+    first pass selected 49/50 windows with no annotated abnormal beats, because
+    the inter-patient detector is near chance. Labels drive SELECTION only; the
+    QUERY still contains detector-side quantities exclusively (flag fraction,
+    feature z vs training normals), never the annotation."""
+    import wfdb
+    MITBIH_DIR = ROOT / "Dataset" / "mit-bih-arrhythmia-database-1.0.0" / "mit-bih-arrhythmia-database-1.0.0"
+    m = get_cache("mitbih")
+    X, y, recs = m["X"], m["y"], m["record"].astype(str)
+    tr = np.isin(recs, DS1) & (y == 0)
+    te = np.isin(recs, DS2)
+    se, st = fit_score("LOF", X[tr], X[te])
+    thr = np.percentile(st, 85)
+    flag_abs = np.zeros(len(X), dtype=bool)
+    flag_abs[np.where(te)[0][se > thr]] = True
+    mu, sd = X[tr].mean(axis=0), X[tr].std(axis=0) + 1e-9
+
+    candidates = {"VEB": [], "SVEB": []}
+    for rec in DS2:
+        sig, _ = wfdb.rdsamp(str(MITBIH_DIR / rec))
+        ann = wfdb.rdann(str(MITBIH_DIR / rec), "atr")
+        idx_te = np.where(te & (recs == rec))[0]
+        sym_seq = []
+        for i, sym in zip(ann.sample, ann.symbol):
+            if sym not in BEAT_SYMBOLS:
+                continue
+            start, end = i - 144, i + 144
+            if start < 0 or end > sig.shape[0]:
+                continue
+            sym_seq.append((i, sym, len(sym_seq)))
+        assert len(sym_seq) == len(idx_te), f"alignment mismatch on {rec}"
+        row_of = {pos: int(r) for pos, r in zip([s[2] for s in sym_seq], idx_te)}
+        windows = {}
+        for sample, sym, pos in sym_seq:
+            widx = sample // (360 * 30)
+            wd = windows.setdefault(widx, {"rows": [], "syms": []})
+            wd["rows"].append(row_of[pos])
+            wd["syms"].append(sym)
+        for widx, wd in windows.items():
+            abn = [s_ for s_ in wd["syms"] if s_ not in AAMI_NORMAL]
+            if len(abn) < min_abnormal or len(wd["rows"]) < 5:
+                continue
+            if any(s_ in {"V", "E"} for s_ in abn):
+                cls = "VEB"
+            elif any(s_ in {"A", "a", "J", "S"} for s_ in abn):
+                cls = "SVEB"
+            else:
+                continue
+            candidates[cls].append((len(abn), rec, widx, wd, abn))
+
+    picked = []
+    for cls in ("VEB", "SVEB"):
+        cands = sorted(candidates[cls], key=lambda t: -t[0])
+        quota = n_events // 2 if len(candidates["SVEB"]) >= n_events // 2 else n_events - min(
+            n_events, len(candidates["VEB"]))
+        quota = max(0, min(quota, len(cands)))
+        picked += [(cls,) + c for c in cands[:quota]]
+    # fill any remainder from VEB
+    n_sveb = sum(1 for p in picked if p[0] == "SVEB")
+    veb_used = {p[2] for p in picked if p[0] == "VEB"}
+    for c in sorted(candidates["VEB"], key=lambda t: -t[0]):
+        if len(picked) >= n_events:
+            break
+        if (c[1], c[2]) in veb_used:
+            continue
+        picked.append(("VEB",) + c)
+        veb_used.add((c[1], c[2]))
+    print(f"  mitbih-v2 candidate windows: VEB {len(candidates['VEB'])}, SVEB {len(candidates['SVEB'])}; "
+          f"picked {len(picked)}", flush=True)
+
+    events = []
+    for cls, n_abn, rec, widx, wd, abn in picked:
+        frac = float(np.mean([flag_abs[r] for r in wd["rows"]]))
+        feat_z = (X[wd["rows"][0]] - mu) / sd
+        q = (f"Ambulatory ECG monitoring window flagged by anomaly detection: "
+             f"{frac * 100:.0f}% of beats in this 30-second window were flagged by a detector "
+             f"trained on normal beats. Representative beat feature deviations vs normal training: "
+             + ", ".join(f"{FEATURE_NAMES[j]} z={feat_z[j]:+.1f}" for j in [0, 1, 4, 7]) +
+             f". Relevant topics: {ECG_TOPICS}.")
+        res = retrieve(q)
+        events.append({"key": f"mitbihv2|{rec}|w{widx}", "group": "mitbih", "subject": rec,
+                       "window": int(widx), "query": q, "true_label": cls,
+                       "true_label_detail": f"{n_abn} annotated abnormal beats: {abn[:6]}",
+                       "flag_frac": frac, "n_beats": len(wd["rows"]), **res})
+    return events
+
+
 # ---------------------------------------------------------------- generation
 def generate_one(alert, model, system_prompt, num_predict=500, use_think_false=True):
     import ollama
@@ -407,5 +500,39 @@ def main():
     print("generation complete ->", GEN_JSONL, flush=True)
 
 
+def run_mitbih_v2():
+    """Regenerate the 50 MIT-BIH labeled events with annotation-driven selection,
+    append to generation_v2.jsonl with mitbihv2 keys, and mark the superseded
+    detector-ranked mitbih| keys in a sidecar file."""
+    retrieve = make_retriever()
+    events = build_mitbih_events_v2(retrieve)
+    print(f"B2-v2: {len(events)} annotation-selected MIT-BIH windows", flush=True)
+    with open(GEN_JSONL, "a", encoding="utf-8") as fout:
+        for job in events:
+            raw, latency = generate_one(job, LLM_MODEL, SYSTEM_PROMPT_150)
+            repaired, snaps = canonicalize_citations_logged(raw, job["sources"])
+            rec = {"key": job["key"], "group": "mitbih", "subgroup": "labeled",
+                   "model": LLM_MODEL, "prompt": "150",
+                   "subject": job["subject"], "window": job["window"],
+                   "query": job["query"], "sources": job["sources"], "tiers": job["tiers"],
+                   "true_label": job["true_label"],
+                   "true_label_detail": job["true_label_detail"],
+                   "raw_explanation": raw, "explanation": repaired,
+                   "canonicalizer_snaps": snaps, "latency_sec": round(latency, 2)}
+            fout.write(json.dumps(rec) + "\n")
+            fout.flush()
+    superseded = [json.loads(l)["key"] for l in open(GEN_JSONL, encoding="utf-8")
+                  if json.loads(l)["group"] == "mitbih" and json.loads(l)["key"].startswith("mitbih|")]
+    (OUT / "superseded_keys.json").write_text(json.dumps(
+        {"superseded_mitbih_keys": superseded,
+         "reason": "detector-ranked selection picked 49/50 windows without annotated "
+                   "abnormal beats; replaced by annotation-driven selection"}, indent=2))
+    print(f"appended {len(events)} mitbihv2 rows; superseded {len(superseded)} old keys", flush=True)
+
+
 if __name__ == "__main__":
-    main()
+    import sys as _sys
+    if len(_sys.argv) > 1 and _sys.argv[1] == "mitbih-v2":
+        run_mitbih_v2()
+    else:
+        main()

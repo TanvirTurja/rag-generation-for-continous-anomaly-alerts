@@ -1,0 +1,16 @@
+{
+  "n_texts": 398,
+  "n_clusters_at_0.9": 237,
+  "mean_nn_cos": 0.9149,
+  "pct_rows_with_nn_gt_0.8": 98.99,
+  "pct_rows_with_nn_gt_0.9": 67.59,
+  "unique_docs_used": 44,
+  "alerts_with_tier1": 70,
+  "tier1_alert_rate": 0.1759,
+  "v1_comparison": {
+    "n_clusters_at_0.9": 173,
+    "mean_nn_cos": 0.9356,
+    "unique_docs_used": 53,
+    "tier1_alert_rate": 0.0653
+  }
+}

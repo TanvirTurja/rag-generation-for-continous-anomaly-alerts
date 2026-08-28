@@ -1,0 +1,208 @@
+{
+  "n_claims": 40,
+  "n_ok": 40,
+  "n_fail": 0,
+  "failed": [],
+  "claims": [
+    {
+      "id": "det_WESAD_IF_auc",
+      "value": "0.799",
+      "in_paper": true
+    },
+    {
+      "id": "det_WESAD_IF_ci",
+      "value": "[0.770, 0.827]",
+      "in_paper": true
+    },
+    {
+      "id": "det_WESAD_LOF_auc",
+      "value": "0.827",
+      "in_paper": true
+    },
+    {
+      "id": "det_WESAD_LOF_ci",
+      "value": "[0.800, 0.852]",
+      "in_paper": true
+    },
+    {
+      "id": "det_WESAD_OCSVM_auc",
+      "value": "0.814",
+      "in_paper": true
+    },
+    {
+      "id": "det_WESAD_OCSVM_ci",
+      "value": "[0.787, 0.842]",
+      "in_paper": true
+    },
+    {
+      "id": "det_WESAD_AE_auc",
+      "value": "0.855",
+      "in_paper": true
+    },
+    {
+      "id": "det_WESAD_AE_ci",
+      "value": "[0.831, 0.878]",
+      "in_paper": true
+    },
+    {
+      "id": "det_MIT-BIH_IF_auc",
+      "value": "0.670",
+      "in_paper": true
+    },
+    {
+      "id": "det_MIT-BIH_IF_ci",
+      "value": "[0.645, 0.663]",
+      "in_paper": true
+    },
+    {
+      "id": "det_MIT-BIH_LOF_auc",
+      "value": "0.502",
+      "in_paper": true
+    },
+    {
+      "id": "det_MIT-BIH_LOF_ci",
+      "value": "[0.492, 0.512]",
+      "in_paper": true
+    },
+    {
+      "id": "det_MIT-BIH_OCSVM_auc",
+      "value": "0.675",
+      "in_paper": true
+    },
+    {
+      "id": "det_MIT-BIH_OCSVM_ci",
+      "value": "[0.666, 0.684]",
+      "in_paper": true
+    },
+    {
+      "id": "det_MIT-BIH_AE_auc",
+      "value": "0.638",
+      "in_paper": true
+    },
+    {
+      "id": "det_MIT-BIH_AE_ci",
+      "value": "[0.628, 0.648]",
+      "in_paper": true
+    },
+    {
+      "id": "det_PTB-XL_IF_auc",
+      "value": "0.632",
+      "in_paper": true
+    },
+    {
+      "id": "det_PTB-XL_IF_ci",
+      "value": "[0.607, 0.654]",
+      "in_paper": true
+    },
+    {
+      "id": "det_PTB-XL_LOF_auc",
+      "value": "0.682",
+      "in_paper": true
+    },
+    {
+      "id": "det_PTB-XL_LOF_ci",
+      "value": "[0.661, 0.703]",
+      "in_paper": true
+    },
+    {
+      "id": "det_PTB-XL_OCSVM_auc",
+      "value": "0.628",
+      "in_paper": true
+    },
+    {
+      "id": "det_PTB-XL_OCSVM_ci",
+      "value": "[0.606, 0.650]",
+      "in_paper": true
+    },
+    {
+      "id": "det_PTB-XL_AE_auc",
+      "value": "0.628",
+      "in_paper": true
+    },
+    {
+      "id": "det_PTB-XL_AE_ci",
+      "value": "[0.605, 0.651]",
+      "in_paper": true
+    },
+    {
+      "id": "bootstrap_p_WESAD",
+      "value": "p = 0.008",
+      "in_paper": true
+    },
+    {
+      "id": "bootstrap_p_MIT-BIH",
+      "value": "p = 0.001",
+      "in_paper": true
+    },
+    {
+      "id": "bootstrap_p_PTB-XL",
+      "value": "p = 0.001",
+      "in_paper": true
+    },
+    {
+      "id": "wesad_sanity_stress_mean",
+      "value": "43.7",
+      "in_paper": true
+    },
+    {
+      "id": "wesad_sanity_baseline_mean",
+      "value": "1.5",
+      "in_paper": true
+    },
+    {
+      "id": "corpus_docs_total",
+      "value": "206 documents",
+      "in_paper": true
+    },
+    {
+      "id": "corpus_chunks",
+      "value": "5,045 chunks",
+      "in_paper": true
+    },
+    {
+      "id": "corpus_t1_chunks",
+      "value": "992 guideline chunks",
+      "in_paper": true
+    },
+    {
+      "id": "abl_arch_unique_docs",
+      "value": "53 unique documents",
+      "in_paper": true
+    },
+    {
+      "id": "abl_naive_unique",
+      "value": "5 | 20.0%",
+      "in_paper": true
+    },
+    {
+      "id": "near_dup_mean",
+      "value": "0.936",
+      "in_paper": true
+    },
+    {
+      "id": "near_dup_pct08",
+      "value": "99.75",
+      "in_paper": true
+    },
+    {
+      "id": "near_dup_clusters",
+      "value": "173",
+      "in_paper": true
+    },
+    {
+      "id": "retrieval_latency_mean_ms",
+      "value": "25 ms",
+      "in_paper": true
+    },
+    {
+      "id": "utilization_docs",
+      "value": "53 of 204",
+      "in_paper": true
+    },
+    {
+      "id": "utilization_pct_alerts",
+      "value": "6.5%",
+      "in_paper": true
+    }
+  ]
+}

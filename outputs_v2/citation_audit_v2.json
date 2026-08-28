@@ -1,0 +1,19 @@
+{
+  "n_rows": 398,
+  "raw": {
+    "citations": 1208,
+    "valid": 1196,
+    "rows_all_valid": 389,
+    "accuracy": 0.9901
+  },
+  "repaired": {
+    "citations": 1196,
+    "valid": 1196,
+    "rows_all_valid": 398,
+    "accuracy": 1.0
+  },
+  "snaps": 0,
+  "drops": 12,
+  "tier1_name_citations": 109,
+  "tier1_name_unmatched": 8
+}
