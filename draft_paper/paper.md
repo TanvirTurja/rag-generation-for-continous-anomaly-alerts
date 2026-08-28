@@ -18,23 +18,30 @@ abstract: |
   unlabeled flags by an unvalidated, near-constant LLM judge. Under corrected,
   pre-registered protocols (WESAD leave-one-subject-out; MIT-BIH inter-patient
   DS1→DS2 with paced records excluded; PTB-XL thresholds frozen from the
-  validation fold; Isolation Forest run over 10 seeds with bootstrap CIs and
-  paired-bootstrap tests; one-class SVM and autoencoder baselines), the
-  headline detection results fall substantially: WESAD LOF AUC 0.827 [0.800,
-  0.852] (IF 0.799), MIT-BIH LOF collapses from 0.899 to 0.502 — chance level —
-  while IF holds 0.670 ± 0.023 and a simple autoencoder reaches 0.855 on WESAD,
-  outperforming both classic detectors. The explanation half is re-evaluated
-  end-to-end on labeled events (WESAD stress windows, MIT-BIH arrhythmic
-  windows, PTB-XL pathology records — 148 true events) with labels withheld
-  from the retrieval query, judged by LLM judges that are themselves validated
-  on a 200-item corruption benchmark (fabricated facts, citation swaps,
-  fabricated identifiers, diagnostic exaggerations), and audited by a
-  FActScore-style atomic-claim verification. Raw pre-canonicalization text is
-  preserved so citation accuracy is reported before and after repair. A
-  ready-to-run clinician evaluation kit (60 stratified items, 3+ raters,
-  Fleiss' κ) accompanies the paper; clinician ratings are pending. All
-  protocols were pre-registered in THRESHOLDS.md before any v2 run; every
-  number is recomputable from released artifacts.
+  validation fold; 10-seed Isolation Forest; bootstrap CIs; one-class SVM and
+  autoencoder baselines), the headline detection results fall substantially:
+  WESAD LOF AUC 0.827 [0.800, 0.852] (IF 0.799), MIT-BIH LOF collapses from
+  0.899 to 0.502 — chance level — while IF holds 0.670 ± 0.023 and a simple
+  autoencoder reaches 0.855 on WESAD, outperforming both classic detectors.
+  The explanation half is re-evaluated end-to-end on 148 labeled events (WESAD
+  stress, MIT-BIH windows with ≥3 annotated ectopic beats, PTB-XL pathology
+  records) with labels withheld from the query: explanations name the correct
+  condition for 94% of true stress events but only 12% of arrhythmic windows
+  and 6% of pathology ECGs, attributing 42–56% of true pathology to motion or
+  sensor artifact — the safety-critical failure mode an unlabeled evaluation
+  cannot surface. Both local LLM judges (llama3.1:8b, gemma4:e4b) detect 0 of
+  100 injected corruptions (fabricated facts, citation swaps, fabricated
+  identifiers, diagnostic exaggerations), empirically confirming that the v1
+  "zero hallucination verdicts" were uninformative; raw-text citation auditing
+  shows a genuine 1% citation-fabrication rate that post-repair reporting hid.
+  A corpus expansion with wearable-relevant guidelines (EHRA 2022 digital-
+  devices guide; 2023 ACC/AHA AF guideline) raises guideline reach from 6.5%
+  to 17.6% of alerts and reduces explanation duplication (near-duplicate
+  clusters 173→237). A ready-to-run clinician evaluation kit (60 stratified
+  items, 3+ raters, Fleiss' κ) accompanies the paper; ratings pending. All
+  protocols were pre-registered before any run; every number is recomputable
+  from released artifacts. The systems idea survives; the original claims did
+  not.
 ---
 
 # 1 Introduction
@@ -220,31 +227,61 @@ Two honest findings. Deviation-aware queries do spread retrieval (5 → 53 uniqu
 
 ## 4.4 Citation accuracy: raw vs canonicalized (v2)
 
-PENDING-W5: total citations on raw text, raw accuracy, snaps, drops, repaired accuracy, tier-1 utilization in v2 corpus.
+With raw generation text preserved and the canonicalizer's identifier capture fixed (the v1 regex greedily captured full source-name slugs, silently dropping valid citations written in long form), the objective audit over all 546 main explanations (398 wearable alerts + 148 labeled events) gives: **1,208 inline PMC citations on raw text, 1,196 valid (99.01%)** — 12 invalid citations across 9 explanations, i.e., a genuine fabrication/mistyping rate of ~1%. The repaired text reaches 100% validity by *dropping* those 12 (zero near-miss snaps were needed; the invalid IDs were not digit transpositions of retrieved IDs but largely identifiers of documents outside the alert's context). Tier-1 guideline sources, which carry no PMC identifier, received 109 valid name-style citations across the corpus (8 unmatched name citations, a further fabrication signal). We no longer headline citation accuracy: validity is a set-membership check, necessary but far from sufficient for grounding.
 
 ## 4.5 Judge validation on the corruption benchmark
 
-PENDING-W6: per-judge detection/FPR table (llama3.1:8b, gemma4:e4b, gpt-oss:20b, DeepSeek API), selected local judge, per-type breakdown.
+*Table 5: Judge validation (100 corrupted + 100 clean items; detection = faithfulness=1 on corrupted; FP = faithfulness=1 on clean).*
 
-## 4.6 Main judge scores and agreement (v2 alerts)
+| Judge | Detection rate | False-positive rate | Detection by corruption type |
+|---|---|---|---|
+| llama3.1:8b (v1's judge) | **0.00** | 0.00 | 0.00 on all four types |
+| gemma4:e4b | **0.00** | 0.00 | 0.00 on all four types |
+| DeepSeek-V4-Flash (API) | PENDING-API-KEY | — | — |
 
-PENDING-W6: score distributions for both judges on 398 v2 alerts; raw/within-1 agreement; Gwet AC1; latency (generation + judge).
+Both local candidates — including the exact judge that produced v1's "zero hallucination verdicts" — detect **none** of the injected fabrications: not the fabricated mortality statistics, not the invented citations, not the "diagnostic of acute myocardial infarction" exaggerations. Combined with v1's finding that this judge scored 397/398 items identically, the conclusion is unavoidable: **small local models used with this rubric are null instruments for faithfulness**, and v1's safety claim was an artifact of asking a question the judge could not answer. Per the pre-registered fallback, no local judge is used for the main run; the evaluation relies on the API judge (validation pending), atomic-claim verification (§4.9), and the clinician kit.
 
-## 4.7 Labeled-event concordance (the integration result)
+## 4.6 Main judge scores (API judge)
 
-PENDING-W6: per-dataset concordance rates, artifact-conclusion rate on true pathology, insufficiency rate, judge scores by group; before/after query-fix comparison (v1 vs v2 alerts on near-duplication and utilization).
+PENDING-API-KEY: API-judge score distributions over the 546 main + 100 ablation explanations, once the OpenRouter key is renewed. Generation latency: mean 11.0 s per explained alert on the RTX 5060 laptop GPU; retrieval 25 ms (p95 32 ms); local-judge latency re-measured at 8.1 s per call (replacing v1's unarchived 5.6 s figure).
 
-## 4.8 Ablations
+## 4.7 Labeled-event concordance: the integration result
 
-PENDING-W6: word-cap 150 vs 300 (completeness/faithfulness trade-off); generator ablation (Qwen3.5 vs llama3.1).
+*Table 6: Do explanations for events with known ground truth name the right condition? (Lexicon check on the DETECTED field; labels never entered the queries. Artifact-language counts overlap with concordant rows.)*
+
+| Event set (true label) | n | Concordant | Artifact language | Other/insufficient |
+|---|---|---|---|---|
+| WESAD (laboratory stress) | 50 | **47 (94%)** | 28 | 1 |
+| MIT-BIH windows (V/SVEB ectopy, ≥3 abnormal beats) | 50 | **6 (12%)** | 28 | 22 |
+| PTB-XL records (MI/STTC/CD/HYP) | 48 | **3 (6%)** | 20 | 25 |
+
+Per-class PTB-XL: MI 0/12, STTC 1/12, CD 2/12, HYP 0/12; MIT-BIH: VEB 1/25, SVEB 5/25.
+
+This is the paper's central negative result, and the one the v1 evaluation could never have produced by design (it judged only unlabeled flags). Where the true event is a strong sympathetic deviation (WESAD stress), the system's explanations are usually right (94%). Where the true event is clinical pathology — ventricular ectopy on ambulatory ECG, infarction or conduction disease on a resting 12-lead — the explanations almost never name the condition (6–12%), and in 42–56% of cases attribute the finding to **motion or sensor artifact**. A conservative artifact-first posture is safe on unlabeled wearable noise but becomes a safety liability when the underlying event is real pathology: the explanation actively reassures. The root causes are structural: unsupervised detectors at or near chance on inter-patient ECG (§4.1) supply uninformative deviation features; 12 summary statistics carry no morphology; and a corpus bucketed towards signal-quality literature reinforces artifact framings. We flag the crude keyword-lexicon concordance measure itself as a limitation — the released clinician kit adjudicates these same items with human raters.
+
+*Before/after query-and-corpus fix (398 wearable alerts, same flags):* effective explanation clusters at cosine 0.9 rise 173 → 237; mean nearest-neighbor similarity falls 0.936 → 0.915; alerts sharing a >0.9-similar twin fall 81.7% → 67.6%; guideline content reaches 17.6% of alert contexts (70/398) versus 6.5% in v1 (one explanation citing the EHRA digital-devices guide verbatim appears in §4.10). One trade-off is reported plainly: the corrected queries concentrate retrieval — 44 unique documents used vs 53 under the (wrong-reference) v1 queries — so deviation-semantic accuracy traded against raw document spread. Duplication remains high in absolute terms: five-channel summary statistics bound the semantic space of queries, and two-thirds of alerts still have a near-identical twin explanation.
+
+## 4.8 Ablations (descriptive; judge scores pending API)
+
+The 300-word-cap variant produces 196.5 mean words vs 127.3 at the 150-word cap — the completeness/brevity mechanism works as designed; its faithfulness/completeness trade-off will be quantified by the API judge and the clinician kit. The generator ablation (llama3.1:8b, same prompts and contexts) yields 99.1 mean words — shorter, more templated outputs from the weaker model.
 
 ## 4.9 Atomic-claim verification
 
-PENDING-W6: % SUPPORTED / UNSUPPORTED / UNVERIFIABLE by group.
+RUNNING: FActScore-lite results (60 explanations decomposed; different-family verifier) will be inserted here on completion.
 
 ## 4.10 Example alert (v2)
 
-PENDING-W5: one verbatim v2 alert with the evidence-coherent query.
+**QUERY (constructed, subject 3, window 270–300 s, true label: stress):** "Biosignal window flagged by anomaly detection. reduced bvp (z=−7.2 vs subject baseline) elevated wrist_eda (z=+4.0 vs subject baseline). Relevant topics: electrodermal activity skin conductance sympathetic arousal stress physiology photoplethysmography heart rate variability ECG."
+
+> **DETECTED:** The pattern suggests acute sympathetic arousal (stress) where reduced blood volume pulse and elevated skin conductance indicate a physiological stress response common in anxiety or high cognitive load scenarios.
+>
+> **EVIDENCE:** EDA reflects changes from sweat gland activity modulated by the autonomic nervous system, making it valuable for detecting emotional arousal and stress. When stressed, blood pressure increases causing higher heart rate linked with low HRV (reduced BVP). EDA tends to increase during stressful periods while adding noise can affect PPG signals like the reduced BVP seen here.
+>
+> **RECOMMENDATION:** Monitor for sustained elevation; consider multimodal confirmation if clinical context warrants, as single-signal methods have limitations in real-world settings.
+>
+> **DISCLAIMER:** Research decision-support tool. Not a diagnostic device. Does not replace clinical judgment.
+
+Contrast this with v1's showcase alert, which asserted an "abrupt isolated spike" while naming two channels at |z| = 0.5 measured against other anomalies. The v2 query states detector facts and real deviations against the subject's own baseline (z = −7.2, +4.0), and the explanation names the correct physiological process — the concordant case. §4.7 quantifies how often this succeeds, and, crucially, where it fails.
 
 # 5 Discussion
 

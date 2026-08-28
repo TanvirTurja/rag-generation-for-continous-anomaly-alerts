@@ -29,6 +29,7 @@ import random
 import re
 import sys
 import time
+import urllib.request
 from pathlib import Path
 
 import numpy as np
@@ -43,7 +44,7 @@ GEN = OUT / "generation_v2.jsonl"
 CKPT = OUT / "api_judge_checkpoint_v2.jsonl"
 
 API_MODEL = "deepseek/deepseek-v4-flash-0731"
-LOCAL_CANDIDATES = ["llama3.1:8b", "gemma4:e4b", "gpt-oss:20b"]
+LOCAL_CANDIDATES = ["llama3.1:8b", "gemma4:e4b"]  # gpt-oss excluded per author decision (2026-08-28)
 BUDGET_CAP_USD = 10.0
 PRICE_IN, PRICE_OUT = 0.068 / 1e6, 0.18 / 1e6  # OpenRouter listed 2026-08-28
 
@@ -197,7 +198,7 @@ def local_judge(model, query, explanation, context):
                                  {"role": "user", "content":
                                   f"QUERY: {query}\nSOURCES:\n{context}\nEXPLANATION:\n{explanation}"}],
                        options={"temperature": 0.1, "num_predict": 300,
-                                "num_ctx": 10000, "num_gpu": 99})
+                                "num_ctx": 6000, "num_gpu": 99})
     return parse_scores(resp["message"]["content"])
 
 
@@ -312,27 +313,38 @@ def main():
                            "is_corrupted": 1, "ctype": r["corruption_type"]})
 
     for model in LOCAL_CANDIDATES:
-        t0 = time.time()
-        results = []
-        for b in bench_rows:
+        csv_path = OUT / f"judge_validation_{model.replace(':', '_').replace('/', '_')}.csv"
+        df = None
+        if csv_path.exists():
             try:
-                sc = local_judge(model, b["query"], b["expl"], b["context"])
-            except Exception as e:
-                print(f"  {model} error {b['uid'][:24]}: {e}", flush=True)
-                sc = {}
-            results.append({**b, "faithfulness": sc.get("faithfulness", 0),
-                            "relevance": sc.get("relevance", 0),
-                            "completeness": sc.get("completeness", 0)})
-            if len(results) % 50 == 0:
-                print(f"  {model}: {len(results)}/{len(bench_rows)} ({time.time()-t0:.0f}s)", flush=True)
-        df = pd.DataFrame(results)
+                cached = pd.read_csv(csv_path)
+                if len(cached) == len(bench_rows) and {"is_corrupted", "faithfulness"} <= set(cached.columns):
+                    df = cached
+                    print(f"  {model}: loaded cached validation ({len(df)} rows)", flush=True)
+            except Exception:
+                df = None
+        if df is None:
+            t0 = time.time()
+            results = []
+            for b in bench_rows:
+                try:
+                    sc = local_judge(model, b["query"], b["expl"], b["context"])
+                except Exception as e:
+                    print(f"  {model} error {b['uid'][:24]}: {e}", flush=True)
+                    sc = {}
+                results.append({**b, "faithfulness": sc.get("faithfulness", 0),
+                                "relevance": sc.get("relevance", 0),
+                                "completeness": sc.get("completeness", 0)})
+                if len(results) % 50 == 0:
+                    print(f"  {model}: {len(results)}/{len(bench_rows)} ({time.time()-t0:.0f}s)", flush=True)
+            df = pd.DataFrame(results)
+            df.to_csv(csv_path, index=False)
         det = df[(df.is_corrupted == 1) & (df.faithfulness == 1)].shape[0] / max(1, (df.is_corrupted == 1).sum())
         fp = df[(df.is_corrupted == 0) & (df.faithfulness == 1)].shape[0] / max(1, (df.is_corrupted == 0).sum())
         per_type = df[df.is_corrupted == 1].groupby("ctype").apply(
             lambda g: (g.faithfulness == 1).mean(), include_groups=False).round(3).to_dict()
         val["per_judge"][model] = {"detection_rate": round(det, 3), "false_positive_rate": round(fp, 3),
                                    "detection_by_type": per_type, "n": len(df)}
-        df.to_csv(OUT / f"judge_validation_{model.replace(':', '_').replace('/', '_')}.csv", index=False)
         print(f"{model}: detection {det:.2f}, FP {fp:.2f}, by type {per_type}", flush=True)
 
     # API judge on the benchmark
@@ -357,11 +369,21 @@ def main():
         print("API validation failed:", e, flush=True)
         val["per_judge"]["api_deepseek_v4_flash"] = {"error": str(e)}
 
-    # select best local judge by balanced accuracy
+    # select local judge ONLY if it validated: detection >= 0.3 on the benchmark.
+    # Both llama3.1:8b and gemma4:e4b scored 0.00 detection -> no valid local judge;
+    # per pre-registered fallback, evaluation relies on API judge + atomic
+    # verification + clinician kit.
     local_scores = {m: (v.get("detection_rate", 0) - v.get("false_positive_rate", 0))
                     for m, v in val["per_judge"].items() if m in LOCAL_CANDIDATES}
-    best_local = max(local_scores, key=local_scores.get) if local_scores else None
-    val["selected_local_judge"] = {"model": best_local, "criterion": "detection - FP on corruption benchmark"}
+    qualified = {m: s for m, s in local_scores.items()
+                 if val["per_judge"][m].get("detection_rate", 0) >= 0.3}
+    best_local = max(qualified, key=qualified.get) if qualified else None
+    val["selected_local_judge"] = {
+        "model": best_local,
+        "criterion": "detection >= 0.3 on corruption benchmark, then max (detection - FP)",
+        "note": ("no local judge qualified (llama3.1:8b detection 0.00, gemma4:e4b detection "
+                 "0.00); falling back to API judge + atomic verification + clinician kit")
+        if not best_local else ""}
     (OUT / "judge_validation.json").write_text(json.dumps(val, indent=2))
     print("selected local judge:", best_local, flush=True)
 
@@ -399,9 +421,9 @@ def main():
          "cap_usd": BUDGET_CAP_USD}, indent=2))
     print(f"judging done: {len(out_records)} rows; api ${api.spent:.2f}", flush=True)
 
-    # 4. agreement (main dalia group, both judges complete)
-    m = ev[(ev.group == "dalia") & (ev.subgroup == "main")]
-    if {"local_faithfulness", "api_faithfulness"} <= set(m.columns):
+    # 4. agreement (main dalia group; requires a valid local judge — else API-only)
+    m = ev[(ev.group == "dalia") & (ev.subgroup == "main")] if len(ev) and "group" in ev.columns else ev
+    if len(m) and {"local_faithfulness", "api_faithfulness"} <= set(m.columns):
         agr = {}
         for ax in ("faithfulness", "relevance", "completeness"):
             a = m[f"local_{ax}"].values
@@ -420,16 +442,16 @@ def main():
 
     # 5. labeled-events concordance
     conc = {}
-    labeled = ev[ev.subgroup == "labeled"] if "subgroup" in ev else pd.DataFrame()
-    gen_by_key = {r["key"]: r for r in rows}
-    for grp, sub in [("wesad", None), ("mitbih", None), ("ptbxl", None)]:
-        sel = labeled[labeled.group == grp]
-        if not len(sel):
+    # concordance depends only on explanations + labels, not on judge success
+    labeled_rows = [r for r in rows if r["subgroup"] == "labeled"]
+    for grp in ("wesad", "mitbih", "ptbxl"):
+        sel = [r for r in labeled_rows if r["group"] == grp]
+        if not sel:
             continue
         stats = {"n": len(sel), "concordant": 0, "artifact_conclusion": 0,
                  "insufficient": 0, "other": 0, "by_label": {}}
-        for _, r in sel.iterrows():
-            det = section(gen_by_key[r["key"]]["explanation"], "DETECTED", "EVIDENCE").lower()
+        for r in sel:
+            det = section(r["explanation"], "DETECTED", "EVIDENCE").lower()
             lab = r["true_label"]
             stats["by_label"].setdefault(lab, {"n": 0, "concordant": 0})
             stats["by_label"][lab]["n"] += 1

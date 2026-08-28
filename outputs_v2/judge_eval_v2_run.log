@@ -1,6 +1,19 @@
 dropped 50 superseded mitbih rows
 loaded 646 generated explanations
-'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: d574b472-c721-48c8-9e0d-c6b4b49d4606)')' thrown while requesting HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/1_Pooling/config.json
-Retrying in 1s [Retry 1/5].
 citation audit: {'raw': {'citations': 1208, 'valid': 1196, 'rows_all_valid': 389, 'accuracy': 0.9901}, 'repaired': {'citations': 1196, 'valid': 1196, 'rows_all_valid': 398, 'accuracy': 1.0}, 'snaps': 0, 'drops': 12}
-  llama3.1:8b: 50/200 (190s)
+  llama3.1:8b: loaded cached validation (200 rows)
+llama3.1:8b: detection 0.00, FP 0.00, by type {'citation_swap': 0.0, 'diagnostic_exaggeration': 0.0, 'fabricated_citation': 0.0, 'fabricated_fact': 0.0}
+  gemma4:e4b: loaded cached validation (200 rows)
+gemma4:e4b: detection 0.00, FP 0.00, by type {'citation_swap': 0.0, 'diagnostic_exaggeration': 0.0, 'fabricated_citation': 0.0, 'fabricated_fact': 0.0}
+API validation failed: HTTP Error 401: Unauthorized
+selected local judge: None
+api main-loop stop: HTTP Error 401: Unauthorized
+judging done: 0 rows; api $0.00
+Traceback (most recent call last):
+  File "D:\All_Folder\data project\new_papers\Retrieval-augmented generation for continuous anomaly alerts\scripts\v2\judge_eval_v2.py", line 476, in <module>
+    main()
+    ~~~~^^
+  File "D:\All_Folder\data project\new_papers\Retrieval-augmented generation for continuous anomaly alerts\scripts\v2\judge_eval_v2.py", line 427, in main
+    if {"local_faithfulness", "api_faithfulness"} <= set(m.columns):
+                                                         ^
+UnboundLocalError: cannot access local variable 'm' where it is not associated with a value

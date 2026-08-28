@@ -1,0 +1,57 @@
+{
+  "wesad": {
+    "n": 50,
+    "concordant": 47,
+    "artifact_conclusion": 28,
+    "insufficient": 0,
+    "other": 1,
+    "by_label": {
+      "stress": {
+        "n": 50,
+        "concordant": 47
+      }
+    }
+  },
+  "mitbih": {
+    "n": 50,
+    "concordant": 6,
+    "artifact_conclusion": 28,
+    "insufficient": 0,
+    "other": 22,
+    "by_label": {
+      "VEB": {
+        "n": 25,
+        "concordant": 1
+      },
+      "SVEB": {
+        "n": 25,
+        "concordant": 5
+      }
+    }
+  },
+  "ptbxl": {
+    "n": 48,
+    "concordant": 3,
+    "artifact_conclusion": 20,
+    "insufficient": 0,
+    "other": 25,
+    "by_label": {
+      "MI": {
+        "n": 12,
+        "concordant": 0
+      },
+      "STTC": {
+        "n": 12,
+        "concordant": 1
+      },
+      "CD": {
+        "n": 12,
+        "concordant": 2
+      },
+      "HYP": {
+        "n": 12,
+        "concordant": 0
+      }
+    }
+  }
+}

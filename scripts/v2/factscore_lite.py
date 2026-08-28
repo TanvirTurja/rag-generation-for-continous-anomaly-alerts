@@ -37,13 +37,19 @@ CLAIM: {claim}"""
 
 def main():
     import ollama
-    rng = pd.util.testing  # noqa: F841  (avoid; use random below)
     import random
+    import sys
     random.seed(11)
+    sys.path.insert(0, str(ROOT / "scripts" / "v2"))
+    from rag_pipeline_v2 import make_retriever
+    retrieve = make_retriever()
     rows = [json.loads(l) for l in open(GEN, encoding="utf-8")]
     dalia = [r for r in rows if r["group"] == "dalia" and r["subgroup"] == "main"]
-    labeled = [r for r in rows if r["subgroup"] == "labeled"]
+    labeled = [r for r in rows if r["subgroup"] == "labeled"
+               and not r["key"].startswith("mitbih|")]
     sample = random.sample(dalia, min(30, len(dalia))) + random.sample(labeled, min(30, len(labeled)))
+    for r in sample:
+        r["context"] = retrieve(r["query"])["context"]
 
     claims_rows = []
     for r in sample:
@@ -60,7 +66,7 @@ def main():
             v = ollama.chat(model="gemma4:e4b",
                             messages=[{"role": "user", "content":
                                        VERIFY_PROMPT.format(context=r["context"][:9000], claim=cl)}],
-                            options={"temperature": 0.0, "num_predict": 10, "num_ctx": 10000})
+                            options={"temperature": 0.0, "num_predict": 10, "num_ctx": 6000})
             verdict = "UNKNOWN"
             for w in ("SUPPORTED", "UNVERIFIABLE", "UNSUPPORTED"):
                 if w in v["message"]["content"].upper():
