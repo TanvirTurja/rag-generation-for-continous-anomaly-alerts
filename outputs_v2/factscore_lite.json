@@ -1,0 +1,26 @@
+{
+  "n_explanations": 60,
+  "n_claims": 797,
+  "pct_supported": 52.32,
+  "pct_unsupported": 0.0,
+  "pct_unverifiable": 47.68,
+  "verifier": "gemma4:e4b (different family from generator)",
+  "by_group": {
+    "dalia": {
+      "n_claims": 414,
+      "pct_supported": 47.34
+    },
+    "mitbih": {
+      "n_claims": 103,
+      "pct_supported": 67.96
+    },
+    "wesad": {
+      "n_claims": 151,
+      "pct_supported": 54.3
+    },
+    "ptbxl": {
+      "n_claims": 129,
+      "pct_supported": 53.49
+    }
+  }
+}

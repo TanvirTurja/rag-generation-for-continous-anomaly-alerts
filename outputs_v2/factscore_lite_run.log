@@ -1,1 +1,86 @@
   dalia|S10|w2575: 15 claims
+  dalia|S12|w3274: 13 claims
+  dalia|S10|w2621: 10 claims
+  dalia|S12|w3194: 12 claims
+  dalia|S13|w3476: 22 claims
+  dalia|S5|w1381: 14 claims
+  dalia|S5|w1278: 13 claims
+  dalia|S12|w3220: 19 claims
+  dalia|S10|w2756: 12 claims
+  dalia|S14|w3815: 13 claims
+  dalia|S14|w3788: 13 claims
+  dalia|S5|w1312: 15 claims
+  dalia|S3|w820: 16 claims
+  dalia|S10|w2570: 13 claims
+  dalia|S7|w1804: 14 claims
+  dalia|S5|w1229: 11 claims
+  dalia|S3|w789: 5 claims
+  dalia|S12|w3263: 21 claims
+  dalia|S14|w3873: 13 claims
+  dalia|S14|w3820: 15 claims
+  dalia|S2|w364: 10 claims
+  dalia|S13|w3540: 12 claims
+  dalia|S8|w2233: 12 claims
+  dalia|S14|w3852: 13 claims
+  dalia|S14|w3903: 13 claims
+  dalia|S14|w3789: 14 claims
+  dalia|S14|w3842: 14 claims
+  dalia|S5|w1262: 18 claims
+  dalia|S14|w3793: 14 claims
+  dalia|S1|w103: 15 claims
+  mitbihv2|232|w49: 14 claims
+  wesad|S16|w11: 15 claims
+  wesad|S14|w12: 14 claims
+  wesad|S5|w20: 10 claims
+  wesad|S13|w21: 9 claims
+  ptbxl|5810: 12 claims
+  wesad|S13|w16: 13 claims
+  mitbihv2|200|w6: 15 claims
+  ptbxl|20865: 12 claims
+  mitbihv2|200|w48: 12 claims
+  ptbxl|16357: 21 claims
+  mitbihv2|232|w4: 11 claims
+  ptbxl|19935: 22 claims
+  ptbxl|4432: 14 claims
+  mitbihv2|232|w52: 12 claims
+  wesad|S5|w0: 16 claims
+  wesad|S17|w13: 9 claims
+  mitbihv2|233|w4: 12 claims
+  ptbxl|8139: 11 claims
+  mitbihv2|213|w4: 11 claims
+  mitbihv2|232|w59: 16 claims
+  ptbxl|18676: 11 claims
+  wesad|S16|w6: 9 claims
+  wesad|S16|w5: 9 claims
+  ptbxl|162: 13 claims
+  wesad|S17|w16: 8 claims
+  ptbxl|10344: 13 claims
+  wesad|S16|w16: 11 claims
+  wesad|S13|w17: 15 claims
+  wesad|S16|w1: 13 claims
+{
+  "n_explanations": 60,
+  "n_claims": 797,
+  "pct_supported": 52.32,
+  "pct_unsupported": 0.0,
+  "pct_unverifiable": 47.68,
+  "verifier": "gemma4:e4b (different family from generator)",
+  "by_group": {
+    "dalia": {
+      "n_claims": 414,
+      "pct_supported": 47.34
+    },
+    "mitbih": {
+      "n_claims": 103,
+      "pct_supported": 67.96
+    },
+    "wesad": {
+      "n_claims": 151,
+      "pct_supported": 54.3
+    },
+    "ptbxl": {
+      "n_claims": 129,
+      "pct_supported": 53.49
+    }
+  }
+}

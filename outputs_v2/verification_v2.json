@@ -1,6 +1,6 @@
 {
-  "n_claims": 58,
-  "n_ok": 58,
+  "n_claims": 59,
+  "n_ok": 59,
   "n_fail": 0,
   "failed": [],
   "claims": [
@@ -251,7 +251,7 @@
     },
     {
       "id": "judge_gemma4:e4b_detection",
-      "value": "0.00",
+      "value": "0.48",
       "in_paper": true
     },
     {
@@ -292,6 +292,11 @@
     {
       "id": "nd2_docs",
       "value": "44",
+      "in_paper": true
+    },
+    {
+      "id": "factscore_supported",
+      "value": "52.3%",
       "in_paper": true
     }
   ]

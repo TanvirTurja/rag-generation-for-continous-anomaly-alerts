@@ -279,7 +279,7 @@ This is the paper's central negative result, and the one the v1 evaluation could
 
 ## 4.9 Atomic-claim verification
 
-RUNNING: FActScore-lite results (60 explanations decomposed; different-family verifier) will be inserted here on completion.
+On a 60-explanation sample (30 wearable alerts, 30 labeled events), decomposed into **797 atomic claims** and verified against the retrieved context alone by a different-family model (gemma4:e4b, thinking disabled): **52.3% SUPPORTED, 47.7% UNVERIFIABLE, 0% UNSUPPORTED** (by group: wearable 47.3%, WESAD 54.3%, MIT-BIH 68.0%, PTB-XL 53.5%). The zero contradiction rate is reassuring but largely reflects the system's hedged phrasing; the operative number is that **roughly half of the atomic content of these explanations is not verifiable from the evidence the system itself retrieved** — quantitatively consistent with the validated judge scoring ~44% of full explanations as "slightly extrapolated" (§4.6). Verification remains context-relative (not full-source or clinician-relative); the released clinician kit is the adjudication step.
 
 ## 4.10 Example alert (v2)
 
