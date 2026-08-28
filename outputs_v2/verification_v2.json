@@ -1,6 +1,6 @@
 {
-  "n_claims": 40,
-  "n_ok": 40,
+  "n_claims": 58,
+  "n_ok": 58,
   "n_fail": 0,
   "failed": [],
   "claims": [
@@ -202,6 +202,96 @@
     {
       "id": "utilization_pct_alerts",
       "value": "6.5%",
+      "in_paper": true
+    },
+    {
+      "id": "gen_n_dalia",
+      "value": "398",
+      "in_paper": true
+    },
+    {
+      "id": "gen_latency",
+      "value": "11.0 s",
+      "in_paper": true
+    },
+    {
+      "id": "wordcap_words",
+      "value": "196.5",
+      "in_paper": true
+    },
+    {
+      "id": "genablation_words",
+      "value": "99.1",
+      "in_paper": true
+    },
+    {
+      "id": "cit_raw_acc",
+      "value": "99.01%",
+      "in_paper": true
+    },
+    {
+      "id": "cit_raw_total",
+      "value": "1,208",
+      "in_paper": true
+    },
+    {
+      "id": "cit_drops",
+      "value": "12",
+      "in_paper": true
+    },
+    {
+      "id": "cit_tier1_names",
+      "value": "109",
+      "in_paper": true
+    },
+    {
+      "id": "judge_llama3.1:8b_detection",
+      "value": "0.00",
+      "in_paper": true
+    },
+    {
+      "id": "judge_gemma4:e4b_detection",
+      "value": "0.00",
+      "in_paper": true
+    },
+    {
+      "id": "conc_wesad",
+      "value": "94%",
+      "in_paper": true
+    },
+    {
+      "id": "conc_mitbih",
+      "value": "12%",
+      "in_paper": true
+    },
+    {
+      "id": "conc_ptbxl",
+      "value": "6%",
+      "in_paper": true
+    },
+    {
+      "id": "conc_wesad_n",
+      "value": "47",
+      "in_paper": true
+    },
+    {
+      "id": "nd2_clusters",
+      "value": "237",
+      "in_paper": true
+    },
+    {
+      "id": "nd2_mean",
+      "value": "0.915",
+      "in_paper": true
+    },
+    {
+      "id": "nd2_tier1",
+      "value": "17.6%",
+      "in_paper": true
+    },
+    {
+      "id": "nd2_docs",
+      "value": "44",
       "in_paper": true
     }
   ]

@@ -12,13 +12,13 @@
       "n": 200
     },
     "gemma4:e4b": {
-      "detection_rate": 0.0,
-      "false_positive_rate": 0.0,
+      "detection_rate": 0.48,
+      "false_positive_rate": 0.01,
       "detection_by_type": {
         "citation_swap": 0.0,
-        "diagnostic_exaggeration": 0.0,
-        "fabricated_citation": 0.0,
-        "fabricated_fact": 0.0
+        "diagnostic_exaggeration": 0.96,
+        "fabricated_citation": 0.16,
+        "fabricated_fact": 0.8
       },
       "n": 200
     },
@@ -27,8 +27,8 @@
     }
   },
   "selected_local_judge": {
-    "model": null,
+    "model": "gemma4:e4b",
     "criterion": "detection >= 0.3 on corruption benchmark, then max (detection - FP)",
-    "note": "no local judge qualified (llama3.1:8b detection 0.00, gemma4:e4b detection 0.00); falling back to API judge + atomic verification + clinician kit"
+    "note": ""
   }
 }

@@ -29,11 +29,13 @@ abstract: |
   condition for 94% of true stress events but only 12% of arrhythmic windows
   and 6% of pathology ECGs, attributing 42–56% of true pathology to motion or
   sensor artifact — the safety-critical failure mode an unlabeled evaluation
-  cannot surface. Both local LLM judges (llama3.1:8b, gemma4:e4b) detect 0 of
-  100 injected corruptions (fabricated facts, citation swaps, fabricated
-  identifiers, diagnostic exaggerations), empirically confirming that the v1
-  "zero hallucination verdicts" were uninformative; raw-text citation auditing
-  shows a genuine 1% citation-fabrication rate that post-repair reporting hid.
+  cannot surface. On a 200-item corruption benchmark, v1's exact judge
+  (llama3.1:8b) detects 0 of 100 injected fabrications — empirically
+  confirming that the v1 "zero hallucination verdicts" were uninformative —
+  while a validated local judge (gemma4:e4b: 48% detection, 1% false
+  positives) catches fabricated facts and exaggerations but not citation
+  swaps. Raw-text citation auditing shows a genuine 1% citation-fabrication
+  rate that post-repair reporting hid.
   A corpus expansion with wearable-relevant guidelines (EHRA 2022 digital-
   devices guide; 2023 ACC/AHA AF guideline) raises guideline reach from 6.5%
   to 17.6% of alerts and reduces explanation duplication (near-duplicate
@@ -236,10 +238,10 @@ With raw generation text preserved and the canonicalizer's identifier capture fi
 | Judge | Detection rate | False-positive rate | Detection by corruption type |
 |---|---|---|---|
 | llama3.1:8b (v1's judge) | **0.00** | 0.00 | 0.00 on all four types |
-| gemma4:e4b | **0.00** | 0.00 | 0.00 on all four types |
+| gemma4:e4b (thinking disabled) | **0.48** | 0.01 | exaggeration 0.96, fabricated fact 0.80, fabricated citation 0.16, citation swap 0.00 |
 | DeepSeek-V4-Flash (API) | PENDING-API-KEY | — | — |
 
-Both local candidates — including the exact judge that produced v1's "zero hallucination verdicts" — detect **none** of the injected fabrications: not the fabricated mortality statistics, not the invented citations, not the "diagnostic of acute myocardial infarction" exaggerations. Combined with v1's finding that this judge scored 397/398 items identically, the conclusion is unavoidable: **small local models used with this rubric are null instruments for faithfulness**, and v1's safety claim was an artifact of asking a question the judge could not answer. Per the pre-registered fallback, no local judge is used for the main run; the evaluation relies on the API judge (validation pending), atomic-claim verification (§4.9), and the clinician kit.
+Two findings. First, the exact judge behind v1's "zero hallucination verdicts" (llama3.1:8b) detects **none** of the injected fabrications — combined with its 397/398 constant scoring in v1, it was a null instrument, and the v1 safety claim was an artifact of asking a question this judge could not answer. Second, the validated local judge (gemma4:e4b, selected by the pre-registered criterion) catches fabricated facts and diagnostic exaggerations well (0.80–0.96) but almost never catches **citation swaps** (0.00) or most fabricated identifiers (0.16): LLM judges of this size verify that text *sounds* supported, not that cited documents *are* the right ones — which is precisely why the objective raw-text citation audit and the human kit remain necessary. (A methodological note we report for reproducibility: gemma4's first validation pass returned empty contents because its default thinking mode consumed the token budget; disabling thinking exposed genuine discrimination. The invalidated artifact is preserved with an `_INVALID` suffix.)
 
 ## 4.6 Main judge scores (API judge)
 

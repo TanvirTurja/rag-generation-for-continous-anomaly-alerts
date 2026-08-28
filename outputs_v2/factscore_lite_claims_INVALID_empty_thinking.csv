@@ -1,0 +1,798 @@
+key,group,claim,verdict
+dalia|S10|w2575,dalia,The anomaly suggests a sustained signal level shift likely caused by sensor displacement or motion artifacts rather than true arrhythmia.,UNKNOWN
+dalia|S10|w2575,dalia,Simultaneous drops in ECG amplitude and skin temperature indicate the cause is likely sensor displacement or motion artifacts rather than true arrhythmia.,UNKNOWN
+dalia|S10|w2575,dalia,Baseline wander from movements can distort morphology.,UNKNOWN
+dalia|S10|w2575,dalia,Baseline wander from movements can bias feature extraction.,UNKNOWN
+dalia|S10|w2575,dalia,Raw PPG signals often show substantial deviations due to noise contamination.,UNKNOWN
+dalia|S10|w2575,dalia,Noise contamination in raw PPG signals leads to misjudgments or missed detections unless filtered.,UNKNOWN
+dalia|S10|w2575,dalia,Low SNR values indicate noisy waveforms with reduced diagnostic reliability.,UNKNOWN
+dalia|S10|w2575,dalia,High-frequency artifacts can distort crossing counts.,UNKNOWN
+dalia|S10|w2575,dalia,High-frequency artifacts reduce signal quality in ambulatory recordings.,UNKNOWN
+dalia|S10|w2575,dalia,Verify sensor contact stability is recommended.,UNKNOWN
+dalia|S10|w2575,dalia,Reposition the device if displacement is suspected.,UNKNOWN
+dalia|S10|w2575,dalia,Do not interpret this sustained level shift as a new arrhythmia without clinical confirmation of stable skin temperature and ECG morphology.,UNKNOWN
+dalia|S10|w2575,dalia,This tool is a research decision-support tool.,UNKNOWN
+dalia|S10|w2575,dalia,This tool is not a diagnostic device.,UNKNOWN
+dalia|S10|w2575,dalia,This tool does not replace clinical judgment.,UNKNOWN
+dalia|S12|w3274,dalia,The detected pattern suggests a physiological stress response indicated by elevated EDA.,UNKNOWN
+dalia|S12|w3274,dalia,The detected pattern potentially coincides with an algorithmic artifact rather than a confirmed cardiac event like atrial fibrillation.,UNKNOWN
+dalia|S12|w3274,dalia,"Wearable PPG-derived metrics are sensitive to parasympathetic activity, such as HRV.",UNKNOWN
+dalia|S12|w3274,dalia,Wearable PPG-derived metrics often show systematic overestimation and bias compared to ground truth ECG.,UNKNOWN
+dalia|S12|w3274,dalia,Wearable ECG devices demonstrate high sensitivity for detecting atrial fibrillation.,UNKNOWN
+dalia|S12|w3274,dalia,Algorithm limitations can lead to inconclusive recordings or false positives in dynamic conditions.,UNKNOWN
+dalia|S12|w3274,dalia,The recommendation is to verify the elevated wrist temperature against clinical context.,UNKNOWN
+dalia|S12|w3274,dalia,The recommendation is to verify the elevated EDA against clinical context such as anxiety or exercise.,UNKNOWN
+dalia|S12|w3274,dalia,A diagnosis of arrhythmia should not be based solely on a single 30-second window.,UNKNOWN
+dalia|S12|w3274,dalia,"If palpitations are present, a repeat recording during symptom onset is recommended.",UNKNOWN
+dalia|S12|w3274,dalia,This tool functions as a research decision-support tool.,UNKNOWN
+dalia|S12|w3274,dalia,This tool is not a diagnostic device.,UNKNOWN
+dalia|S12|w3274,dalia,This tool does not replace clinical judgment.,UNKNOWN
+dalia|S10|w2621,dalia,"Mild deviations in ECG suggest potential signal noise, artifact, or a transient physiological event rather than a definitive arrhythmia diagnosis based on current evidence.",UNKNOWN
+dalia|S10|w2621,dalia,Wearable devices show high diagnostic accuracy for atrial fibrillation but face barriers like inconclusive recordings and algorithm limitations.,UNKNOWN
+dalia|S10|w2621,dalia,"Abnormal readings from consumer heart rate monitors must be critically evaluated by an experienced physician to distinguish suspected arrhythmia noise or oversensing, as devices alone do not suffice for diagnosis.",UNKNOWN
+dalia|S10|w2621,dalia,Wrist-worn PPG metrics like HRV can suffer from systematic overestimation and bias that may persist even with signal processing improvements.,UNKNOWN
+dalia|S10|w2621,dalia,Do not diagnose based on a single mild anomaly.,UNKNOWN
+dalia|S10|w2621,dalia,"Confirm any suspected arrhythmia or significant symptom correlation with a standard 12-lead ECG, as consumer devices alone are insufficient for diagnosis.",UNKNOWN
+dalia|S10|w2621,dalia,Monitor the patient if symptoms persist.,UNKNOWN
+dalia|S10|w2621,dalia,Review signal quality if symptoms persist.,UNKNOWN
+dalia|S10|w2621,dalia,This tool is a research decision-support tool and not a diagnostic device.,UNKNOWN
+dalia|S10|w2621,dalia,This tool does not replace clinical judgment.,UNKNOWN
+dalia|S12|w3194,dalia,Abrupt high-amplitude signals in wrist-worn EDA data likely represent motion artifacts or sensor noise rather than true physiological stress.,UNKNOWN
+dalia|S12|w3194,dalia,Wrist-worn electrodermal activity (EDA) is known to be inaccurate and prone to artifacts during physical activity.,UNKNOWN
+dalia|S12|w3194,dalia,Simultaneously reduced skin temperature may reflect ambient cooling or vasoconstriction due to movement.,UNKNOWN
+dalia|S12|w3194,dalia,Skin temperature varies widely based on the type of activity performed by the subject.,UNKNOWN
+dalia|S12|w3194,dalia,Reduced skin temperature variations are not solely indicative of stress but depend heavily on activity type and ambient conditions.,UNKNOWN
+dalia|S12|w3194,dalia,EDA peaks in wristband data collection can be affected by artifacts.,UNKNOWN
+dalia|S12|w3194,dalia,"In some subjects, wrist-worn sensor signals cannot be captured or are inaccurate due to motion.",UNKNOWN
+dalia|S12|w3194,dalia,Skin blood flow changes cause skin temperature variations based on activity type and ambient temperature.,UNKNOWN
+dalia|S12|w3194,dalia,High-amplitude EDA spikes occurring during movement should be treated as artifacts rather than stress responses.,UNKNOWN
+dalia|S12|w3194,dalia,Temperature spikes occurring during movement should be treated as artifacts rather than physiological stress indicators.,UNKNOWN
+dalia|S12|w3194,dalia,Accelerometer data can be used to cross-reference with EDA signals to confirm sensor noise caused by motion.,UNKNOWN
+dalia|S12|w3194,dalia,Visual confirmation of movement is a method to verify that high-amplitude signal changes are due to artifact.,UNKNOWN
+dalia|S13|w3476,dalia,The detected pattern suggests a sudden increase in breathing rate.,UNKNOWN
+dalia|S13|w3476,dalia,The detected pattern shows reduced skin temperature.,UNKNOWN
+dalia|S13|w3476,dalia,A sudden increase in breathing rate may indicate respiratory distress.,UNKNOWN
+dalia|S13|w3476,dalia,Reduced skin temperature may indicate an autonomic response to stress or cold.,UNKNOWN
+dalia|S13|w3476,dalia,Elevated respiration rates are clinically significant for detecting tachypnea.,UNKNOWN
+dalia|S13|w3476,dalia,Elevated respiration rates are clinically significant for detecting potential hypoxemia.,UNKNOWN
+dalia|S13|w3476,dalia,Reference [PMC13212801] supports the clinical significance of elevated respiration rates.,UNKNOWN
+dalia|S13|w3476,dalia,Reduced wrist temperature can reflect changes in thermal perfusion.,UNKNOWN
+dalia|S13|w3476,dalia,Reduced wrist temperature can reflect changes in vasomotor tone.,UNKNOWN
+dalia|S13|w3476,dalia,Changes in thermal perfusion or vasomotor tone are often seen during physiological arousal.,UNKNOWN
+dalia|S13|w3476,dalia,Changes in thermal perfusion or vasomotor tone are often seen during cold exposure.,UNKNOWN
+dalia|S13|w3476,dalia,Ambient sensor effects must be considered when interpreting skin temperature data from wearables.,UNKNOWN
+dalia|S13|w3476,dalia,Verification of the patient's breathing rate is recommended.,UNKNOWN
+dalia|S13|w3476,dalia,Verification of the patient's oxygen saturation is recommended.,UNKNOWN
+dalia|S13|w3476,dalia,Checking for environmental factors like low room temperature is recommended.,UNKNOWN
+dalia|S13|w3476,dalia,Low room temperature can cause vasoconstriction.,UNKNOWN
+dalia|S13|w3476,dalia,Vasoconstriction caused by low room temperature can lower wrist temperature.,UNKNOWN
+dalia|S13|w3476,dalia,Initiating standard respiratory assessment protocols is recommended if tachypnea persists or hypoxemia is suspected.,UNKNOWN
+dalia|S13|w3476,dalia,Reference [PMC13212801] supports initiating standard respiratory assessment protocols for persistent tachypnea or suspected hypoxemia.,UNKNOWN
+dalia|S13|w3476,dalia,The tool is a research decision-support tool.,UNKNOWN
+dalia|S13|w3476,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S13|w3476,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S5|w1381,dalia,The detected anomaly suggests a potential motion artifact or sensor displacement rather than true physiological change.,UNKNOWN
+dalia|S5|w1381,dalia,An abrupt high-amplitude PPG pattern indicates the presence of an artifact.,UNKNOWN
+dalia|S5|w1381,dalia,Elevated skin temperature is present in this context.,UNKNOWN
+dalia|S5|w1381,dalia,Wrist photoplethysmogram (PPG) signals are highly susceptible to noise which can reduce accuracy.,UNKNOWN
+dalia|S5|w1381,dalia,Signal quality is significantly lower when standing with arms hanging compared to supine or sitting positions [PMC12204546].,UNKNOWN
+dalia|S5|w1381,dalia,Abrupt high-amplitude patterns often indicate motion artifact rather than true perfusion changes.,UNKNOWN
+dalia|S5|w1381,dalia,Elevated kurtosis often indicates motion artifact rather than true perfusion changes.,UNKNOWN
+dalia|S5|w1381,dalia,PPG devices rely on stable sensor contact for accurate waveform analysis.,UNKNOWN
+dalia|S5|w1381,dalia,The recommendation is to verify patient position (supine/sitting vs standing).,UNKNOWN
+dalia|S5|w1381,dalia,The recommendation includes checking for movement or loose fit causing signal noise before interpreting the elevated heart rate or temperature spike as a clinical event.,UNKNOWN
+dalia|S5|w1381,dalia,Data should be re-acquired if motion is suspected [PMC12204546].,UNKNOWN
+dalia|S5|w1381,dalia,This tool functions as a research decision-support tool.,UNKNOWN
+dalia|S5|w1381,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S5|w1381,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S5|w1278,dalia,The detected anomaly suggests a potential artifact caused by wrist sweat (high EDA) degrading the PPG signal quality.,UNKNOWN
+dalia|S5|w1278,dalia,Motion interference is also contributing to the degradation of the PPG signal quality in this case.,UNKNOWN
+dalia|S5|w1278,dalia,High EDA and motion interference are causing issues rather than indicating true cardiac pathology like atrial fibrillation.,UNKNOWN
+dalia|S5|w1278,dalia,"Research indicates that parasympathetic-sensitive metrics derived from wrist-worn PPG, such as RMSSD and HF power, often suffer systematic overestimation or bias even with advanced processing methods.",UNKNOWN
+dalia|S5|w1278,dalia,Wearable ECG devices show high diagnostic accuracy for atrial fibrillation in supervised settings.,UNKNOWN
+dalia|S5|w1278,dalia,Algorithm limitations can lead to inconclusive recordings during dynamic conditions.,UNKNOWN
+dalia|S5|w1278,dalia,The patient's current activity level may explain the signal deviation.,UNKNOWN
+dalia|S5|w1278,dalia,"Skin condition, such as sweating, may explain the signal deviation.",UNKNOWN
+dalia|S5|w1278,dalia,Re-evaluation after ensuring a dry sensor contact is recommended.,UNKNOWN
+dalia|S5|w1278,dalia,Ensuring stable sensor contact is recommended to distinguish between physiological stress responses and technical artifacts.,UNKNOWN
+dalia|S5|w1278,dalia,This tool is a research decision-support tool.,UNKNOWN
+dalia|S5|w1278,dalia,This tool is not a diagnostic device.,UNKNOWN
+dalia|S5|w1278,dalia,This tool does not replace clinical judgment.,UNKNOWN
+dalia|S12|w3220,dalia,The sustained elevation in wrist electrodermal activity (EDA) has a z-score of +3.3.,UNKNOWN
+dalia|S12|w3220,dalia,A z-score of +3.3 for EDA indicates significant sympathetic arousal or stress response.,UNKNOWN
+dalia|S12|w3220,dalia,Elevated blood volume pulse (BVP) suggests increased perfusion.,UNKNOWN
+dalia|S12|w3220,dalia,This pattern may reflect a physiological reaction rather than device error.,UNKNOWN
+dalia|S12|w3220,dalia,Wrist-worn photoplethysmography (PPG) signals are prone to errors.,UNKNOWN
+dalia|S12|w3220,dalia,Wrist PPG shows larger estimation errors compared to facial sites.,UNKNOWN
+dalia|S12|w3220,dalia,Motion artifacts can cause errors in wrist PPG signals.,UNKNOWN
+dalia|S12|w3220,dalia,Missed pulse peaks can alter signal baselines in wrist PPG.,UNKNOWN
+dalia|S12|w3220,dalia,Signal quality assessment and reconstruction steps are recommended for wrist PPG.,UNKNOWN
+dalia|S12|w3220,dalia,These steps aim to improve agreement with ground truth ECG data.,UNKNOWN
+dalia|S12|w3220,dalia,Parasympathetic metrics like RMSSD remain difficult to recover accurately from wrist PPG.,UNKNOWN
+dalia|S12|w3220,dalia,Wearable devices have high diagnostic accuracy for arrhythmias.,UNKNOWN
+dalia|S12|w3220,dalia,Careful interpretation of signal quality and context is required when using wearable devices.,UNKNOWN
+dalia|S12|w3220,dalia,The tool should verify if the patient is experiencing stress or physical activity that could explain elevated EDA.,UNKNOWN
+dalia|S12|w3220,dalia,Recent motion logs should be reviewed for potential artifacts affecting PPG baseline stability.,UNKNOWN
+dalia|S12|w3220,dalia,A 12-lead ECG should be correlated with wrist data if clinical concern persists to rule out arrhythmia.,UNKNOWN
+dalia|S12|w3220,dalia,The tool is a research decision-support tool.,UNKNOWN
+dalia|S12|w3220,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S12|w3220,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S10|w2756,dalia,"The wrist signal shows an abrupt, high-amplitude pattern.",UNKNOWN
+dalia|S10|w2756,dalia,This pattern likely represents a motion artifact or poor sensor contact rather than a physiological event.,UNKNOWN
+dalia|S10|w2756,dalia,Wrist photoplethysmogram (PPG) signals are highly susceptible to noise.,UNKNOWN
+dalia|S10|w2756,dalia,PPG signals can be influenced by posture.,UNKNOWN
+dalia|S10|w2756,dalia,Signal quality is lowest when standing with arms hanging alongside compared to supine positions [PMC12204546].,UNKNOWN
+dalia|S10|w2756,dalia,PPG-based devices may produce inconclusive recordings due to algorithm limitations or motion artifacts that require verification via traditional ECG methods [PMC12731301].,UNKNOWN
+dalia|S10|w2756,dalia,The recommendation is to verify the patient's position and ensure proper sensor contact.,UNKNOWN
+dalia|S10|w2756,dalia,It is recommended to re-acquire data in a supine posture if possible.,UNKNOWN
+dalia|S10|w2756,dalia,Correlation with clinical assessment for signs of arrhythmia should occur before acting on PPG-only alerts.,UNKNOWN
+dalia|S10|w2756,dalia,This tool is a research decision-support tool.,UNKNOWN
+dalia|S10|w2756,dalia,This tool is not a diagnostic device.,UNKNOWN
+dalia|S10|w2756,dalia,This tool does not replace clinical judgment.,UNKNOWN
+dalia|S14|w3815,dalia,The detected signal shows an abrupt onset and high amplitude on the ECG trace.,UNKNOWN
+dalia|S14|w3815,dalia,Respiration rates are significantly reduced during the event.,UNKNOWN
+dalia|S14|w3815,dalia,These findings suggest a potential arrhythmia such as atrial fibrillation or tachycardia.,UNKNOWN
+dalia|S14|w3815,dalia,Clinical confirmation is required for these suspected events.,UNKNOWN
+dalia|S14|w3815,dalia,Wearable devices can detect atrial fibrillation and other rhythms.,UNKNOWN
+dalia|S14|w3815,dalia,Diagnosis requires comparison with 12-lead ECG data [PMC12731301].,UNKNOWN
+dalia|S14|w3815,dalia,Abnormal readings from consumer heart rate monitors require critical evaluation by an experienced physician [ehra2022_digital_devices_arrhythmias].,UNKNOWN
+dalia|S14|w3815,dalia,Abnormal cardiac evaluations mandate ECG confirmation rather than reliance on the device alone [ehra2022_digital_devices_arrhythmias].,UNKNOWN
+dalia|S14|w3815,dalia,The patient should undergo a standard 12-lead ECG to confirm or rule out arrhythmia.,UNKNOWN
+dalia|S14|w3815,dalia,Further evaluation is necessary if symptoms like palpitations are present before assuming benign causes.,UNKNOWN
+dalia|S14|w3815,dalia,This tool functions as research decision-support software.,UNKNOWN
+dalia|S14|w3815,dalia,This tool is not a diagnostic device.,UNKNOWN
+dalia|S14|w3815,dalia,This tool does not replace clinical judgment.,UNKNOWN
+dalia|S14|w3788,dalia,The detected pattern suggests acute sympathetic arousal.,UNKNOWN
+dalia|S14|w3788,dalia,Acute sympathetic arousal likely indicates physiological stress or high engagement rather than pathology.,UNKNOWN
+dalia|S14|w3788,dalia,Multimodal systems combine EDA (sweat response) and respiration to detect sympathetic nervous system activation during cognitive tasks [PMC12987280].,UNKNOWN
+dalia|S14|w3788,dalia,Elevated wrist_EDA indexes sympathetic activation [PMC12608435].,UNKNOWN
+dalia|S14|w3788,dalia,Concurrent changes in heart rate variability reflect autonomic flexibility or reduced parasympathetic control under load [PMC12987280].,UNKNOWN
+dalia|S14|w3788,dalia,These signals index arousal and regulatory processes rather than specific emotional states like stress [PMC12987280].,UNKNOWN
+dalia|S14|w3788,dalia,"Elevated activity can arise from excitement, engagement, or novelty detection [PMC12987280].",UNKNOWN
+dalia|S14|w3788,dalia,"The recommendation is to correlate the physiological spike with current user context (e.g., gaming level, conversation).",UNKNOWN
+dalia|S14|w3788,dalia,Correlating with context helps distinguish between pathological tachypnea and normal arousal.,UNKNOWN
+dalia|S14|w3788,dalia,"EDA/HRV should not be interpreted alone as a direct proxy for ""stress"" without behavioral or contextual data [PMC12987280].",UNKNOWN
+dalia|S14|w3788,dalia,The tool is a research decision-support tool.,UNKNOWN
+dalia|S14|w3788,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S14|w3788,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S5|w1312,dalia,The detected pattern suggests mild sympathetic arousal relative to the user's baseline.,UNKNOWN
+dalia|S5|w1312,dalia,The detected pattern indicates thermal stress relative to the user's baseline.,UNKNOWN
+dalia|S5|w1312,dalia,Skin temperature is slightly elevated compared to the baseline.,UNKNOWN
+dalia|S5|w1312,dalia,Electrodermal activity (EDA) is reduced compared to the baseline.,UNKNOWN
+dalia|S5|w1312,dalia,Skin temperature sensors provide insight into peripheral thermal regulation during emotional elicitation.,UNKNOWN
+dalia|S5|w1312,dalia,Electrodermal activity reflects skin conductance changes associated with sympathetic nervous system activity.,UNKNOWN
+dalia|S5|w1312,dalia,Wrist-worn devices are challenging sites for accurate signal estimation compared to finger placement.,UNKNOWN
+dalia|S5|w1312,dalia,Inaccurate signal estimation at the wrist may affect baseline stability.,UNKNOWN
+dalia|S5|w1312,dalia,Ambient temperature changes can influence wrist sensor readings.,UNKNOWN
+dalia|S5|w1312,dalia,Ambient temperature changes can influence EDA baselines.,UNKNOWN
+dalia|S5|w1312,dalia,Device fit should be verified.,UNKNOWN
+dalia|S5|w1312,dalia,Skin contact integrity should be verified.,UNKNOWN
+dalia|S5|w1312,dalia,The tool is a research decision-support tool.,UNKNOWN
+dalia|S5|w1312,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S5|w1312,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S3|w820,dalia,The detected pattern is abrupt and high-amplitude.,UNKNOWN
+dalia|S3|w820,dalia,"An abrupt, high-amplitude pattern suggests a potential motion artifact or signal quality issue rather than atrial fibrillation.",UNKNOWN
+dalia|S3|w820,dalia,PPG signals are highly susceptible to noise.,UNKNOWN
+dalia|S3|w820,dalia,Noise in PPG signals can reduce the accuracy of monitored parameters.,UNKNOWN
+dalia|S3|w820,dalia,Signal quality is influenced by posture and arm position.,UNKNOWN
+dalia|S3|w820,dalia,Standing postures often yield lower signal quality compared to supine or sitting positions where the arm rests in the lap.,UNKNOWN
+dalia|S3|w820,dalia,Wearable devices demonstrate high diagnostic performance for atrial fibrillation detection.,UNKNOWN
+dalia|S3|w820,dalia,Inconclusive recordings due to algorithm limitations remain a barrier for wearable device AF detection.,UNKNOWN
+dalia|S3|w820,dalia,The patient may have been moving during this window.,UNKNOWN
+dalia|S3|w820,dalia,The patient may have changed position during this window.,UNKNOWN
+dalia|S3|w820,dalia,Signal quality metrics include the perfusion index.,UNKNOWN
+dalia|S3|w820,dalia,Motion can degrade PPG accuracy.,UNKNOWN
+dalia|S3|w820,dalia,Elevated heart rate or EDA should be re-evaluated before interpreting them as clinical events if motion is suspected.,UNKNOWN
+dalia|S3|w820,dalia,This tool is a research decision-support tool.,UNKNOWN
+dalia|S3|w820,dalia,This tool is not a diagnostic device.,UNKNOWN
+dalia|S3|w820,dalia,This tool does not replace clinical judgment.,UNKNOWN
+dalia|S10|w2570,dalia,The signal shows an abrupt high-amplitude spike.,UNKNOWN
+dalia|S10|w2570,dalia,A drop in skin temperature accompanies the signal.,UNKNOWN
+dalia|S10|w2570,dalia,Electrodermal Activity (EDA) levels decrease during the event.,UNKNOWN
+dalia|S10|w2570,dalia,Reduced perfusion is common during movement.,UNKNOWN
+dalia|S10|w2570,dalia,Literature indicates wristband-based EDA collection has low accuracy.,UNKNOWN
+dalia|S10|w2570,dalia,Artifacts can affect data collection results from wristbands.,UNKNOWN
+dalia|S10|w2570,dalia,Skin temperature varies based on activity type.,UNKNOWN
+dalia|S10|w2570,dalia,Skin temperature varies based on ambient conditions.,UNKNOWN
+dalia|S10|w2570,dalia,Changes in skin blood flow cause variations in skin temperature.,SUPPORTED
+dalia|S10|w2570,dalia,Accelerometer sensors are used to identify movement types.,UNKNOWN
+dalia|S10|w2570,dalia,Signal deviations may be explained by identified movement types.,UNKNOWN
+dalia|S10|w2570,dalia,The high-amplitude spike and concurrent temperature drop likely indicate a technical artifact if significant movement is detected.,UNKNOWN
+dalia|S10|w2570,dalia,A 30-second window of data can be discarded from analysis based on these findings.,UNKNOWN
+dalia|S7|w1804,dalia,The detected pattern shows an abrupt high-amplitude signal change.,UNKNOWN
+dalia|S7|w1804,dalia,Respiration is reduced during the event.,UNKNOWN
+dalia|S7|w1804,dalia,Blood volume pulse (BVP) is reduced during the event.,UNKNOWN
+dalia|S7|w1804,dalia,These findings suggest a potential atrial fibrillation episode or significant signal artifact.,UNKNOWN
+dalia|S7|w1804,dalia,PPG-based algorithms can detect AF with sensitivity greater than 95%.,UNKNOWN
+dalia|S7|w1804,dalia,False positives may occur due to irregular ectopy in PPG-based detection.,UNKNOWN
+dalia|S7|w1804,dalia,Some alerts indicate spontaneous conversion from AF to sinus rhythm.,UNKNOWN
+dalia|S7|w1804,dalia,Wearable devices show varying diagnostic accuracy for arrhythmias compared to 12-lead ECG gold standards.,UNKNOWN
+dalia|S7|w1804,dalia,Signal quality should be verified when an alert is detected.,UNKNOWN
+dalia|S7|w1804,dalia,Patient symptoms should be checked when an alert is detected.,UNKNOWN
+dalia|S7|w1804,dalia,A confirmatory 12-lead or Holter ECG should be obtained if clinical suspicion remains after PPG detection of absolute arrhythmia alerts.,UNKNOWN
+dalia|S7|w1804,dalia,The tool functions as a research decision-support tool.,UNKNOWN
+dalia|S7|w1804,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S7|w1804,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S5|w1229,dalia,The detected pattern suggests acute sympathetic arousal.,UNKNOWN
+dalia|S5|w1229,dalia,Acute sympathetic arousal likely indicates physiological stress or high engagement rather than respiratory distress like tachypnea.,UNKNOWN
+dalia|S5|w1229,dalia,Elevated wrist EDA is a direct index of sympathetic nervous system activation and sweat response [PMC12987280].,UNKNOWN
+dalia|S5|w1229,dalia,Multimodal systems combining EDA with other signals improve accuracy by distinguishing between different arousal states [PMC12987280].,UNKNOWN
+dalia|S5|w1229,dalia,These measures primarily reflect general arousal rather than specific emotional valence like fear or excitement [PMC12987280].,UNKNOWN
+dalia|S5|w1229,dalia,Respiration rate can change during stress [PMC12608435].,UNKNOWN
+dalia|S5|w1229,dalia,The dominant signal is electrodermal activity indicating autonomic activation [PMC12608435].,UNKNOWN
+dalia|S5|w1229,dalia,"Reviewing recent context (e.g., exercise, gaming) helps determine if arousal reflects a non-stressful state like excitement or novelty detection rather than pathological tachypnea.",UNKNOWN
+dalia|S5|w1229,dalia,Monitoring for persistence of elevated EDA beyond the immediate event window is recommended.,UNKNOWN
+dalia|S5|w1229,dalia,This tool is research decision-support only and not a diagnostic device.,UNKNOWN
+dalia|S5|w1229,dalia,This tool does not replace clinical judgment.,UNKNOWN
+dalia|S3|w789,dalia,The anomaly suggests a transient increase in respiratory rate.,UNKNOWN
+dalia|S3|w789,dalia,The anomaly suggests a transient increase in skin temperature.,UNKNOWN
+dalia|S3|w789,dalia,Elevated respiration rates are recognized markers of physiological response to stimuli such as VR simulations or sleep arousals.,UNKNOWN
+dalia|S3|w789,dalia,Skin temperature changes can reflect vasomotor responses associated with these events.,UNKNOWN
+dalia|S3|w789,dalia,Wearable devices often detect stress via multimodal fusion of signals like heart rate and respiration rather than single metrics alone.,UNKNOWN
+dalia|S12|w3263,dalia,The detected pattern suggests acute sympathetic arousal.,UNKNOWN
+dalia|S12|w3263,dalia,The detected pattern suggests a stress response.,UNKNOWN
+dalia|S12|w3263,dalia,"Rapid breathing is present, defined as tachypnea.",UNKNOWN
+dalia|S12|w3263,dalia,Increased skin conductance is observed.,UNKNOWN
+dalia|S12|w3263,dalia,Elevated wrist EDA indicates a sweat response.,UNKNOWN
+dalia|S12|w3263,dalia,A sweat response is linked to sympathetic activation [PMC13023499].,UNKNOWN
+dalia|S12|w3263,dalia,The respiration z-score is -3.5 relative to baseline.,UNKNOWN
+dalia|S12|w3263,dalia,"This reduced respiration z-score aligns with the ""cyclic bradycardia-tachycardia"" pattern.",UNKNOWN
+dalia|S12|w3263,dalia,Parasympathetic dominance precedes a sympathetic surge in this pattern [PMC13212801].,UNKNOWN
+dalia|S12|w3263,dalia,Rate slowing is observed as part of parasympathetic dominance.,UNKNOWN
+dalia|S12|w3263,dalia,Specific respiratory event signatures are present.,UNKNOWN
+dalia|S12|w3263,dalia,The recommendation includes monitoring for signs of sleep apnea events.,UNKNOWN
+dalia|S12|w3263,dalia,The recommendation includes monitoring for anxiety attacks.,UNKNOWN
+dalia|S12|w3263,dalia,The recommendation includes monitoring for physical exertion.,UNKNOWN
+dalia|S12|w3263,dalia,Verification is recommended to determine if tachypnea resolves with rest.,UNKNOWN
+dalia|S12|w3263,dalia,Clinical evaluation should be sought if symptoms persist or worsen [PMC13212801].,UNKNOWN
+dalia|S12|w3263,dalia,Clinical evaluation aims to rule out respiratory distress influences on heart rate.,UNKNOWN
+dalia|S12|w3263,dalia,Clinical evaluation aims to rule out cardiac arrhythmia influences on heart rate.,UNKNOWN
+dalia|S12|w3263,dalia,The tool is a research decision-support tool.,UNKNOWN
+dalia|S12|w3263,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S12|w3263,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S14|w3873,dalia,Sustained elevation in blood volume pulse (BVP) suggests a physiological stress response.,UNKNOWN
+dalia|S14|w3873,dalia,Elevated wrist electrodermal activity (EDA) suggests a physiological stress response.,UNKNOWN
+dalia|S14|w3873,dalia,Physiological stress responses may indicate anxiety or sympathetic arousal rather than simple motion artifact.,UNKNOWN
+dalia|S14|w3873,dalia,EDA reflects skin conductance changes from sweat gland activity.,UNKNOWN
+dalia|S14|w3873,dalia,Sweat gland activity is modulated by the autonomic nervous system in response to emotional arousal or stress.,UNKNOWN
+dalia|S14|w3873,dalia,PPG (photoplethysmography) is prone to motion artifacts.,UNKNOWN
+dalia|S14|w3873,dalia,Elevated BVP and concurrent high EDA often correlate with anxiety detection.,UNKNOWN
+dalia|S14|w3873,dalia,Multimodal approaches show higher accuracy than single-signal methods for anxiety detection.,UNKNOWN
+dalia|S14|w3873,dalia,Symptoms such as palpitations or sweating should be correlated with the signal.,UNKNOWN
+dalia|S14|w3873,dalia,Findings should be confirmed with a standard ECG if symptoms are present or persistent.,UNKNOWN
+dalia|S14|w3873,dalia,Consumer devices alone are insufficient for definitive arrhythmia diagnosis.,UNKNOWN
+dalia|S14|w3873,dalia,The tool is intended to support research decisions rather than serve as a diagnostic device.,UNKNOWN
+dalia|S14|w3873,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S14|w3820,dalia,The anomaly suggests mild deviations in ECG and skin temperature.,UNKNOWN
+dalia|S14|w3820,dalia,These deviations may indicate early rhythm irregularity or sensor artifacts.,UNKNOWN
+dalia|S14|w3820,dalia,Wearable devices show high diagnostic performance for atrial fibrillation.,UNKNOWN
+dalia|S14|w3820,dalia,Inaccurate data from poor skin contact can affect wearable device readings.,UNKNOWN
+dalia|S14|w3820,dalia,Activity levels can cause inaccurate data from wearable devices.,UNKNOWN
+dalia|S14|w3820,dalia,Variations in skin tone can cause inaccurate data from wearable devices.,UNKNOWN
+dalia|S14|w3820,dalia,PPG technology is not considered fully diagnostic of AF per 2020 ESC Guidelines.,UNKNOWN
+dalia|S14|w3820,dalia,PPG technology can underestimate heart rate by up to 10 bpm due to pulse deficits.,UNKNOWN
+dalia|S14|w3820,dalia,Algorithms may struggle with distinguishing between different tachyarrhythmias without clinical verification.,UNKNOWN
+dalia|S14|w3820,dalia,Algorithms may struggle with detecting spontaneous rhythm conversions without clinical verification.,UNKNOWN
+dalia|S14|w3820,dalia,An experienced physician should verify the findings using a standard ECG or 12-lead comparator.,UNKNOWN
+dalia|S14|w3820,dalia,Wearable alerts require clinical confirmation before action.,UNKNOWN
+dalia|S14|w3820,dalia,The tool is a research decision-support tool.,UNKNOWN
+dalia|S14|w3820,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S14|w3820,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S2|w364,dalia,The pattern suggests a sympathetic stress response characterized by increased sweat gland activity and reduced skin blood flow to conserve heat.,UNKNOWN
+dalia|S2|w364,dalia,EDA peaks can estimate the body's response to stimuli like stress [PMC12635167].,UNKNOWN
+dalia|S2|w364,dalia,"Skin temperature drops due to vasoconstriction (reduced skin blood flow) during activities or emotional states, while ambient factors also influence readings [PMC12635167].",UNKNOWN
+dalia|S2|w364,dalia,High ambient temperature and humidity can independently elevate baseline conductance levels unrelated to psychological stress [PMC13259440].,UNKNOWN
+dalia|S2|w364,dalia,Environmental factors significantly alter these signals.,UNKNOWN
+dalia|S2|w364,dalia,Motion artifacts can distort EDA data [PMC13259440][PMC13203100].,UNKNOWN
+dalia|S2|w364,dalia,Motion artifacts can distort temperature data [PMC13259440][PMC13203100].,UNKNOWN
+dalia|S2|w364,dalia,This is a research decision-support tool.,UNKNOWN
+dalia|S2|w364,dalia,This is not a diagnostic device.,UNKNOWN
+dalia|S2|w364,dalia,This does not replace clinical judgment.,UNKNOWN
+dalia|S13|w3540,dalia,The wrist signal pattern is abrupt and high-amplitude.,UNKNOWN
+dalia|S13|w3540,dalia,"An abrupt, high-amplitude pattern suggests a significant sympathetic stress response or motion artifact rather than atrial fibrillation.",UNKNOWN
+dalia|S13|w3540,dalia,Elevated electrodermal activity (EDA) indicates sweat responses linked to sympathetic arousal.,UNKNOWN
+dalia|S13|w3540,dalia,Smartwatches have high accuracy for detecting atrial fibrillation.,UNKNOWN
+dalia|S13|w3540,dalia,The performance of smartwatches can be influenced by signal quality and processing methods.,UNKNOWN
+dalia|S13|w3540,dalia,Certain metrics may struggle under dynamic conditions in wearable devices.,UNKNOWN
+dalia|S13|w3540,dalia,Verification should include checking if the patient is experiencing stress or moving vigorously.,UNKNOWN
+dalia|S13|w3540,dalia,Raw ECG traces should be reviewed to rule out motion artifact before considering arrhythmia alerts.,UNKNOWN
+dalia|S13|w3540,dalia,Wearable devices may produce inconclusive recordings during scenarios involving motion artifacts.,UNKNOWN
+dalia|S13|w3540,dalia,The tool functions as a research decision-support tool.,UNKNOWN
+dalia|S13|w3540,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S13|w3540,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S8|w2233,dalia,The detected pattern suggests a motion artifact rather than true physiological change.,UNKNOWN
+dalia|S8|w2233,dalia,The detected pattern suggests poor sensor contact rather than true physiological change.,UNKNOWN
+dalia|S8|w2233,dalia,Reduced perfusion indicates the presence of an artifact or poor contact in this context.,UNKNOWN
+dalia|S8|w2233,dalia,Elevated skin temperature indicates the presence of an artifact or poor contact in this context.,UNKNOWN
+dalia|S8|w2233,dalia,PPG signals are highly susceptible to noise.,UNKNOWN
+dalia|S8|w2233,dalia,Noise can reduce the accuracy of monitored parameters.,UNKNOWN
+dalia|S8|w2233,dalia,Signal quality is influenced by posture.,UNKNOWN
+dalia|S8|w2233,dalia,Standing with an arm hanging alongside yields lower signal quality compared to supine positions.,UNKNOWN
+dalia|S8|w2233,dalia,Standing with an arm hanging alongside yields lower signal quality compared to sitting positions where the arm rests in the lap.,UNKNOWN
+dalia|S8|w2233,dalia,Supine or sitting positions where the arm rests in the lap yield higher signal quality than standing with an arm hanging alongside.,UNKNOWN
+dalia|S8|w2233,dalia,Motion artifacts are common causes for reduced perfusion index signals during activity.,UNKNOWN
+dalia|S8|w2233,dalia,Poor positioning is a cause of motion artifact-related reduced perfusion index signals.,UNKNOWN
+dalia|S14|w3852,dalia,The detected pattern suggests acute sympathetic arousal.,UNKNOWN
+dalia|S14|w3852,dalia,Acute sympathetic arousal likely indicates stress or high engagement rather than simple respiratory distress.,UNKNOWN
+dalia|S14|w3852,dalia,Elevated wrist EDA is a direct index of sympathetic nervous system activation and sweat response [PMC12987280].,UNKNOWN
+dalia|S14|w3852,dalia,Reduced respiration can occur during tachypnea.,UNKNOWN
+dalia|S14|w3852,dalia,Reduced respiration also reflects autonomic shifts where elevated arousal arises from excitement or novelty detection alongside stress [PMC12987280].,UNKNOWN
+dalia|S14|w3852,dalia,Multimodal systems integrating EDA with cardiovascular metrics are required to distinguish between stressful states and other arousing conditions like engagement [PMC12987280].,UNKNOWN
+dalia|S14|w3852,dalia,The recommendation is to correlate the physiological spike with current activity or context rather than assuming pathology.,UNKNOWN
+dalia|S14|w3852,dalia,Examples of relevant activities include exercise or gaming.,UNKNOWN
+dalia|S14|w3852,dalia,Monitoring should occur if the pattern persists during rest.,UNKNOWN
+dalia|S14|w3852,dalia,Behavioral causes for sympathetic activation should be considered given that these signals index arousal processes broadly [PMC12987280].,UNKNOWN
+dalia|S14|w3852,dalia,The tool is a research decision-support tool.,UNKNOWN
+dalia|S14|w3852,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S14|w3852,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S14|w3903,dalia,The sustained level shift in ECG likely represents sensor artifacts or environmental interference rather than true cardiac pathology.,UNKNOWN
+dalia|S14|w3903,dalia,Elevated wrist temperature likely represents sensor artifacts or environmental interference rather than true cardiac pathology.,UNKNOWN
+dalia|S14|w3903,dalia,Wearable PPG technology is not diagnostic for atrial fibrillation.,UNKNOWN
+dalia|S14|w3903,dalia,Inaccurate data due to poor skin contact can occur with wearable PPG technology.,UNKNOWN
+dalia|S14|w3903,dalia,Activity can cause inaccurate data in wearable PPG technology.,UNKNOWN
+dalia|S14|w3903,dalia,Variations in skin tone can cause inaccurate data in wearable PPG technology.,UNKNOWN
+dalia|S14|w3903,dalia,Sources of inaccuracy in photoplethysmography can lead to misjudgments or missed detections if motion artifacts are not removed from the signal.,UNKNOWN
+dalia|S14|w3903,dalia,A traditional 12-lead ECG is considered the gold standard for verifying findings by an experienced physician.,UNKNOWN
+dalia|S14|w3903,dalia,Algorithm limitations exist regarding wearable PPG technology.,UNKNOWN
+dalia|S14|w3903,dalia,Potential sensor effects include ambient temperature changes.,UNKNOWN
+dalia|S14|w3903,dalia,The tool is a research decision-support tool.,UNKNOWN
+dalia|S14|w3903,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S14|w3903,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S14|w3789,dalia,The detected pattern suggests sympathetic nervous system arousal.,UNKNOWN
+dalia|S14|w3789,dalia,Elevated skin conductance is part of the detected state.,UNKNOWN
+dalia|S14|w3789,dalia,Reduced respiration is part of the detected state.,UNKNOWN
+dalia|S14|w3789,dalia,Electrodermal activity (EDA) serves as a direct index of sympathetic activation.,SUPPORTED
+dalia|S14|w3789,dalia,Multimodal frameworks integrate EDA with respiratory metrics to improve accuracy in detecting stress-related dynamics.,UNKNOWN
+dalia|S14|w3789,dalia,High ambient temperature can independently elevate tonic skin conductance levels.,UNKNOWN
+dalia|S14|w3789,dalia,Elevated tonic skin conductance may contribute to sustained level shifts unrelated to psychological stressors.,UNKNOWN
+dalia|S14|w3789,dalia,Environmental conditions such as temperature and humidity should be verified before concluding elevated EDA indicates acute stress.,UNKNOWN
+dalia|S14|w3789,dalia,Recent physical activity should be considered before concluding elevated EDA indicates acute stress.,UNKNOWN
+dalia|S14|w3789,dalia,Respiration trends should be monitored alongside heart rate variability for a robust assessment of arousal state.,UNKNOWN
+dalia|S14|w3789,dalia,Relying on unimodal signals alone is less accurate than using multimodal frameworks.,UNKNOWN
+dalia|S14|w3789,dalia,The tool is a research decision-support tool.,UNKNOWN
+dalia|S14|w3789,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S14|w3789,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S14|w3842,dalia,The anomaly suggests a sudden sympathetic stress response.,UNKNOWN
+dalia|S14|w3842,dalia,Elevated skin conductance indicates sweat gland activity.,UNKNOWN
+dalia|S14|w3842,dalia,Increased wrist temperature is indicated by the data.,UNKNOWN
+dalia|S14|w3842,dalia,Wrist temperature increases may be due to vasodilation or sensor effects.,UNKNOWN
+dalia|S14|w3842,dalia,EDA measures sweat gland activity reflecting sympathetic nervous system arousal.,UNKNOWN
+dalia|S14|w3842,dalia,Peaks in EDA are event-related responses to stimuli.,UNKNOWN
+dalia|S14|w3842,dalia,Skin temperature varies with skin blood flow and ambient conditions.,UNKNOWN
+dalia|S14|w3842,dalia,Elevated skin readings can occur independently of psychological stress.,UNKNOWN
+dalia|S14|w3842,dalia,High ambient temperature or humidity can raise the tonic baseline conductance.,UNKNOWN
+dalia|S14|w3842,dalia,Raised tonic baseline conductance does not necessarily indicate acute stress.,UNKNOWN
+dalia|S14|w3842,dalia,Environmental factors such as heat or humidity may cause a rise in readings.,UNKNOWN
+dalia|S14|w3842,dalia,The tool is intended for research decision support.,UNKNOWN
+dalia|S14|w3842,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S14|w3842,dalia,The tool does not replace clinical judgment.,UNKNOWN
+dalia|S5|w1262,dalia,The detected anomaly suggests a potential motion artifact rather than true physiological stress.,UNKNOWN
+dalia|S5|w1262,dalia,The detected anomaly suggests a potential signal quality issue rather than true physiological stress.,UNKNOWN
+dalia|S5|w1262,dalia,High-amplitude PPG spikes are present in the data.,UNKNOWN
+dalia|S5|w1262,dalia,Skin conductance is reduced relative to baseline levels.,UNKNOWN
+dalia|S5|w1262,dalia,Heart rate is elevated relative to baseline levels.,UNKNOWN
+dalia|S5|w1262,dalia,Wrist-worn photoplethysmography (PPG) signals are prone to systematic errors.,UNKNOWN
+dalia|S5|w1262,dalia,Parasympathetic-sensitive metrics like RMSSD may be overestimated or biased in PPG data.,UNKNOWN
+dalia|S5|w1262,dalia,Bias in parasympathetic-sensitive metrics is particularly likely without rigorous signal-quality assessment and reconstruction steps.,UNKNOWN
+dalia|S5|w1262,dalia,Abrupt high-amplitude patterns in PPG often reflect motion artifacts rather than perfusion changes.,UNKNOWN
+dalia|S5|w1262,dalia,Wearable ECG devices can yield inconclusive recordings due to algorithm limitations during dynamic conditions.,UNKNOWN
+dalia|S5|w1262,dalia,Signal quality should be verified by checking for movement.,UNKNOWN
+dalia|S5|w1262,dalia,"If an artifact is suspected, the window should be discarded.",UNKNOWN
+dalia|S5|w1262,dalia,The data should not be interpreted as true sympathetic arousal without clinical confirmation.,UNKNOWN
+dalia|S5|w1262,dalia,The data should not be interpreted as arrhythmia without clinical confirmation.,UNKNOWN
+dalia|S5|w1262,dalia,Measurement should be repeated in a stationary state if artifacts are present.,UNKNOWN
+dalia|S5|w1262,dalia,This tool is classified as a research decision-support tool.,UNKNOWN
+dalia|S5|w1262,dalia,This tool is not a diagnostic device.,UNKNOWN
+dalia|S5|w1262,dalia,This tool does not replace clinical judgment.,UNKNOWN
+dalia|S14|w3793,dalia,The detected pattern suggests a sympathetic stress response or motion artifact.,UNKNOWN
+dalia|S14|w3793,dalia,Elevated skin conductance is indicated by the detection.,UNKNOWN
+dalia|S14|w3793,dalia,Reduced pulse amplitude is indicated by the detection.,UNKNOWN
+dalia|S14|w3793,dalia,Wrist EDA was elevated with a z-score of +3.0.,UNKNOWN
+dalia|S14|w3793,dalia,An elevated wrist EDA indicates a sweat response associated with sympathetic arousal.,UNKNOWN
+dalia|S14|w3793,dalia,BVP may reflect motion artifact or signal quality issues.,UNKNOWN
+dalia|S14|w3793,dalia,PPG metrics can be biased by processing methods and dynamic conditions.,UNKNOWN
+dalia|S14|w3793,dalia,The recommendation is to verify if the patient is experiencing stress.,UNKNOWN
+dalia|S14|w3793,dalia,The recommendation includes repeating measurement after ensuring stillness.,UNKNOWN
+dalia|S14|w3793,dalia,Repeating measurement aims to rule out motion artifact.,UNKNOWN
+dalia|S14|w3793,dalia,"If symptoms persist, clinical review for arrhythmia screening limitations in dynamic conditions should be considered.",UNKNOWN
+dalia|S14|w3793,dalia,This tool is a research decision-support tool.,UNKNOWN
+dalia|S14|w3793,dalia,This tool is not a diagnostic device.,UNKNOWN
+dalia|S14|w3793,dalia,This tool does not replace clinical judgment.,UNKNOWN
+dalia|S1|w103,dalia,The anomaly suggests a sudden sympathetic stress response indicated by high electrodermal activity (EDA).,UNKNOWN
+dalia|S1|w103,dalia,Reduced skin blood flow or vasoconstriction is suggested by lower temperature readings.,UNKNOWN
+dalia|S1|w103,dalia,Elevated electrodermal activity indicates sweat gland activation.,UNKNOWN
+dalia|S1|w103,dalia,Electrodermal activity reflects event-related body responses to stimuli.,UNKNOWN
+dalia|S1|w103,dalia,Skin temperature variations reflect changes in skin blood flow.,UNKNOWN
+dalia|S1|w103,dalia,Changes in skin blood flow are influenced by thermal regulation.,UNKNOWN
+dalia|S1|w103,dalia,High ambient temperatures can independently elevate baseline conductance (tonic SCL).,UNKNOWN
+dalia|S1|w103,dalia,Elevated baseline conductance may potentially confound stress detection.,UNKNOWN
+dalia|S1|w103,dalia,A drop in temperature could be due to genuine physiological vasoconstriction response.,UNKNOWN
+dalia|S1|w103,dalia,A drop in temperature could be an artifact from ambient cooling.,UNKNOWN
+dalia|S1|w103,dalia,Motion artifacts are suspected as a potential cause of sharp transients.,UNKNOWN
+dalia|S1|w103,dalia,Sharp transients can mimic real stress peaks.,UNKNOWN
+dalia|S1|w103,dalia,The tool is described as a research decision-support tool.,UNKNOWN
+dalia|S1|w103,dalia,The tool is not a diagnostic device.,UNKNOWN
+dalia|S1|w103,dalia,The tool does not replace clinical judgment.,UNKNOWN
+mitbihv2|232|w49,mitbih,The detector identified significant deviations in standard ECG features compared to normal sinus rhythm.,UNKNOWN
+mitbihv2|232|w49,mitbih,Normal beats are defined by regular rhythms with consistent P waves and specific interval ranges.,UNKNOWN
+mitbihv2|232|w49,mitbih,A PR interval range of 120–200 ms defines a normal beat.,UNKNOWN
+mitbihv2|232|w49,mitbih,A QRS duration range of 80–120 ms defines a normal beat.,UNKNOWN
+mitbihv2|232|w49,mitbih,Deviations from these norms indicate underlying arrhythmias like atrial fibrillation or conduction abnormalities.,UNKNOWN
+mitbihv2|232|w49,mitbih,Supraventricular premature beats represent deviations from norm.,UNKNOWN
+mitbihv2|232|w49,mitbih,Fusion of ventricular and normal beats represents deviations from norm.,UNKNOWN
+mitbihv2|232|w49,mitbih,Wide QRS is an example of a morphological change to review in the flagged window.,UNKNOWN
+mitbihv2|232|w49,mitbih,Absent P waves are an example of a morphological change to review in the flagged window.,UNKNOWN
+mitbihv2|232|w49,mitbih,Reviewing for morphological changes helps distinguish between noise artifacts and true ectopic activity.,UNKNOWN
+mitbihv2|232|w49,mitbih,True ectopic activity requiring clinical follow-up may be present if deviations from norm exist.,UNKNOWN
+mitbihv2|232|w49,mitbih,The tool is classified as a research decision-support tool.,UNKNOWN
+mitbihv2|232|w49,mitbih,The tool is not a diagnostic device.,UNKNOWN
+mitbihv2|232|w49,mitbih,The tool does not replace clinical judgment.,UNKNOWN
+wesad|S16|w11,wesad,Simultaneous reduction in wrist skin temperature is detected.,UNKNOWN
+wesad|S16|w11,wesad,Reduction in electrodermal activity (EDA) is detected at the same time as the skin temperature change.,UNKNOWN
+wesad|S16|w11,wesad,Reduced sympathetic arousal may explain the simultaneous signal changes.,UNKNOWN
+wesad|S16|w11,wesad,Motion artifacts may cause potential signal degradation leading to these readings.,UNKNOWN
+wesad|S16|w11,wesad,Wearable sensors such as the Empatica E4 use EDA as a marker for sympathetic arousal.,UNKNOWN
+wesad|S16|w11,wesad,Skin temperature is used to help interpret thermoregulation in wearable sensors.,UNKNOWN
+wesad|S16|w11,wesad,These signals are sensitive to interface conditions.,UNKNOWN
+wesad|S16|w11,wesad,Motion artifacts can distort signal morphology [PMC13203100].,UNKNOWN
+wesad|S16|w11,wesad,Wrist-worn photoplethysmography (PPG) is often paired with temperature and EDA measurements.,UNKNOWN
+wesad|S16|w11,wesad,Wrist-worn PPG is more prone to signal degradation under poor perfusion compared to chest ECG setups.,UNKNOWN
+wesad|S16|w11,wesad,Wrist-worn PPG is more prone to signal degradation due to movement compared to chest ECG setups [PMC12789550].,UNKNOWN
+wesad|S16|w11,wesad,Artifact contamination in wrist-worn devices is common during motion events [PMC13203100].,UNKNOWN
+wesad|S16|w11,wesad,This tool functions as a research decision-support tool.,UNKNOWN
+wesad|S16|w11,wesad,This tool is not a diagnostic device.,UNKNOWN
+wesad|S16|w11,wesad,This tool does not replace clinical judgment.,UNKNOWN
+wesad|S14|w12,wesad,Simultaneous reduction in wrist skin conductance and heart rate variability suggests a potential artifact rather than true physiological stress.,UNKNOWN
+wesad|S14|w12,wesad,Known limitations of photoplethysmography (PPG) at the wrist contribute to this interpretation.,UNKNOWN
+wesad|S14|w12,wesad,Wrist-worn PPG is prone to motion artifacts compared to electrocardiogram (ECG).,UNKNOWN
+wesad|S14|w12,wesad,Wrist-worn PPG experiences signal degradation under poor perfusion conditions compared to ECG.,UNKNOWN
+wesad|S14|w12,wesad,Heart rate variability metrics like RMSSD and HF are difficult to recover accurately from wrist PPG due to persistent bias even with advanced processing.,UNKNOWN
+wesad|S14|w12,wesad,HRV metrics such as RMSSD and HF serve as parasympathetic indicators.,UNKNOWN
+wesad|S14|w12,wesad,Wrist measurements show significantly larger heart rate estimation errors compared to facial or finger sites.,UNKNOWN
+wesad|S14|w12,wesad,Larger heart rate estimation errors at the wrist are caused by missed pulse peaks.,UNKNOWN
+wesad|S14|w12,wesad,The recommendation is not to interpret simultaneous reduction in skin conductance and HRV as acute stress.,UNKNOWN
+wesad|S14|w12,wesad,Signal quality should be verified using motion context from inertial measurement units (IMU).,UNKNOWN
+wesad|S14|w12,wesad,Data collected via wrist PPG may be unreliable for parasympathetic metrics without ECG confirmation.,UNKNOWN
+wesad|S14|w12,wesad,Monitoring is recommended until signals stabilize or a more reliable site is used if clinically necessary.,UNKNOWN
+wesad|S14|w12,wesad,The tool functions as a research decision-support tool and not as a diagnostic device.,UNKNOWN
+wesad|S14|w12,wesad,This output does not replace clinical judgment.,UNKNOWN
+wesad|S5|w20,wesad,A simultaneous drop in wrist temperature and skin conductance suggests reduced sympathetic arousal or peripheral vasoconstriction.,UNKNOWN
+wesad|S5|w20,wesad,Reduced sympathetic arousal or peripheral vasoconstriction can occur during relaxation.,UNKNOWN
+wesad|S5|w20,wesad,"Motion artifacts may affect sensor accuracy, causing a simultaneous drop in wrist temperature and skin conductance.",UNKNOWN
+wesad|S5|w20,wesad,Wrist-worn PPG signals are more prone to degradation than ECG signals.,UNKNOWN
+wesad|S5|w20,wesad,Wrist-worn PPG signals are more prone to motion artifacts than ECG signals.,UNKNOWN
+wesad|S5|w20,wesad,Signal drops in wrist-worn PPG can mimic physiological changes like reduced skin conductance or temperature shifts.,UNKNOWN
+wesad|S5|w20,wesad,Skin temperature is sometimes used alongside electrodermal activity (EDA) to capture stress-related vasoconstriction.,UNKNOWN
+wesad|S5|w20,wesad,Systematic assessments of multimodal approaches are limited.,UNKNOWN
+wesad|S5|w20,wesad,Multimodal approaches often yield higher accuracy than single signals for capturing stress-related vasoconstriction.,UNKNOWN
+wesad|S5|w20,wesad,Wrist-based PPG is less reliable in ambulatory settings than ECG.,UNKNOWN
+wesad|S13|w21,wesad,The detected pattern suggests a transient arrhythmia.,UNKNOWN
+wesad|S13|w21,wesad,An electrical heartbeat occurred during the event.,UNKNOWN
+wesad|S13|w21,wesad,The electrical heartbeat did not generate a detectable peripheral pulse.,UNKNOWN
+wesad|S13|w21,wesad,ECG captures direct cardiac electrical activity.,UNKNOWN
+wesad|S13|w21,wesad,PPG measures blood volume.,UNKNOWN
+wesad|S13|w21,wesad,Non-perfusing ectopic beats do not produce sufficient peripheral pulses.,UNKNOWN
+wesad|S13|w21,wesad,Optical methods may follow dampened hemodynamic trends during arrhythmic events like ectopic beats.,UNKNOWN
+wesad|S13|w21,wesad,Hypertension is a condition linked to increased ectopic activity.,UNKNOWN
+wesad|S13|w21,wesad,Increased ectopic activity may cause signal disparities in certain patient groups.,UNKNOWN
+ptbxl|5810,ptbxl,The detected anomaly indicates significant signal distortion rather than a specific arrhythmia like atrial fibrillation in the short window analyzed.,UNKNOWN
+ptbxl|5810,ptbxl,The detected anomaly indicates significant noise (high standard deviation) rather than a specific arrhythmia like atrial fibrillation in the short window analyzed.,UNKNOWN
+ptbxl|5810,ptbxl,High statistical deviations suggest artifacts are present.,UNKNOWN
+ptbxl|5810,ptbxl,"Guidelines note that ""Unclassifiable beat"" categories include beats with irregular morphologies due to noise requiring further investigation.",UNKNOWN
+ptbxl|5810,ptbxl,Preprocessing steps like denoising are standard practice to remove interference before analysis.,UNKNOWN
+ptbxl|5810,ptbxl,Verification of signal quality is recommended.,UNKNOWN
+ptbxl|5810,ptbxl,Checking for motion artifacts is recommended.,UNKNOWN
+ptbxl|5810,ptbxl,Checking for baseline wander is recommended.,UNKNOWN
+ptbxl|5810,ptbxl,This event should not be interpreted as a confirmed arrhythmia without visual confirmation.,UNKNOWN
+ptbxl|5810,ptbxl,The tool functions as a research decision-support tool.,UNKNOWN
+ptbxl|5810,ptbxl,The tool is not a diagnostic device.,UNKNOWN
+ptbxl|5810,ptbxl,The tool does not replace clinical judgment.,UNKNOWN
+wesad|S13|w16,wesad,Elevated wrist temperature suggests sympathetic arousal consistent with stress physiology [PMC12789550].,UNKNOWN
+wesad|S13|w16,wesad,Increased skin conductance suggests sympathetic arousal consistent with stress physiology [PMC12789550].,UNKNOWN
+wesad|S13|w16,wesad,An ECG mean of zero may indicate signal degradation due to motion artifacts or poor electrode contact common in wearables [PMC13203100].,UNKNOWN
+wesad|S13|w16,wesad,Signal degradation from motion artifacts or poor electrode contact can render HRV metrics unreliable under these conditions.,UNKNOWN
+wesad|S13|w16,wesad,Wearable biosignals like PPG and EDA are prone to noise from movement and interface changes [PMC13203100].,UNKNOWN
+wesad|S13|w16,wesad,A zero-value ECG reading alongside elevated skin signals warrants checking for motion artifacts or contact issues [PMC13203100].,UNKNOWN
+wesad|S13|w16,wesad,Multimodal approaches often yield better accuracy than single-signal methods in anxiety detection contexts [PMC12789550].,UNKNOWN
+wesad|S13|w16,wesad,Signal quality assessment is essential before clinical interpretation [PMC13203100].,UNKNOWN
+wesad|S13|w16,wesad,The tool should be used to verify sensor contact and minimize motion.,UNKNOWN
+wesad|S13|w16,wesad,"If artifacts persist, the current window may be insufficient for reliable stress inference.",UNKNOWN
+wesad|S13|w16,wesad,Context is insufficient to confirm true physiological arousal without validated HRV data.,UNKNOWN
+wesad|S13|w16,wesad,This research decision-support tool is not a diagnostic device [PMC13203100].,UNKNOWN
+wesad|S13|w16,wesad,The tool does not replace clinical judgment.,UNKNOWN
+mitbihv2|200|w6,mitbih,The anomaly suggests a potential arrhythmia or conduction abnormality.,UNKNOWN
+mitbihv2|200|w6,mitbih,The detector identified nearly 60% of beats in this short window as deviating from normal patterns.,UNKNOWN
+mitbihv2|200|w6,mitbih,Automated systems detect abnormalities like atrial fibrillation and ventricular tachycardia by identifying irregular rhythms.,UNKNOWN
+mitbihv2|200|w6,mitbih,Automated systems detect abnormalities like atrial fibrillation and ventricular tachycardia by identifying morphological differences.,UNKNOWN
+mitbihv2|200|w6,mitbih,Models can struggle with noise or artifacts that mimic these conditions [PMC12346745].,UNKNOWN
+mitbihv2|200|w6,mitbih,Normal beats typically show regular rhythm.,UNKNOWN
+mitbihv2|200|w6,mitbih,Normal beats typically show consistent P waves.,UNKNOWN
+mitbihv2|200|w6,mitbih,Anomalies may present as premature beats without preceding P waves.,UNKNOWN
+mitbihv2|200|w6,mitbih,Anomalies may present as wide QRS complexes [PMC12031393].,UNKNOWN
+mitbihv2|200|w6,mitbih,"The recommendation is to review the raw ECG trace for noise, motion artifacts, or true ectopic beats.",UNKNOWN
+mitbihv2|200|w6,mitbih,The recommendation is to correlate findings with patient symptoms.,UNKNOWN
+mitbihv2|200|w6,mitbih,"If uncertainty remains regarding rhythm irregularity, a standard 12-lead ECG should be recommended for confirmation per clinical guidelines on arrhythmia detection [PMC12731301].",UNKNOWN
+mitbihv2|200|w6,mitbih,This tool is a research decision-support tool.,UNKNOWN
+mitbihv2|200|w6,mitbih,This tool is not a diagnostic device.,UNKNOWN
+mitbihv2|200|w6,mitbih,This tool does not replace clinical judgment.,UNKNOWN
+ptbxl|20865,ptbxl,"The high anomaly score suggests an irregular rhythm or morphological deviation such as ectopic beats, noise artifacts, or potential arrhythmia like atrial fibrillation.",UNKNOWN
+ptbxl|20865,ptbxl,Abnormalities manifest as alterations in waveform morphology and rhythmic patterns.,UNKNOWN
+ptbxl|20865,ptbxl,Specific beat classes include premature ventricular contractions characterized by wide QRS complexes.,UNKNOWN
+ptbxl|20865,ptbxl,Unclassifiable beats can occur due to noise.,UNKNOWN
+ptbxl|20865,ptbxl,Multi-lead analysis is crucial for accurate lesion localization.,UNKNOWN
+ptbxl|20865,ptbxl,Single-lead data can still indicate rhythm disturbances like atrial fibrillation.,UNKNOWN
+ptbxl|20865,ptbxl,Review the Lead I trace visually to distinguish between true arrhythmia and signal artifacts.,UNKNOWN
+ptbxl|20865,ptbxl,True arrhythmia may present as irregular R-R intervals.,UNKNOWN
+ptbxl|20865,ptbxl,Correlate findings with patient symptoms if available.,UNKNOWN
+ptbxl|20865,ptbxl,This is a research decision-support tool.,UNKNOWN
+ptbxl|20865,ptbxl,This system is not a diagnostic device.,UNKNOWN
+ptbxl|20865,ptbxl,This system does not replace clinical judgment.,UNKNOWN
+mitbihv2|200|w48,mitbih,The anomaly indicates a significant deviation from normal sinus rhythm morphology or timing in over half of the beats within this 30-second window [PMC12031393].,UNKNOWN
+mitbihv2|200|w48,mitbih,Normal beats are defined by regular rhythm and consistent P waves [PMC12031393].,UNKNOWN
+mitbihv2|200|w48,mitbih,The mean z-score is +1.1 [PMC12031393].,UNKNOWN
+mitbihv2|200|w48,mitbih,The standard deviation is +2.0 (z=+2.0) [PMC12031393].,UNKNOWN
+mitbihv2|200|w48,mitbih,"Deviations in morphology or timing are typical of supraventricular premature beats, fusion beats, or unclassifiable artifacts [PMC12031393].",UNKNOWN
+mitbihv2|200|w48,mitbih,Deep learning models flag these deviations to reduce subjectivity and improve consistency in waveform interpretation [PMC13194003].,UNKNOWN
+mitbihv2|200|w48,mitbih,The recommendation is to review the flagged segment for specific waveforms such as wide QRS or absent P waves [PMC12031393].,UNKNOWN
+mitbihv2|200|w48,mitbih,Wide QRS or absent P waves may match known arrhythmia classes like premature ventricular contractions or fusion beats [PMC12031393].,UNKNOWN
+mitbihv2|200|w48,mitbih,The tool should be correlated with patient symptoms and history to determine clinical significance before assigning a pathological label.,UNKNOWN
+mitbihv2|200|w48,mitbih,This is a research decision-support tool [Disclaimer].,UNKNOWN
+mitbihv2|200|w48,mitbih,This tool is not a diagnostic device [Disclaimer].,UNKNOWN
+mitbihv2|200|w48,mitbih,This tool does not replace clinical judgment [Disclaimer].,UNKNOWN
+ptbxl|16357,ptbxl,The high anomaly score suggests an irregular rhythm.,UNKNOWN
+ptbxl|16357,ptbxl,The high anomaly score suggests an ectopic beat pattern.,UNKNOWN
+ptbxl|16357,ptbxl,An irregular rhythm or ectopic beat pattern deviates significantly from normal sinus morphology.,UNKNOWN
+ptbxl|16357,ptbxl,Normal beats are defined by regular rhythms.,UNKNOWN
+ptbxl|16357,ptbxl,Normal beats are defined by consistent P waves.,UNKNOWN
+ptbxl|16357,ptbxl,Normal beats are defined by standard PR intervals.,UNKNOWN
+ptbxl|16357,ptbxl,Normal beats are defined by standard QRS intervals.,UNKNOWN
+ptbxl|16357,ptbxl,Deviations in rhythm features indicate arrhythmias like atrial fibrillation.,UNKNOWN
+ptbxl|16357,ptbxl,Deviations in rhythm features indicate premature ventricular contractions.,UNKNOWN
+ptbxl|16357,ptbxl,Abnormalities manifest as altered waveform morphology.,UNKNOWN
+ptbxl|16357,ptbxl,Abnormalities manifest as altered duration.,UNKNOWN
+ptbxl|16357,ptbxl,Abnormalities manifest as altered rhythmic patterns.,UNKNOWN
+ptbxl|16357,ptbxl,"Altered waveform morphology, duration, or rhythmic patterns are associated with myocardial infarction.",UNKNOWN
+ptbxl|16357,ptbxl,"Altered waveform morphology, duration, or rhythmic patterns are associated with conduction abnormalities.",UNKNOWN
+ptbxl|16357,ptbxl,Review the 30-second window for irregular R-R intervals to identify specific arrhythmias like atrial fibrillation.,UNKNOWN
+ptbxl|16357,ptbxl,Review the 30-second window for absent P waves to identify specific arrhythmias like atrial fibrillation.,UNKNOWN
+ptbxl|16357,ptbxl,Review the 30-second window for wide QRS complexes to identify specific arrhythmias like ventricular tachycardia.,UNKNOWN
+ptbxl|16357,ptbxl,Review the 30-second window for ST-segment changes to identify specific arrhythmias like ventricular tachycardia.,UNKNOWN
+ptbxl|16357,ptbxl,This tool is a research decision-support tool.,UNKNOWN
+ptbxl|16357,ptbxl,This tool is not a diagnostic device.,UNKNOWN
+ptbxl|16357,ptbxl,This tool does not replace clinical judgment.,UNKNOWN
+mitbihv2|232|w4,mitbih,The anomaly suggests a potential arrhythmia.,UNKNOWN
+mitbihv2|232|w4,mitbih,The anomaly suggests a conduction abnormality.,UNKNOWN
+mitbihv2|232|w4,mitbih,The detector identified nearly one-third of beats in this window as deviating from normal patterns.,UNKNOWN
+mitbihv2|232|w4,mitbih,"Automated systems flag ""Unclassifiable"" (Q) beat classes when waveforms show irregular morphologies due to noise or artifacts.",UNKNOWN
+mitbihv2|232|w4,mitbih,Deep learning models are designed to detect subtle morphological differences associated with arrhythmias like atrial fibrillation and ventricular tachycardia.,UNKNOWN
+mitbihv2|232|w4,mitbih,Arrhythmias like atrial fibrillation and ventricular tachycardia can be challenging for manual review.,UNKNOWN
+mitbihv2|232|w4,mitbih,"Review the flagged window visually to distinguish between true cardiac events (e.g., ectopic beats) and signal artifacts or noise that may have triggered false positives.",UNKNOWN
+mitbihv2|232|w4,mitbih,Correlate findings with patient symptoms if available.,UNKNOWN
+mitbihv2|232|w4,mitbih,This is a research decision-support tool.,UNKNOWN
+mitbihv2|232|w4,mitbih,This is not a diagnostic device.,UNKNOWN
+mitbihv2|232|w4,mitbih,This does not replace clinical judgment.,UNKNOWN
+ptbxl|19935,ptbxl,The high standard deviation has a z-score of +9.2.,UNKNOWN
+ptbxl|19935,ptbxl,Significant beat-to-beat variability is present in Lead I.,UNKNOWN
+ptbxl|19935,ptbxl,Morphological inconsistency is observed in Lead I.,UNKNOWN
+ptbxl|19935,ptbxl,Atrial fibrillation may be indicated by these findings.,UNKNOWN
+ptbxl|19935,ptbxl,Frequent ectopic beats may be indicated by these findings.,UNKNOWN
+ptbxl|19935,ptbxl,ECG anomalies manifest as alterations in waveform morphology.,UNKNOWN
+ptbxl|19935,ptbxl,ECG anomalies manifest as alterations in rhythmic patterns.,UNKNOWN
+ptbxl|19935,ptbxl,Supraventricular premature beats are classified with the letter S.,UNKNOWN
+ptbxl|19935,ptbxl,Abnormal P waves characterize Supraventricular premature beats.,UNKNOWN
+ptbxl|19935,ptbxl,Premature ventricular contractions are classified with the letter V.,UNKNOWN
+ptbxl|19935,ptbxl,Premature ventricular contractions lack preceding P waves.,UNKNOWN
+ptbxl|19935,ptbxl,Multi-lead analysis is crucial for accurate lesion localization.,UNKNOWN
+ptbxl|19935,ptbxl,Diagnostic redundancy exists between multi-lead systems and single-lead systems.,UNKNOWN
+ptbxl|19935,ptbxl,Review of Lead I tracing should focus on irregular R-R intervals.,UNKNOWN
+ptbxl|19935,ptbxl,Review of Lead I tracing should focus on absent P waves.,UNKNOWN
+ptbxl|19935,ptbxl,Correlation with other leads includes lead II.,UNKNOWN
+ptbxl|19935,ptbxl,Correlation with other leads includes lead V1.,UNKNOWN
+ptbxl|19935,ptbxl,Variability may be due to noise or artifacts.,UNKNOWN
+ptbxl|19935,ptbxl,Variability may be due to true arrhythmia like atrial fibrillation.,UNKNOWN
+ptbxl|19935,ptbxl,The tool is a research decision-support tool.,UNKNOWN
+ptbxl|19935,ptbxl,The tool is not a diagnostic device.,UNKNOWN
+ptbxl|19935,ptbxl,The tool does not replace clinical judgment.,UNKNOWN
+ptbxl|4432,ptbxl,The detected anomaly suggests potential rhythm irregularity or ectopic activity.,UNKNOWN
+ptbxl|4432,ptbxl,Potential causes include premature beats due to deviations in signal morphology like standard deviation and skewness.,UNKNOWN
+ptbxl|4432,ptbxl,"ECG anomalies often manifest as alterations in waveform morphology, duration, and rhythmic patterns.",UNKNOWN
+ptbxl|4432,ptbxl,These alterations are caused by disturbances in impulse initiation or propagation [PMC12467215].,UNKNOWN
+ptbxl|4432,ptbxl,Supraventricular premature beats (S) show abnormal P waves.,UNKNOWN
+ptbxl|4432,ptbxl,Premature ventricular contractions (V) feature wide QRS complexes without preceding P waves.,UNKNOWN
+ptbxl|4432,ptbxl,These irregularities can trigger high anomaly scores during detection [PMC12031393].,UNKNOWN
+ptbxl|4432,ptbxl,The recommendation is to review the 30-second window for premature beats or rhythm breaks.,UNKNOWN
+ptbxl|4432,ptbxl,Signal quality should be verified to rule out artifacts.,UNKNOWN
+ptbxl|4432,ptbxl,Unclassifiable beats often result from noise requiring further investigation [PMC12031393].,UNKNOWN
+ptbxl|4432,ptbxl,Clinical symptoms should be correlated if arrhythmia is suspected.,UNKNOWN
+ptbxl|4432,ptbxl,The tool is a research decision-support tool.,UNKNOWN
+ptbxl|4432,ptbxl,The tool is not a diagnostic device.,UNKNOWN
+ptbxl|4432,ptbxl,The tool does not replace clinical judgment.,UNKNOWN
+mitbihv2|232|w52,mitbih,The anomaly suggests a potential conduction abnormality or ectopic beat.,UNKNOWN
+mitbihv2|232|w52,mitbih,Flagged beats deviate significantly from normal sinus rhythm morphology and timing metrics.,UNKNOWN
+mitbihv2|232|w52,mitbih,Normal beats are defined by regular rhythms with consistent P waves.,UNKNOWN
+mitbihv2|232|w52,mitbih,Normal PR intervals range from 120 to 200 ms.,UNKNOWN
+mitbihv2|232|w52,mitbih,Deviations in P wave features indicate abnormalities like supraventricular premature beats or fusion beats.,UNKNOWN
+mitbihv2|232|w52,mitbih,"Deep learning models detect subtle morphological differences and arrhythmias, including conduction abnormalities.",UNKNOWN
+mitbihv2|232|w52,mitbih,Automated analysis is required to identify certain arrhythmias that may not be immediately obvious without it.,UNKNOWN
+mitbihv2|232|w52,mitbih,Review the flagged beats for signs of ectopic activity such as absent P waves or wide QRS complexes.,UNKNOWN
+mitbihv2|232|w52,mitbih,Assess clinical symptoms associated with irregular rhythms.,UNKNOWN
+mitbihv2|232|w52,mitbih,Correlate persistent irregular rhythms with patient history to rule out transient arrhythmias like atrial fibrillation.,UNKNOWN
+mitbihv2|232|w52,mitbih,The tool is a research decision-support tool and not a diagnostic device.,UNKNOWN
+mitbihv2|232|w52,mitbih,The tool does not replace clinical judgment.,UNKNOWN
+wesad|S5|w0,wesad,A simultaneous drop in wrist temperature and ECG signal quality suggests reduced peripheral blood flow.,UNKNOWN
+wesad|S5|w0,wesad,Reduced peripheral blood flow is also known as poor perfusion.,UNKNOWN
+wesad|S5|w0,wesad,Motion artifacts can affect the optical sensor at the wrist.,UNKNOWN
+wesad|S5|w0,wesad,Wrist-based PPG signals are more prone to degradation under poor perfusion compared to other sites like the finger or temple.,UNKNOWN
+wesad|S5|w0,wesad,Poor perfusion leads to higher estimation errors in wrist-based PPG signals due to missed pulse peaks.,UNKNOWN
+wesad|S5|w0,wesad,Skin temperature changes can reflect stress-related peripheral vasoconstriction.,UNKNOWN
+wesad|S5|w0,wesad,Reduced ECG signal quality in a wrist-worn device often indicates motion artifacts.,UNKNOWN
+wesad|S5|w0,wesad,Reduced ECG signal quality in a wrist-worn device often indicates low perfusion.,UNKNOWN
+wesad|S5|w0,wesad,Reduced ECG signal quality in a wrist-worn device does not necessarily indicate true cardiac rhythm issues.,UNKNOWN
+wesad|S5|w0,wesad,Checking the patient's position and limb movement is recommended when these signals are affected.,UNKNOWN
+wesad|S5|w0,wesad,"If motion is present, waiting for a stable period before re-evaluating is recommended.",UNKNOWN
+wesad|S5|w0,wesad,Ensuring the wrist area is warm can improve perfusion.,UNKNOWN
+wesad|S5|w0,wesad,Seeking medical evaluation is recommended if symptoms persist or clinical concern exists regarding circulation.,UNKNOWN
+wesad|S5|w0,wesad,The tool described is a research decision-support tool.,UNKNOWN
+wesad|S5|w0,wesad,The tool is not a diagnostic device.,UNKNOWN
+wesad|S5|w0,wesad,The tool does not replace clinical judgment.,UNKNOWN
+wesad|S17|w13,wesad,The detected anomaly suggests elevated sympathetic arousal or stress.,UNKNOWN
+wesad|S17|w13,wesad,Electrodermal activity (EDA) reflects skin conductance changes from sweat gland activity modulated by the autonomic nervous system in response to emotional arousal and stress [PMC12789550].,UNKNOWN
+wesad|S17|w13,wesad,"Skin temperature may capture stress-related peripheral vasoconstriction, though systematic assessments are limited [PMC12789550].",UNKNOWN
+wesad|S17|w13,wesad,"When stressed, blood pressure increases causing a rise in heart rate linked with low heart rate variability (HRV) [PMC11679670].",UNKNOWN
+wesad|S17|w13,wesad,Multimodal approaches achieve higher accuracy than single-signal methods for monitoring anxiety or stress [PMC12789550].,UNKNOWN
+wesad|S17|w13,wesad,Seeking timely medical treatment can reduce disease morbidity and mortality if symptoms persist [PMC12789550].,UNKNOWN
+wesad|S17|w13,wesad,The tool is a research decision-support tool.,UNKNOWN
+wesad|S17|w13,wesad,The tool is not a diagnostic device.,UNKNOWN
+wesad|S17|w13,wesad,The tool does not replace clinical judgment.,UNKNOWN
+mitbihv2|233|w4,mitbih,The detected anomaly indicates a statistically significant deviation from normal sinus rhythm.,UNKNOWN
+mitbihv2|233|w4,mitbih,A statistically significant deviation from normal sinus rhythm suggests the presence of an arrhythmia or conduction abnormality requiring clinical review [PMC12031393].,UNKNOWN
+mitbihv2|233|w4,mitbih,Normal beats are defined by regular rhythms and consistent P waves.,UNKNOWN
+mitbihv2|233|w4,mitbih,"Deviations in mean z-scores indicate morphological changes such as ectopic activity, fusion beats, or noise that distinguish abnormal from normal classes [PMC12031393].",UNKNOWN
+mitbihv2|233|w4,mitbih,A deviation in the mean z-score of +2.5 indicates a morphological change distinguishing abnormal from normal classes [PMC12031393].,UNKNOWN
+mitbihv2|233|w4,mitbih,Automated systems use feature deviations to flag potential conditions like atrial fibrillation or ventricular tachycardia for further investigation [PMC12731301].,UNKNOWN
+mitbihv2|233|w4,mitbih,The recommendation is to review the flagged window visually.,UNKNOWN
+mitbihv2|233|w4,mitbih,"Visual review should confirm if the deviation represents a true arrhythmia (e.g., ectopic beat, fusion) or an artifact.",UNKNOWN
+mitbihv2|233|w4,mitbih,"If clinically significant rhythm irregularity is confirmed, standard monitoring protocols for conditions like atrial fibrillation should be followed [PMC12731301].",UNKNOWN
+mitbihv2|233|w4,mitbih,The tool is classified as a research decision-support tool.,UNKNOWN
+mitbihv2|233|w4,mitbih,The tool is not a diagnostic device.,UNKNOWN
+mitbihv2|233|w4,mitbih,The tool does not replace clinical judgment.,UNKNOWN
+ptbxl|8139,ptbxl,The anomaly suggests potential rhythm irregularity or ectopic activity due to significant deviations in signal standard deviation and peak-to-peak amplitude.,UNKNOWN
+ptbxl|8139,ptbxl,"ECG anomalies often manifest as alterations in waveform morphology, duration, and rhythmic patterns caused by disturbances in impulse initiation or propagation.",UNKNOWN
+ptbxl|8139,ptbxl,Supraventricular premature beats (S) show abnormal P waves.,UNKNOWN
+ptbxl|8139,ptbxl,Premature ventricular contractions (V) feature wide QRS complexes without preceding P waves.,UNKNOWN
+ptbxl|8139,ptbxl,These irregularities can trigger high anomaly scores during detection.,UNKNOWN
+ptbxl|8139,ptbxl,Review the 30-second window for premature beats or fusion beats.,UNKNOWN
+ptbxl|8139,ptbxl,"Verify signal quality to rule out artifacts, as unclassifiable beats with irregular morphologies may require further investigation before clinical interpretation.",UNKNOWN
+ptbxl|8139,ptbxl,Correlate findings with multi-lead data if available to localize lesions accurately.,UNKNOWN
+ptbxl|8139,ptbxl,This is a research decision-support tool.,UNKNOWN
+ptbxl|8139,ptbxl,It is not a diagnostic device.,UNKNOWN
+ptbxl|8139,ptbxl,It does not replace clinical judgment.,UNKNOWN
+mitbihv2|213|w4,mitbih,The detector flagged all beats in the anomaly.,UNKNOWN
+mitbihv2|213|w4,mitbih,All flagged beats are statistically very close to normal training data.,UNKNOWN
+mitbihv2|213|w4,mitbih,The mean z-score of the flagged beats is +0.3.,UNKNOWN
+mitbihv2|213|w4,mitbih,Normal sinus rhythm is characterized by regular rhythms.,UNKNOWN
+mitbihv2|213|w4,mitbih,Normal sinus rhythm is characterized by consistent P waves.,UNKNOWN
+mitbihv2|213|w4,mitbih,PR intervals in normal sinus rhythm range between 120–200 ms.,UNKNOWN
+mitbihv2|213|w4,mitbih,Deviations in specific features are required for abnormal classification.,UNKNOWN
+mitbihv2|213|w4,mitbih,ECG waveforms can be susceptible to noise sources.,UNKNOWN
+mitbihv2|213|w4,mitbih,Noise sources pose challenges for reliable classification of ECGs.,UNKNOWN
+mitbihv2|213|w4,mitbih,Flagged anomalies may occur even when the underlying rhythm is normal due to noise.,UNKNOWN
+mitbihv2|213|w4,mitbih,Models may struggle with noise and class imbalance.,UNKNOWN
+mitbihv2|232|w59,mitbih,The anomaly suggests a potential conduction abnormality or ectopic beat.,UNKNOWN
+mitbihv2|232|w59,mitbih,The detector flagged beats with deviations in standard deviation and peak-to-peak intervals.,UNKNOWN
+mitbihv2|232|w59,mitbih,ECG waveforms associated with different arrhythmia types often exhibit subtle morphological differences.,UNKNOWN
+mitbihv2|232|w59,mitbih,ECG waveforms are susceptible to various noise sources.,UNKNOWN
+mitbihv2|232|w59,mitbih,Automated classification is needed to reduce subjectivity [PMC13194003].,UNKNOWN
+mitbihv2|232|w59,mitbih,The dataset includes beat classes like Supraventricular premature beats (S).,UNKNOWN
+mitbihv2|232|w59,mitbih,Supraventricular premature beats (S) may be characterized by possible abnormal or hidden P waves.,UNKNOWN
+mitbihv2|232|w59,mitbih,The dataset includes Premature ventricular contractions (V).,UNKNOWN
+mitbihv2|232|w59,mitbih,Premature ventricular contractions (V) have no preceding P wave [PMC12031393].,UNKNOWN
+mitbihv2|232|w59,mitbih,Review the flagged window for noise artifacts versus true ectopic activity.,UNKNOWN
+mitbihv2|232|w59,mitbih,Verify rhythm regularity and PR/QRS morphology.,UNKNOWN
+mitbihv2|232|w59,mitbih,Consider manual review by a clinician if uncertainty persists regarding class imbalance or model bias.,UNKNOWN
+mitbihv2|232|w59,mitbih,Automated models may favor common conditions over rare anomalies [PMC12031393].,UNKNOWN
+mitbihv2|232|w59,mitbih,This is a research decision-support tool.,UNKNOWN
+mitbihv2|232|w59,mitbih,This is not a diagnostic device.,UNKNOWN
+mitbihv2|232|w59,mitbih,This does not replace clinical judgment.,UNKNOWN
+ptbxl|18676,ptbxl,The detected anomaly indicates significant signal distortion or noise rather than a specific arrhythmia like atrial fibrillation.,UNKNOWN
+ptbxl|18676,ptbxl,High standard deviation and peak-to-peak z-scores are present in the signal.,UNKNOWN
+ptbxl|18676,ptbxl,Standard deviations of +5.2 were observed in features such as standard deviation.,UNKNOWN
+ptbxl|18676,ptbxl,"Peak-to-peak amplitude values of +4.9 suggest the presence of artifacts, baseline wander, or noise.",UNKNOWN
+ptbxl|18676,ptbxl,These factors obscure normal waveform morphology.,UNKNOWN
+ptbxl|18676,ptbxl,High-frequency interference is present and requires removal via filters during preprocessing.,UNKNOWN
+ptbxl|18676,ptbxl,Baseline wander must be removed before analysis using denoising techniques.,UNKNOWN
+ptbxl|18676,ptbxl,Motion artifacts may cause poor signal quality.,UNKNOWN
+ptbxl|18676,ptbxl,Poor electrode contact may affect the reading.,UNKNOWN
+ptbxl|18676,ptbxl,The reading may not represent a true cardiac event if noise is confirmed.,UNKNOWN
+ptbxl|18676,ptbxl,Re-acquiring the signal after ensuring stable probe placement and minimizing patient movement is recommended.,UNKNOWN
+wesad|S16|w6,wesad,Reduced wrist temperature suggests sympathetic arousal consistent with stress or anxiety.,UNKNOWN
+wesad|S16|w6,wesad,Elevated heart rate suggests sympathetic arousal consistent with stress or anxiety.,UNKNOWN
+wesad|S16|w6,wesad,Skin temperature drops can capture stress-related peripheral vasoconstriction [PMC12789550].,UNKNOWN
+wesad|S16|w6,wesad,"Elevated heart rate is linked to low heart rate variability, which reflects a high stress level when resting HR increases under stress [PMC11679670].",UNKNOWN
+wesad|S16|w6,wesad,Electrodermal activity and skin temperature are valuable markers for anxiety detection alongside PPG signals [PMC12789550].,UNKNOWN
+wesad|S16|w6,wesad,These biosignals indicate potential sympathetic activation requiring clinical correlation.,UNKNOWN
+wesad|S16|w6,wesad,The tool is a research decision-support tool.,UNKNOWN
+wesad|S16|w6,wesad,The tool is not a diagnostic device.,UNKNOWN
+wesad|S16|w6,wesad,The tool does not replace clinical judgment.,UNKNOWN
+wesad|S16|w5,wesad,A simultaneous drop in blood volume pulse suggests a stress response involving sympathetic arousal and peripheral vasoconstriction.,UNKNOWN
+wesad|S16|w5,wesad,Reduced heart rate variability (HRV) reflects high stress levels [PMC11679670].,UNKNOWN
+wesad|S16|w5,wesad,Electrodermal activity changes occur due to sweat gland modulation by the autonomic nervous system during emotional arousal or stress [PMC12789550].,UNKNOWN
+wesad|S16|w5,wesad,Skin temperature may capture stress-related peripheral vasoconstriction where blood flow decreases under anxiety [PMC12789550].,UNKNOWN
+wesad|S16|w5,wesad,Wrist PPG signals can be less reliable in real-world settings due to motion compared to ECG [PMC12789550].,UNKNOWN
+wesad|S16|w5,wesad,Wrist PPG signals can be less reliable in real-world settings due to poor perfusion compared to ECG [PMC12789550].,UNKNOWN
+wesad|S16|w5,wesad,The tool is a research decision-support tool.,UNKNOWN
+wesad|S16|w5,wesad,The tool is not a diagnostic device.,UNKNOWN
+wesad|S16|w5,wesad,The tool does not replace clinical judgment.,UNKNOWN
+ptbxl|162,ptbxl,The standard deviation is z=+4.1.,UNKNOWN
+ptbxl|162,ptbxl,The peak-to-peak z-score is +5.3.,UNKNOWN
+ptbxl|162,ptbxl,These metrics suggest significant signal irregularity or noise.,UNKNOWN
+ptbxl|162,ptbxl,These metrics do not indicate a specific named arrhythmia like atrial fibrillation in this short window.,UNKNOWN
+ptbxl|162,ptbxl,"Abnormalities manifest as alterations in waveform morphology, duration, and rhythmic patterns.",UNKNOWN
+ptbxl|162,ptbxl,Beats with irregular morphologies due to noise require further investigation [PMC12031393].,UNKNOWN
+ptbxl|162,ptbxl,Multi-lead analysis is crucial for accurate lesion localization compared to single-lead recordings which may miss spatial context [PMC12467215].,UNKNOWN
+ptbxl|162,ptbxl,Signal quality should be verified by checking for baseline wander or artifacts.,UNKNOWN
+ptbxl|162,ptbxl,Preprocessing often involves filtering out baseline wander or artifacts before diagnosis.,UNKNOWN
+ptbxl|162,ptbxl,"If noise persists after cleaning, the high anomaly score likely reflects unclean data rather than a pathological condition requiring immediate intervention in this 30-second clip.",UNKNOWN
+ptbxl|162,ptbxl,This is a research decision-support tool.,UNKNOWN
+ptbxl|162,ptbxl,This is not a diagnostic device.,UNKNOWN
+ptbxl|162,ptbxl,This does not replace clinical judgment.,UNKNOWN
+wesad|S17|w16,wesad,Simultaneous rise in wrist temperature and drop in blood volume pulse suggests a stress response or signal artifact common at the wrist site.,UNKNOWN
+wesad|S17|w16,wesad,Wearable PPG sensors are more prone to motion artifacts than ECG.,UNKNOWN
+wesad|S17|w16,wesad,Wearable PPG sensors are more prone to signal degradation than ECG.,UNKNOWN
+wesad|S17|w16,wesad,Skin temperature can capture stress-related peripheral vasoconstriction.,UNKNOWN
+wesad|S17|w16,wesad,Reduced HRV reflects high stress levels.,UNKNOWN
+wesad|S17|w16,wesad,Wrist measurements often show larger heart rate estimation errors due to missed pulse peaks compared to facial sites or fingers.,UNKNOWN
+wesad|S17|w16,wesad,Elevated wrist temperature may indicate vasoconstriction.,UNKNOWN
+wesad|S17|w16,wesad,Elevated wrist temperature may indicate sensor placement issues.,UNKNOWN
+ptbxl|10344,ptbxl,A high anomaly score suggests irregular rhythm rather than normal sinus activity.,UNKNOWN
+ptbxl|10344,ptbxl,A high anomaly score suggests ectopic beats rather than normal sinus activity.,UNKNOWN
+ptbxl|10344,ptbxl,Normal beats show regular rhythms with consistent P waves.,UNKNOWN
+ptbxl|10344,ptbxl,Absent P waves indicate ventricular origin deviations.,UNKNOWN
+ptbxl|10344,ptbxl,"Abnormal morphology indicates arrhythmias such as atrial fibrillation, premature ventricular contractions, or supraventricular premature beats.",UNKNOWN
+ptbxl|10344,ptbxl,Multi-lead analysis is crucial for accurate localization of abnormalities.,UNKNOWN
+ptbxl|10344,ptbxl,Review the 12-lead ECG to identify specific waveforms like missing P waves.,UNKNOWN
+ptbxl|10344,ptbxl,Review the 12-lead ECG to identify specific waveforms like wide QRS complexes.,UNKNOWN
+ptbxl|10344,ptbxl,Confirm if an arrhythmia like atrial fibrillation is present by reviewing the ECG.,UNKNOWN
+ptbxl|10344,ptbxl,Confirm if a premature beat is present by reviewing the ECG.,UNKNOWN
+ptbxl|10344,ptbxl,This tool is a research decision-support tool.,UNKNOWN
+ptbxl|10344,ptbxl,This tool is not a diagnostic device.,UNKNOWN
+ptbxl|10344,ptbxl,This tool does not replace clinical judgment.,UNKNOWN
+wesad|S16|w16,wesad,The detected pattern suggests reduced sympathetic arousal or signal degradation at the wrist.,UNKNOWN
+wesad|S16|w16,wesad,Signal degradation may be due to motion artifacts common in PPG sensors rather than a physiological event alone [PMC12789550].,UNKNOWN
+wesad|S16|w16,wesad,Wrist-worn photoplethysmography (PPG) is prone to motion artifacts compared to electrocardiogram (ECG).,UNKNOWN
+wesad|S16|w16,wesad,Wrist-worn PPG is prone to poor perfusion compared to ECG.,UNKNOWN
+wesad|S16|w16,wesad,Heart rate variability metrics like RMSSD are particularly difficult to recover accurately from wrist signals [PMC12736534].,UNKNOWN
+wesad|S16|w16,wesad,Difficulty in recovering HRV metrics persists even with processing steps [PMC12736534].,UNKNOWN
+wesad|S16|w16,wesad,Wrist measurements often show higher error rates due to missed pulse peaks compared to facial or finger sites [PMC13210545].,UNKNOWN
+wesad|S16|w16,wesad,Reduced heart rate variability should not be interpreted as a definitive stress marker without corroborating ECG data given PPG limitations at the wrist site [PMC12789550][PMC12736534].,UNKNOWN
+wesad|S16|w16,wesad,The tool is a research decision-support tool.,UNKNOWN
+wesad|S16|w16,wesad,The tool is not a diagnostic device.,UNKNOWN
+wesad|S16|w16,wesad,The tool does not replace clinical judgment.,UNKNOWN
+wesad|S13|w17,wesad,Elevated skin temperature indicates vasodilation.,UNKNOWN
+wesad|S13|w17,wesad,Reduced heart rate variability suggests a potential stress response or signal artifact.,UNKNOWN
+wesad|S13|w17,wesad,Slightly lower blood volume pulse amplitude is observed at the wrist.,UNKNOWN
+wesad|S13|w17,wesad,Wearable PPG sensors are more prone to motion artifacts than ECG under poor perfusion conditions.,UNKNOWN
+wesad|S13|w17,wesad,Wearable PPG sensors experience greater signal degradation than ECG under poor perfusion conditions.,UNKNOWN
+wesad|S13|w17,wesad,Reduced heart rate variability reflects a high stress level.,UNKNOWN
+wesad|S13|w17,wesad,Increased skin temperature can capture peripheral vasoconstriction changes associated with anxiety detection contexts.,UNKNOWN
+wesad|S13|w17,wesad,Increased skin temperature can capture peripheral vasodilation changes associated with anxiety detection contexts.,UNKNOWN
+wesad|S13|w17,wesad,Multimodal biosignals include PPG and electrodermal activity (EDA).,UNKNOWN
+wesad|S13|w17,wesad,Wrist measurements show higher heart rate estimation errors than facial sites due to missed pulse peaks.,UNKNOWN
+wesad|S13|w17,wesad,Wrist measurements show higher heart rate estimation errors than finger sites due to missed pulse peaks.,UNKNOWN
+wesad|S13|w17,wesad,Missed pulse peaks at the wrist may explain reduced blood volume pulse signal quality.,UNKNOWN
+wesad|S13|w17,wesad,Motion artifacts can degrade PPG signals.,UNKNOWN
+wesad|S13|w17,wesad,Motion artifacts can alter derived metrics like heart rate variability.,UNKNOWN
+wesad|S13|w17,wesad,Wrist-based readings are less reliable than ECG for stress assessment in real-world settings due to perfusion issues.,UNKNOWN
+wesad|S16|w1,wesad,A simultaneous drop in wrist temperature and skin conductance was detected.,UNKNOWN
+wesad|S16|w1,wesad,Reduced sympathetic arousal can cause reduced peripheral vasoconstriction.,UNKNOWN
+wesad|S16|w1,wesad,Peripheral vasoconstriction can occur during stress responses.,UNKNOWN
+wesad|S16|w1,wesad,Motion artifacts at the wrist may affect sensor accuracy.,UNKNOWN
+wesad|S16|w1,wesad,Wrist-worn PPG signals are more prone to motion artifacts than ECG signals.,UNKNOWN
+wesad|S16|w1,wesad,Wrist-worn PPG signals experience greater signal degradation compared to ECG signals.,UNKNOWN
+wesad|S16|w1,wesad,Measurements acquired at the wrist often show larger estimation errors due to missed pulse peaks or poor perfusion conditions like vasoconstriction.,UNKNOWN
+wesad|S16|w1,wesad,Skin temperature changes can reflect stress-related peripheral vasoconstriction.,UNKNOWN
+wesad|S16|w1,wesad,Skin temperature measurements are influenced by motion in wearable settings.,UNKNOWN
+wesad|S16|w1,wesad,Skin temperature measurements are influenced by environmental factors in wearable settings.,UNKNOWN
+wesad|S16|w1,wesad,The tool is a research decision-support tool.,UNKNOWN
+wesad|S16|w1,wesad,The tool is not a diagnostic device.,UNKNOWN
+wesad|S16|w1,wesad,The tool does not replace clinical judgment.,UNKNOWN

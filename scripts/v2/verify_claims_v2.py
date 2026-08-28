@@ -82,6 +82,60 @@ def main():
         jl = jload(a / "judge_latency.json")
 
     # ---- W5/W6 (marked pending in the paper; fail only if artifacts exist but strings absent)
+    # ---- W5/W6 v2 artifacts
+    gen_p = OUT / "generation_v2.jsonl"
+    if gen_p.exists():
+        rows = [json.loads(l) for l in open(gen_p, encoding="utf-8")]
+        import re as _re
+        mn = [r for r in rows if r["group"] == "dalia" and r["subgroup"] == "main"]
+        claims.append(("gen_n_dalia", f"{len(mn)}", str(len(mn)) in paper))
+        lat = sum(r["latency_sec"] for r in mn) / len(mn)
+        claims.append(("gen_latency", f"{lat:.1f} s", f"{lat:.1f} s" in paper))
+        wc300 = [r for r in rows if r["subgroup"] == "wordcap"]
+        w300 = sum(len(r["explanation"].split()) for r in wc300) / len(wc300)
+        claims.append(("wordcap_words", f"{w300:.1f}", f"{w300:.1f}" in paper))
+        ga = [r for r in rows if r["subgroup"] == "genablation"]
+        wga = sum(len(r["explanation"].split()) for r in ga) / len(ga)
+        claims.append(("genablation_words", f"{wga:.1f}", f"{wga:.1f}" in paper))
+
+    ca = OUT / "citation_audit_v2.json"
+    if ca.exists():
+        c = jload(ca)
+        claims.append(("cit_raw_acc", f"{c['raw']['accuracy']*100:.2f}%", f"{c['raw']['accuracy']*100:.2f}%" in paper))
+        claims.append(("cit_raw_total", f"{c['raw']['citations']:,}", f"{c['raw']['citations']:,}" in paper))
+        claims.append(("cit_drops", f"{c['drops']}", str(c["drops"]) in paper))
+        claims.append(("cit_tier1_names", f"{c['tier1_name_citations']}", str(c["tier1_name_citations"]) in paper))
+
+    jv = OUT / "judge_validation.json"
+    if jv.exists():
+        v = jload(jv)
+        for m in ("llama3.1:8b", "gemma4:e4b"):
+            d = v["per_judge"].get(m, {}).get("detection_rate")
+            if d is not None:
+                claims.append((f"judge_{m}_detection", f"{d:.2f}", f"{d:.2f}" in paper))
+
+    cc = OUT / "concordance_v2.json"
+    if cc.exists():
+        k = jload(cc)
+        pct = lambda g: round(100 * k[g]["concordant"] / k[g]["n"])
+        claims.append(("conc_wesad", f"{pct('wesad')}%", f"{pct('wesad')}%" in paper))
+        claims.append(("conc_mitbih", f"{pct('mitbih')}%", f"{pct('mitbih')}%" in paper))
+        claims.append(("conc_ptbxl", f"{pct('ptbxl')}%", f"{pct('ptbxl')}%" in paper))
+        claims.append(("conc_wesad_n", f"{k['wesad']['concordant']}", str(k["wesad"]["concordant"]) in paper))
+
+    nd2 = OUT / "near_duplicate_v2.json"
+    if nd2.exists():
+        n = jload(nd2)
+        claims.append(("nd2_clusters", f"{n['n_clusters_at_0.9']}", str(n["n_clusters_at_0.9"]) in paper))
+        claims.append(("nd2_mean", f"{n['mean_nn_cos']:.3f}", f"{n['mean_nn_cos']:.3f}" in paper))
+        claims.append(("nd2_tier1", f"{n['tier1_alert_rate']*100:.1f}%", f"{n['tier1_alert_rate']*100:.1f}%" in paper))
+        claims.append(("nd2_docs", f"{n['unique_docs_used']}", str(n["unique_docs_used"]) in paper))
+
+    fs = OUT / "factscore_lite.json"
+    if fs.exists():
+        f = jload(fs)
+        claims.append(("factscore_supported", f"{f['pct_supported']:.1f}%", f"{f['pct_supported']:.1f}%" in paper))
+
     pend = [c for c in claims if not c[2]]
     ok = [c for c in claims if c[2]]
     report = {"n_claims": len(claims), "n_ok": len(ok), "n_fail": len(pend),

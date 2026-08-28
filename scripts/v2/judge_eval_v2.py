@@ -197,6 +197,8 @@ def local_judge(model, query, explanation, context):
                        messages=[{"role": "system", "content": JUDGE_PROMPT_V2},
                                  {"role": "user", "content":
                                   f"QUERY: {query}\nSOURCES:\n{context}\nEXPLANATION:\n{explanation}"}],
+                       think=False,  # gemma4 (and other thinking models) otherwise emit
+                                    # only reasoning tokens within the budget -> empty content
                        options={"temperature": 0.1, "num_predict": 300,
                                 "num_ctx": 6000, "num_gpu": 99})
     return parse_scores(resp["message"]["content"])
@@ -392,6 +394,7 @@ def main():
     for r in rows:
         eval_rows.append(r)
     out_records = []
+    api_failures = 0
     for r in eval_rows:
         rec = {"key": r["key"], "group": r["group"], "subgroup": r["subgroup"],
                "model": r["model"], "prompt": r["prompt"], "subject": r.get("subject"),
@@ -404,15 +407,19 @@ def main():
             except Exception:
                 sc = {}
             rec.update({f"local_{k}": sc.get(k, 0) for k in ("faithfulness", "relevance", "completeness")})
-        try:
-            sc = api.judge(f"main|{r['key']}|{r['model']}|{r['prompt']}|{r['subgroup']}",
-                           r["query"], r["explanation"], r["context"])
-            rec.update({f"api_{k}": sc.get(k, 0) for k in ("faithfulness", "relevance", "completeness")})
-        except Exception as e:
-            print("api main-loop stop:", e, flush=True)
-            break
+        if api_failures < 3:
+            try:
+                sc = api.judge(f"main|{r['key']}|{r['model']}|{r['prompt']}|{r['subgroup']}",
+                               r["query"], r["explanation"], r["context"])
+                rec.update({f"api_{k}": sc.get(k, 0) for k in ("faithfulness", "relevance", "completeness")})
+                api_failures = 0
+            except Exception as e:
+                api_failures += 1
+                if api_failures == 3:
+                    print(f"api disabled after 3 consecutive failures (last: {e}); "
+                          f"continuing with local judge only", flush=True)
         out_records.append(rec)
-        if len(out_records) % 25 == 0:
+        if len(out_records) % 50 == 0:
             print(f"  judged {len(out_records)}/{len(eval_rows)} (api spent ${api.spent:.2f})", flush=True)
     ev = pd.DataFrame(out_records)
     ev.to_csv(OUT / "rag_evaluation_v2.csv", index=False)

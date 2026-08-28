@@ -66,7 +66,8 @@ def main():
             v = ollama.chat(model="gemma4:e4b",
                             messages=[{"role": "user", "content":
                                        VERIFY_PROMPT.format(context=r["context"][:9000], claim=cl)}],
-                            options={"temperature": 0.0, "num_predict": 10, "num_ctx": 6000})
+                            think=False,
+                            options={"temperature": 0.0, "num_predict": 60, "num_ctx": 6000})
             verdict = "UNKNOWN"
             for w in ("SUPPORTED", "UNVERIFIABLE", "UNSUPPORTED"):
                 if w in v["message"]["content"].upper():
