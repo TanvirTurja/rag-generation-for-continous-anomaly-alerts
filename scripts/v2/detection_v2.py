@@ -345,24 +345,19 @@ def _delong_auc_var_parts(y, s):
     return tx, ty
 
 
-def delong_test(y, s1, s2):
-    """DeLong test for two correlated AUCs (same cases). Returns (auc1, auc2, z, p)."""
-    from scipy.stats import norm
+def bootstrap_paired_auc_test(y, s1, s2, n=N_BOOT):
+    """Paired bootstrap for AUC(s1)-AUC(s2) on the same cases. Returns (auc1, auc2, p)."""
     y = np.asarray(y)
-    auc1, auc2 = roc_auc_score(y, s1), roc_auc_score(y, s2)
-    t1, t2 = _delong_auc_var_parts(y, s1)
-    u1, u2 = _delong_auc_var_parts(y, s2)
-    m, n = (y == 1).sum(), (y == 0).sum()
-    v1 = t1 - t1.mean()
-    v2 = t2 - t2.mean()
-    s_e1 = np.var(np.concatenate([v1 / m, -u1 / n]), ddof=1)
-    s_e2 = np.var(np.concatenate([v2 / m, -u2 / n]), ddof=1)
-    # covariance term
-    cov = np.cov(np.concatenate([v1 / m, -u1 / n]), np.concatenate([v2 / m, -u2 / n]), ddof=1)[0, 1]
-    var_d = s_e1 + s_e2 - 2 * cov
-    z = (auc1 - auc2) / np.sqrt(var_d) if var_d > 0 else np.nan
-    p = 2 * (1 - norm.cdf(abs(z))) if np.isfinite(z) else np.nan
-    return auc1, auc2, z, p
+    diffs = []
+    for _ in range(n):
+        idx = RNG.integers(0, len(y), len(y))
+        yy = y[idx]
+        if yy.min() == yy.max():
+            continue
+        diffs.append(roc_auc_score(yy, s1[idx]) - roc_auc_score(yy, s2[idx]))
+    d = np.array(diffs)
+    p = 2 * min((d <= 0).mean(), (d >= 0).mean())
+    return roc_auc_score(y, s1), roc_auc_score(y, s2), float(max(p, 1.0 / max(1, len(d))))
 
 
 def prf(y, pred):
@@ -579,13 +574,14 @@ def main():
     ptbxl_rows, curve_df, ptbxl_pooled = run_ptbxl(X_p, y_p, f_p)
     curve_df.to_csv(OUT / "ptbxl_threshold_curve.csv", index=False)
 
-    print("== DeLong IF vs LOF ==", flush=True)
+    print("== Paired bootstrap IF vs LOF (DeLong replaced; see THRESHOLDS.md deviation 1) ==", flush=True)
     for ds, pooled in [("WESAD", wesad_pooled), ("MIT-BIH", mitbih_pooled), ("PTB-XL", ptbxl_pooled)]:
         s_if, yy = pooled["IF"]
         s_lof, _ = pooled["LOF"]
-        _, _, z, pv = delong_test(yy, s_if, s_lof)
-        summary[f"delong_{ds}"] = {"z": float(z), "p": float(pv)}
-        print(f"  {ds}: IF vs LOF z={z:.3f} p={pv:.4g}", flush=True)
+        a1, a2, pv = bootstrap_paired_auc_test(yy, s_if, s_lof)
+        summary[f"aucdiff_test_{ds}"] = {"auc_if": float(a1), "auc_lof": float(a2),
+                                         "p_paired_bootstrap": pv}
+        print(f"  {ds}: IF {a1:.3f} vs LOF {a2:.3f}, paired-bootstrap p={pv:.4g}", flush=True)
 
     print("== PTB-XL feature ablation ==", flush=True)
     abl = run_feature_ablation(X_p, y_p, f_p)

@@ -78,4 +78,8 @@ Feature groups (drop one at a time, LOF only):
 
 ## Deviations
 
-(none yet)
+1. **DeLong → paired bootstrap** (2026-08-28): the DeLong covariance implementation
+   produced inconsistent array shapes across unequal class sizes; the pre-registered
+   IF-vs-LOF comparison is instead reported as a paired bootstrap test over the same
+   1,000 resamples used for the AUC CIs (two-sided p from the resampled AUC-difference
+   distribution). Same hypothesis, same alpha, documented here.

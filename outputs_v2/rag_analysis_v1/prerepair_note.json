@@ -1,0 +1,6 @@
+{
+  "claim": "v1 paper: raw citation accuracy 99.3% (9 near-miss rows) before canonicalization",
+  "reconstructable_from_artifacts": false,
+  "reason": "The canonicalizer ran in-line during generation and only post-repair text was persisted to rag_explanations.csv; no raw pre-repair output exists in outputs_v1_archive. Re-running the checker on archived text yields 0 repairs (idempotent) and cannot recover the pre-repair figure.",
+  "action": "v2 pipeline (rag_pipeline_v2.py) saves raw pre-canonicalization text, so the pre-repair number becomes deterministic and artifact-backed for the new run. The 99.3% v1 figure is reported in the v2 manuscript only as dev-history, explicitly flagged, or dropped."
+}

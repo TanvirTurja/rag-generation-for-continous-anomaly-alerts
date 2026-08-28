@@ -1,0 +1,44 @@
+{
+  "corpus_unique_docs": 204,
+  "unique_docs_used": 53,
+  "corpus_utilization": 0.2598,
+  "alerts_with_tier1_source": 26,
+  "tier1_alert_rate": 0.0653,
+  "n_citations_total": 1359,
+  "citations_to_tier1": 0,
+  "citations_to_tier1_note": "Tier-1 guideline chunks carry no PMC identifier, so the citation format [PMC...] cannot reference them by design; tier-1 usage must be measured at retrieval, not citation.",
+  "retrieval_2x2": {
+    "deviation_diversity_on_ARCHIVED": {
+      "unique_docs": 53,
+      "top_source_share": 0.1181,
+      "top_source": "PMC12736534_signal_quality_assessment_and_reconstruction_of_ppgderived_s",
+      "slots": 1990,
+      "alerts_with_tier1": 26,
+      "tier1_alert_rate": 0.0653
+    },
+    "naive_diversity_on": {
+      "unique_docs": 5,
+      "top_source_share": 0.2,
+      "top_source": "PMC13203100_from_biosignals_to_bedside_a_review_of_realtime_edge_machine",
+      "slots": 1990,
+      "alerts_with_tier1": 0,
+      "tier1_alert_rate": 0.0
+    },
+    "naive_diversity_off": {
+      "unique_docs": 5,
+      "top_source_share": 0.2,
+      "top_source": "PMC13203100_from_biosignals_to_bedside_a_review_of_realtime_edge_machine",
+      "slots": 1990,
+      "alerts_with_tier1": 0,
+      "tier1_alert_rate": 0.0
+    },
+    "deviation_diversity_off": {
+      "unique_docs": 51,
+      "top_source_share": 0.1402,
+      "top_source": "PMC12736534_signal_quality_assessment_and_reconstruction_of_ppgderived_s",
+      "slots": 1990,
+      "alerts_with_tier1": 21,
+      "tier1_alert_rate": 0.0528
+    }
+  }
+}

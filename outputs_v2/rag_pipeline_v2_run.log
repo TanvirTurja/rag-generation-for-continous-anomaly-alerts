@@ -1,0 +1,11 @@
+A: 398 dalia alerts
+B1: 50 WESAD stress events
+B2: 50 MIT-BIH windows selected (of 1342)
+B3: 48 PTB-XL records
+total generation jobs: 646
+  [0/646] dalia|S1|w1 46.0s snaps=3
+  [10/646] dalia|S1|w297 11.6s snaps=0
+  [20/646] dalia|S2|w363 11.4s snaps=0
+  [30/646] dalia|S2|w404 11.4s snaps=2
+  [40/646] dalia|S3|w581 11.6s snaps=0
+  [50/646] dalia|S3|w841 11.1s snaps=0

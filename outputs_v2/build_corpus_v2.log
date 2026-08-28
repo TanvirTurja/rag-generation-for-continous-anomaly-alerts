@@ -1,0 +1,58 @@
+docs: tier1_v1=4 tier1_v2=2 tier2=200
+chunks: 5,045 (mean 489 words)
+  embedded 64/5045
+  embedded 1344/5045
+  embedded 2624/5045
+  embedded 3904/5045
+embedded 5,045 chunks in 21s
+collection size: 5045
+{
+  "docs_total": 206,
+  "tier1_v1_docs": 4,
+  "tier1_v2_docs": 2,
+  "tier2_docs": 200,
+  "chunks_total": 5045,
+  "chunks_tier1_v1": 679,
+  "chunks_tier1_v2": 313,
+  "chunks_tier2": 4053,
+  "mean_chunk_words": 489.1,
+  "tier1_v2_documents": [
+    {
+      "source": "accaha2023_af_guideline",
+      "words": 119730
+    },
+    {
+      "source": "ehra2022_digital_devices_arrhythmias",
+      "words": 20524
+    }
+  ],
+  "tier1_v2_manifest": [
+    {
+      "slug": "ehra2022_digital_devices_arrhythmias",
+      "title": "How to use digital devices to detect and manage arrhythmias: an EHRA practical guide",
+      "doi": "10.1093/europace/euac038",
+      "status": "included",
+      "provenance": "PMC HTML https://pmc.ncbi.nlm.nih.gov/articles/PMC11636571/",
+      "license": "free-to-read (non-OA deposit)",
+      "words": "20524"
+    },
+    {
+      "slug": "accaha2023_af_guideline",
+      "title": "2023 ACC/AHA/ACCP/HRS Guideline for the Diagnosis and Management of Atrial Fibrillation",
+      "doi": "10.1016/j.jacc.2023.08.017",
+      "status": "included",
+      "provenance": "NCBI-efetch PMC11104284",
+      "license": "open-access full text (API)",
+      "words": "119730"
+    },
+    {
+      "slug": "esc2024_af_guideline",
+      "title": "2024 ESC Guidelines for the management of atrial fibrillation",
+      "doi": "10.1093/eurheartj/ehae178",
+      "status": "excluded",
+      "provenance": "landing page: HTTPError",
+      "license": "unknown",
+      "words": "0"
+    }
+  ]
+}

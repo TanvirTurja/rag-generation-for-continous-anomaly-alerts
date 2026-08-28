@@ -1,0 +1,22 @@
+Featurizing ppgdalia ...
+  DaLiA S1: 307 windows
+  DaLiA S2: 273 windows
+  DaLiA S3: 291 windows
+  DaLiA S4: 304 windows
+  DaLiA S5: 310 windows
+  DaLiA S6: 174 windows
+  DaLiA S7: 311 windows
+  DaLiA S8: 269 windows
+  DaLiA S9: 285 windows
+  DaLiA S10: 354 windows
+  DaLiA S11: 301 windows
+  DaLiA S12: 263 windows
+  DaLiA S13: 304 windows
+  DaLiA S14: 298 windows
+  DaLiA S15: 264 windows
+  cached ppgdalia in 87s
+archived flags mapped: 398 rows; IF 216, LOF 216, both 34, union 398 (v1 archived: 216/216/34/398)
+built 398 v2 queries
+Biosignal window flagged by the LOF anomaly detector. Deviating channels show an abrupt, high-amplitude pattern (elevated kurtosis/peak-to-peak vs this subject's baseline). elevated bvp (z=+0.8 vs subject baseline, mean=0.73) elevated resp (z=+0.7 vs subject baseline, mean=0.16) Relevant topics: pho
+WESAD sanity: {'metric': "max |z| of channel means vs subject's own baseline windows", 'mean_stress': 43.673, 'mean_baseline': 1.53, 'mannwhitney_u': 195277.0, 'p_value': 2.5367115412710417e-138, 'interpretation': 'stress windows deviate more than baseline windows under the new reference'}
+retrieval done in 5s -> alerts_retrieval_v2.jsonl

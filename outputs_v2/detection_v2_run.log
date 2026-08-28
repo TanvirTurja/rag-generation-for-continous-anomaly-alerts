@@ -1,0 +1,25 @@
+== WESAD ==
+  WESAD LOSO IF: AUC 0.799 [0.770,0.827] P 0.520 R 0.749 F1 0.614
+  WESAD LOSO LOF: AUC 0.827 [0.800,0.852] P 0.422 R 0.955 F1 0.585
+  WESAD LOSO OCSVM: AUC 0.814 [0.787,0.842] P 0.466 R 0.881 F1 0.610
+  WESAD LOSO AE: AUC 0.855 [0.831,0.878] P 0.454 R 0.922 F1 0.609
+== MIT-BIH ==
+  MIT-BIH IF: AUC 0.670±0.023 [0.645,0.663] P 0.247 R 0.485 F1 0.327
+  MIT-BIH LOF: AUC 0.502±0.000 [0.492,0.512] P 0.098 R 0.663 F1 0.171
+  MIT-BIH OCSVM: AUC 0.675±0.000 [0.666,0.684] P 0.217 R 0.522 F1 0.307
+  MIT-BIH AE: AUC 0.638±0.000 [0.628,0.648] P 0.239 R 0.519 F1 0.327
+== PTB-XL ==
+  PTB-XL IF: AUC 0.632 [0.607,0.654] P 0.587 R 0.957 F1 0.728 (pct 5)
+  PTB-XL LOF: AUC 0.682 [0.661,0.703] P 0.586 R 0.970 F1 0.731 (pct 5)
+  PTB-XL OCSVM: AUC 0.628 [0.606,0.650] P 0.578 R 0.990 F1 0.730 (pct 1)
+  PTB-XL AE: AUC 0.628 [0.605,0.651] P 0.591 R 0.965 F1 0.733 (pct 5)
+== Paired bootstrap IF vs LOF (DeLong replaced; see THRESHOLDS.md deviation 1) ==
+  WESAD: IF 0.799 vs LOF 0.827, paired-bootstrap p=0.008
+  MIT-BIH: IF 0.654 vs LOF 0.502, paired-bootstrap p=0.001
+  PTB-XL: IF 0.632 vs LOF 0.682, paired-bootstrap p=0.001
+== PTB-XL feature ablation ==
+  ablation -location: AUC 0.677 F1 0.727
+  ablation -spread: AUC 0.633 F1 0.730
+  ablation -shape: AUC 0.666 F1 0.731
+  ablation -dynamics: AUC 0.646 F1 0.728
+Saved outputs_v2/detection_results_v2.csv + summary json + figures

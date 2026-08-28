@@ -1,0 +1,40 @@
+loaded 398 archived explanations
+corpus: 4732 chunks, 204 unique source docs
+  ablation 0/398
+  ablation 50/398
+  ablation 100/398
+  ablation 150/398
+  ablation 200/398
+  ablation 250/398
+  ablation 300/398
+  ablation 350/398
+ablation: {
+  "deviation_diversity_on_ARCHIVED": {
+    "unique_docs": 53,
+    "top_source_share": 0.1181,
+    "top_source": "PMC12736534_signal_quality_assessment_and_reconstruction_of_ppgderived_s",
+    "slots": 1990,
+    "alerts_with_tier1": 26,
+    "tier1_alert_rate": 0.0653
+  },
+  "naive_diversity_on": {
+    "unique_docs": 5,
+    "top_source_share": 0.2,
+    "top_source": "PMC13203100_from_biosignals_to_bedside_a_review_of_realtime_edge_machine",
+    "slots": 1990,
+    "alerts_with_tier1": 0,
+    "tier1_alert_rate": 0.0
+  },
+  "naive_diversity_off": {
+    "unique_docs": 5,
+    "top_source_share": 0.2,
+    "top_source": "PMC13203100_from_biosignals_to_bedside_a_review_of_realtime_edge_machine",
+    "slots": 1990,
+    "alerts_with_tier1": 0,
+    "tier1_alert_rate": 0.0
+  },
+  "deviation_diversity_
+near-dup: {'n_texts': 398, 'n_clusters_at_0.9': 173, 'mean_nn_cos': 0.9356, 'pct_rows_with_nn_gt_0.8': 99.75, 'pct_rows_with_nn_gt_0.9': 81.66, 'n_unique_detected_strings': 390}
+utilization: {'corpus_unique_docs': 204, 'unique_docs_used': 53, 'corpus_utilization': 0.2598, 'alerts_with_tier1_source': 26, 'tier1_alert_rate': 0.0653, 'n_citations_total': 1359, 'citations_to_tier1': 0, 'citations_to_tier1_note': 'Tier-1 guideline chunks carry no PMC identifier, so the citation format [PMC...] cannot reference them by design; tier-1 usage must be measured at retrieval, not citation.'}
+judge latency measured: mean 8.07s over 20 calls
+W2 done -> D:\All_Folder\data project\new_papers\Retrieval-augmented generation for continuous anomaly alerts\outputs_v2\rag_analysis_v1

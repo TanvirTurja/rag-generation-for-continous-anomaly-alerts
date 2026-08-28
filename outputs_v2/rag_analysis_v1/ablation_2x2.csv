@@ -1,0 +1,5 @@
+,unique_docs,top_source_share,top_source,slots,alerts_with_tier1,tier1_alert_rate
+deviation_diversity_on_ARCHIVED,53,0.1181,PMC12736534_signal_quality_assessment_and_reconstruction_of_ppgderived_s,1990,26,0.0653
+naive_diversity_on,5,0.2,PMC13203100_from_biosignals_to_bedside_a_review_of_realtime_edge_machine,1990,0,0.0
+naive_diversity_off,5,0.2,PMC13203100_from_biosignals_to_bedside_a_review_of_realtime_edge_machine,1990,0,0.0
+deviation_diversity_off,51,0.1402,PMC12736534_signal_quality_assessment_and_reconstruction_of_ppgderived_s,1990,21,0.0528

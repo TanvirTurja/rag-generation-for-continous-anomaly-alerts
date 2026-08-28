@@ -191,7 +191,8 @@ def build_mitbih_events(retrieve, n_windows=50):
     te = np.isin(recs, DS2)
     se, st = fit_score("LOF", X[tr], X[te])
     thr = np.percentile(st, 85)
-    flagged = se > thr
+    flag_abs = np.zeros(len(X), dtype=bool)
+    flag_abs[np.where(te)[0][se > thr]] = True  # absolute cache-row indexing
     # feature z vs training normals
     mu, sd = X[tr].mean(axis=0), X[tr].std(axis=0) + 1e-9
 
@@ -218,7 +219,7 @@ def build_mitbih_events(retrieve, n_windows=50):
             wd["rows"].append(row_of[pos])
             wd["syms"].append(sym)
         for widx, wd in windows.items():
-            frac = float(np.mean([flagged[r] for r in wd["rows"]]))
+            frac = float(np.mean([flag_abs[r] for r in wd["rows"]]))
             abn = [s_ for s_ in wd["syms"] if s_ not in AAMI_NORMAL]
             if not abn:
                 label, detail = "none", "no annotated abnormal beats in window"

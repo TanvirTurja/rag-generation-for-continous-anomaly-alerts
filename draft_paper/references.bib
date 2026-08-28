@@ -1,0 +1,317 @@
+% ============================================================================
+% references.bib — Core citations for the paper
+% "Retrieval-Augmented Generation for Continuous Anomaly Alerts"
+%
+% Verification status (checked 2026-08-24):
+%   [VERIFIED-DOI]   DOI + publisher page confirmed via web search
+%   [VERIFIED-URL]   paper/record page confirmed, DOI resolves
+%   [STANDARD]       canonical, extremely well-known citation (no lookup needed)
+%
+% The 200 Tier-2 corpus articles live in references_tier2_corpus.bib
+% (copied from Dataset/Tier2_literature/references.bib; Europe PMC IDs).
+% ============================================================================
+
+% ---------------------------------------------------------------------------
+% 1. SIGNAL DATASETS
+% ---------------------------------------------------------------------------
+
+@article{reiss2019deepppg,
+  author  = {Reiss, Attila and Indlekofer, Ina and Schmidt, Philip and Van Laerhoven, Kristof},
+  title   = {Deep {PPG}: Large-Scale Heart Rate Estimation with Convolutional Neural Networks},
+  journal = {Sensors},
+  year    = {2019},
+  volume  = {19},
+  number  = {14},
+  pages   = {3079},
+  doi     = {10.3390/s19143079},
+  url     = {https://www.mdpi.com/1424-8220/19/14/3079},
+  note    = {Introduces the PPG-DaLiA dataset. [VERIFIED-DOI]}
+}
+
+@dataset{ppgdalia2023,
+  author  = {Reiss, Attila and Indlekofer, Ina and Schmidt, Philip and Van Laerhoven, Kristof},
+  title   = {{PPG-DaLiA}},
+  year    = {2019},
+  publisher = {UCI Machine Learning Repository},
+  doi     = {10.24432/C53890},
+  url     = {https://archive.ics.uci.edu/dataset/495/ppg+dalia},
+  note    = {[VERIFIED-DOI]}
+}
+
+@inproceedings{schmidt2018wesad,
+  author    = {Schmidt, Philip and Reiss, Attila and Duerichen, Robert and Marberger, Claus and Van Laerhoven, Kristof},
+  title     = {Introducing {WESAD}, a Multimodal Dataset for Wearable Stress and Affect Detection},
+  booktitle = {Proceedings of the 20th ACM International Conference on Multimodal Interaction (ICMI '18)},
+  year      = {2018},
+  pages     = {400--408},
+  publisher = {ACM},
+  doi       = {10.1145/3242969.3242985},
+  url       = {https://dl.acm.org/doi/10.1145/3242969.3242985},
+  note      = {[VERIFIED-DOI]}
+}
+
+@dataset{wesad2023,
+  author  = {Schmidt, Philip and Reiss, Attila and Duerichen, Robert and Marberger, Claus and Van Laerhoven, Kristof},
+  title   = {{WESAD} (Wearable Stress and Affect Detection)},
+  year    = {2018},
+  publisher = {UCI Machine Learning Repository},
+  doi     = {10.24432/C57K5T},
+  url     = {https://archive.ics.uci.edu/dataset/465/wesad+wearable+stress+and+affect+detection},
+  note    = {[VERIFIED-DOI]}
+}
+
+@article{moody2001mitbih,
+  author  = {Moody, George B. and Mark, Roger G.},
+  title   = {The impact of the {MIT-BIH} Arrhythmia Database},
+  journal = {IEEE Engineering in Medicine and Biology Magazine},
+  year    = {2001},
+  volume  = {20},
+  number  = {3},
+  pages   = {45--50},
+  doi     = {10.1109/51.932724},
+  url     = {https://ieeexplore.ieee.org/document/932724},
+  note    = {[VERIFIED-URL: PMID 11446209]}
+}
+
+@dataset{mitbih2023,
+  author  = {Moody, George B. and Mark, Roger G.},
+  title   = {MIT-BIH Arrhythmia Database (v1.0.0)},
+  year    = {2001},
+  publisher = {PhysioNet},
+  doi     = {10.13026/C2F61Q},
+  url     = {https://physionet.org/content/mitdb/},
+  note    = {[VERIFIED-DOI]}
+}
+
+@article{wagner2020ptbxl,
+  author  = {Wagner, Patrick and Strodthoff, Nils and Bousseljot, Tobias and Samek, Wojciech and Schaeffter, Tobias},
+  title   = {{PTB-XL}, a large publicly available electrocardiography dataset},
+  journal = {Scientific Data},
+  year    = {2020},
+  volume  = {7},
+  pages   = {154},
+  doi     = {10.1038/s41597-020-0495-6},
+  url     = {https://www.nature.com/articles/s41597-020-0495-6},
+  note    = {[VERIFIED-DOI]}
+}
+
+@article{goldberger2000physionet,
+  author  = {Goldberger, Ary L. and Amaral, Luis A. N. and Glass, Leon and Hausdorff, Jeffrey M. and Ivanov, Plamen Ch. and Mark, Roger G. and Mietus, Joseph E. and Moody, George B. and Peng, Chung-Kang and Stanley, H. Eugene},
+  title   = {{PhysioBank}, {PhysioToolkit}, and {PhysioNet}: Components of a New Research Resource for Complex Physiologic Signals},
+  journal = {Circulation},
+  year    = {2000},
+  volume  = {101},
+  number  = {23},
+  pages   = {e215--e220},
+  doi     = {10.1161/01.CIR.101.23.e215},
+  url     = {https://www.ahajournals.org/doi/10.1161/01.CIR.101.23.e215},
+  note    = {Citation for PhysioNet / wfdb tooling. [STANDARD]}
+}
+
+% ---------------------------------------------------------------------------
+% 2. TIER-1 CLINICAL GUIDELINES (RAG knowledge base)
+% ---------------------------------------------------------------------------
+
+@article{shen2017syncope,
+  author  = {Shen, Win-Kuang and Sheldon, Robert S. and Benditt, David G. and Cohen, Mitchell I. and Forman, Daniel E. and Goldschlager, Norman F. and Kaul, Sanjay and Lee, Benzy H. and Page, Richard L. and Sarkar, Suneet and others},
+  title   = {2017 {ACC/AHA/HRS} Guideline for the Evaluation and Management of Patients With Syncope},
+  journal = {Circulation},
+  year    = {2017},
+  volume  = {136},
+  number  = {5},
+  pages   = {e60--e66},
+  doi     = {10.1161/CIR.0000000000000499},
+  url     = {https://www.ahajournals.org/doi/10.1161/CIR.0000000000000499},
+  note    = {[VERIFIED-DOI]}
+}
+
+@article{alkhatib2017vascd,
+  author  = {Al-Khatib, Sana M. and Stevenson, William G. and Ackerman, Michael J. and Bryant, William J. and Callans, David J. and Curtis, Anne B. and Deal, Barbara J. and Dickfeld, Timm and Field, Michael E. and Fonarow, Gregg C. and others},
+  title   = {2017 {AHA/ACC/HRS} Guideline for Management of Patients With Ventricular Arrhythmias and the Prevention of Sudden Cardiac Death},
+  journal = {Circulation},
+  year    = {2018},
+  volume  = {138},
+  number  = {13},
+  pages   = {e272--e391},
+  doi     = {10.1161/CIR.000000000000054},
+  url     = {https://www.ahajournals.org/doi/10.1161/CIR.000000000000054},
+  note    = {[VERIFIED-URL: PMID 29097296]}
+}
+
+@article{brignole2018syncope,
+  author  = {Brignole, Michele and Moya, Angel and de Lange, Frederik J. and Deharo, Jean-Claude and Elliott, Perry M. and Fanciulli, Alessandra and Fedorowski, Artur and Furlan, Raffaello and Kenny, Rose Anne and Mart{\'i}n, Alfonso and others},
+  title   = {2018 {ESC} Guidelines for the diagnosis and management of syncope},
+  journal = {European Heart Journal},
+  year    = {2018},
+  volume  = {39},
+  number  = {21},
+  pages   = {1883--1948},
+  doi     = {10.1093/eurheartj/ehy037},
+  url     = {https://academic.oup.com/eurheartj/article/39/21/1883/4957293},
+  note    = {[VERIFIED-DOI: PMID 29562304]}
+}
+
+@article{zeppenfeld2022vascd,
+  author  = {Zeppenfeld, Katja and Tfelt-Hansen, Jacob and de Riva, Marco and Winkel, Bente Gry and Behr, Elijah R. and Blom, Nynke A. and Charron, Philippe and Corrado, Domenico and Dagle, Ingar and de Chillou, Christian and others},
+  title   = {2022 {ESC} Guidelines for the management of patients with ventricular arrhythmias and the prevention of sudden cardiac death},
+  journal = {European Heart Journal},
+  year    = {2022},
+  volume  = {43},
+  number  = {40},
+  pages   = {3997--4126},
+  doi     = {10.1093/eurheartj/ehac262},
+  url     = {https://academic.oup.com/eurheartj/article/43/40/3997/6675633},
+  note    = {[VERIFIED-DOI: PMID 36017572]}
+}
+
+% ---------------------------------------------------------------------------
+% 3. ANOMALY-DETECTION METHODS
+% ---------------------------------------------------------------------------
+
+@inproceedings{liu2008isolationforest,
+  author    = {Liu, Fei Tony and Ting, Kai Ming and Zhou, Zhi-Hua},
+  title     = {Isolation Forest},
+  booktitle = {Proceedings of the 2008 Eighth IEEE International Conference on Data Mining (ICDM)},
+  year      = {2008},
+  pages     = {413--422},
+  publisher = {IEEE},
+  doi       = {10.1109/ICDM.2008.17},
+  url       = {https://ieeexplore.ieee.org/document/4781136},
+  note      = {[STANDARD]}
+}
+
+@inproceedings{breunig2000lof,
+  author    = {Breunig, Markus M. and Kriegel, Hans-Peter and Ng, Raymond T. and Sander, J{\"o}rg},
+  title     = {{LOF}: Identifying Density-Based Local Outliers},
+  booktitle = {Proceedings of the 2000 ACM SIGMOD International Conference on Management of Data},
+  year      = {2000},
+  pages     = {93--104},
+  publisher = {ACM},
+  doi       = {10.1145/335191.335388},
+  url       = {https://dl.acm.org/doi/10.1145/335191.335388},
+  note      = {[STANDARD]}
+}
+
+@article{pedregosa2011scikitlearn,
+  author  = {Pedregosa, Fabian and Varoquaux, Ga{\"e}l and Gramfort, Alexandre and Michel, Vincent and Thirion, Bertrand and Grisel, Olivier and Blondel, Mathieu and Prettenhofer, Peter and Weiss, Ron and Dubourg, Vincent and others},
+  title   = {Scikit-learn: Machine Learning in {Python}},
+  journal = {Journal of Machine Learning Research},
+  year    = {2011},
+  volume  = {12},
+  pages   = {2825--2830},
+  url     = {https://jmlr.csail.mit.edu/papers/v12/pedregosa11a.html},
+  note    = {[STANDARD]}
+}
+
+% ---------------------------------------------------------------------------
+% 4. RAG / NLP METHODS AND MODELS
+% ---------------------------------------------------------------------------
+
+@inproceedings{lewis2020rag,
+  author    = {Lewis, Patrick and Perez, Ethan and Piktus, Aleksandra and Petroni, Fabio and Karpukhin, Vladimir and Goyal, Naman and K{\"u}ttler, Heinrich and Lewis, Mike and Yih, Wen-tau and Rockt{\"a}schel, Tim and Riedel, Sebastian and Kiela, Douwe},
+  title     = {Retrieval-Augmented Generation for Knowledge-Intensive {NLP} Tasks},
+  booktitle = {Advances in Neural Information Processing Systems 33 (NeurIPS 2020)},
+  year      = {2020},
+  pages     = {9459--9474},
+  url       = {https://arxiv.org/abs/2005.11401},
+  note      = {[STANDARD: arXiv:2005.11401]}
+}
+
+@inproceedings{reimers2019sbert,
+  author    = {Reimers, Nils and Gurevych, Iryna},
+  title     = {Sentence-{BERT}: Sentence Embeddings using Siamese {BERT}-Networks},
+  booktitle = {Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)},
+  year      = {2019},
+  pages     = {3982--3992},
+  publisher = {ACL},
+  doi       = {10.18653/v1/D19-1410},
+  url       = {https://aclanthology.org/D19-1410/},
+  note      = {all-MiniLM-L6-v2 is served via sentence-transformers. [STANDARD]}
+}
+
+@inproceedings{wang2020minilm,
+  author    = {Wang, Wenhui and Wei, Furu and Dong, Li and Bao, Hangbo and Yang, Nan and Zhou, Ming},
+  title     = {{MiniLM}: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers},
+  booktitle = {Advances in Neural Information Processing Systems 33 (NeurIPS 2020)},
+  year      = {2020},
+  url       = {https://arxiv.org/abs/2002.10957},
+  note      = {[STANDARD: arXiv:2002.10957]}
+}
+
+@article{qwen2025qwen3,
+  author  = {{Qwen Team}},
+  title   = {Qwen3 Technical Report},
+  journal = {arXiv preprint arXiv:2505.09388},
+  year    = {2025},
+  url     = {https://arxiv.org/abs/2505.09388},
+  note    = {Generator LLM (qwen3.5:9b via Ollama). [TODO: replace with the qwen3.5 report if one is released before submission]}
+}
+
+@inproceedings{zheng2023llmjudge,
+  author    = {Zheng, Lianmin and Chiang, Wei-Lin and Sheng, Ying and Zhuang, Siyuan and Wu, Zhanghao and Zhuang, Yonghao and Lin, Zi and Li, Zhuohan and Li, Dacheng and Xing, Eric and Zhang, Hao and Gonzalez, Joseph E. and Stoica, Ion},
+  title     = {Judging {LLM}-as-a-Judge with {MT-Bench} and {Chatbot Arena}},
+  booktitle = {Advances in Neural Information Processing Systems 36 (NeurIPS 2023), Datasets and Benchmarks Track},
+  year      = {2023},
+  url       = {https://arxiv.org/abs/2306.05685},
+  note      = {[STANDARD: arXiv:2306.05685]}
+}
+
+@article{cohen1960kappa,
+  author  = {Cohen, Jacob},
+  title   = {A Coefficient of Agreement for Nominal Scales},
+  journal = {Educational and Psychological Measurement},
+  year    = {1960},
+  volume  = {20},
+  number  = {1},
+  pages   = {37--46},
+  doi     = {10.1177/001316446002000104},
+  url     = {https://journals.sagepub.com/doi/10.1177/001316446002000104},
+  note    = {[STANDARD]}
+}
+
+% ---------------------------------------------------------------------------
+% 5. SOFTWARE
+% ---------------------------------------------------------------------------
+
+@misc{ollama2023,
+  author       = {{Ollama}},
+  title        = {Ollama: Get up and running with large language models locally},
+  year         = {2023},
+  howpublished = {\url{https://ollama.com}},
+  note         = {Local LLM inference. [VERIFIED-URL]}
+}
+
+@misc{chromadb2023,
+  author       = {{Chroma}},
+  title        = {Chroma: the AI-native open-source embedding database},
+  year         = {2023},
+  howpublished = {\url{https://www.trychroma.com}},
+  note         = {Persistent local vector store. [VERIFIED-URL]}
+}
+
+% ---------------------------------------------------------------------------
+% 6. AUTHOR'S PRIOR WORK (fill in before submission — cannot be verified here)
+% ---------------------------------------------------------------------------
+
+@article{turja2026unsupervised,
+  author  = {Turja, Md Tanvir Hasan},
+  title   = {Unsupervised anomaly detection in wearable foot sensor data: A baseline feasibility study towards diabetic foot ulcer prevention},
+  journal = {Biomedical Signal Processing and Control},
+  year    = {2026},
+  volume  = {123},
+  pages   = {110416},
+  publisher = {Elsevier},
+  doi     = {10.1016/j.bspc.2026.110416},
+  url     = {https://www.sciencedirect.com/science/article/pii/S1746809426009705},
+  note    = {arXiv preprint: arXiv:2603.12278. [VERIFIED-DOI]}
+}
+
+@article{turja2026forecasting,
+  author  = {Turja, Md Tanvir Hasan},
+  title   = {Forecasting Bacterial Antimicrobial Resistance Trends Using Machine Learning on {WHO GLASS} Surveillance Data: A Retrieval-Augmented Generation Approach for Policy Decision Support},
+  journal = {arXiv preprint arXiv:2602.22673},
+  year    = {2026},
+  doi     = {10.48550/arXiv.2602.22673},
+  url     = {https://arxiv.org/abs/2602.22673},
+  note    = {[VERIFIED-DOI]}
+}

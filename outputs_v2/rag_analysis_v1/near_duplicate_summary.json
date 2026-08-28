@@ -1,0 +1,8 @@
+{
+  "n_texts": 398,
+  "n_clusters_at_0.9": 173,
+  "mean_nn_cos": 0.9356,
+  "pct_rows_with_nn_gt_0.8": 99.75,
+  "pct_rows_with_nn_gt_0.9": 81.66,
+  "n_unique_detected_strings": 390
+}
