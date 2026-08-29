@@ -5,4 +5,5 @@ Dataset/
 chroma_db/
 outputs/models.joblib
 __pycache__/
-project_description.md
+project_description.md.zcode/
+__pycache__/
