@@ -330,7 +330,7 @@ We built an alert-triggered RAG pipeline for wearable biosignal anomalies and th
 
 # Data and Code Availability
 
-Datasets are public (PPG-DaLiA 10.24432/C53890; WESAD 10.24432/C57K5T; MIT-BIH 10.13026/C2F61Q; PTB-XL 10.1038/s41597-020-0495-6). Released with this paper: `THRESHOLDS.md` (pre-registration), `SEARCH_PROTOCOL.md` (literature search), `scripts/v2/` (all pipeline and analysis code), `outputs_v2/` (all per-alert artifacts, judge benchmarks, caches), `outputs_v1_archive/` (original artifacts, preserved), `clinician_eval/` (human-evaluation kit), `Dataset/Tier1_v2/manifest.csv` (guideline provenance). Model identifiers are verified against public listings (Qwen3.5 family: arXiv:2604.15804; DeepSeek-V4-Flash 0731: OpenRouter model card, 2026-08-28).
+Datasets are public (PPG-DaLiA 10.24432/C53890; WESAD 10.24432/C57K5T; MIT-BIH 10.13026/C2F61Q; PTB-XL 10.1038/s41597-020-0495-6). Released with this paper: `THRESHOLDS.md` (pre-registration), `SEARCH_PROTOCOL.md` (literature search), `detection_v2.ipynb` and `rag_v2.ipynb` (executed notebooks that rebuild the entire v2 evaluation from raw data on a cold start and load cached artifacts otherwise), `scripts/v2/` (all pipeline and analysis code), `outputs_v2/` (all per-alert artifacts, judge benchmarks, caches), `outputs_v1_archive/` (original artifacts, preserved), `clinician_eval/` (human-evaluation kit with the pre-drawn 60-item sample), `Dataset/Tier1_v2/manifest.csv` (guideline provenance). Model identifiers are verified against public listings (Qwen3.5 family: arXiv:2604.15804; DeepSeek-V4-Flash 0731: OpenRouter model card, 2026-08-28).
 
 # Author Contributions
 
