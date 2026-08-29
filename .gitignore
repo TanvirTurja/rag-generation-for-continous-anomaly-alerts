@@ -7,3 +7,5 @@ outputs/models.joblib
 __pycache__/
 project_description.md.zcode/
 __pycache__/
+chroma_db_v2/
+outputs_v2/cache/
