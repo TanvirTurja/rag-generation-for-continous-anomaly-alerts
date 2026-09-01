@@ -348,7 +348,7 @@ The clinician evaluation kit is included (`clinician_eval/`); ratings were pendi
 
 # References
 
-(Rendered from `draft_paper/references.bib` + `draft_paper/references_v2_additions.bib`; see also `SEARCH_PROTOCOL.md`.)
+(Rendered from `draft_paper/references.bib`; see also `SEARCH_PROTOCOL.md`.)
 
 1. Reiss, A., et al. Deep PPG. *Sensors* 19(14):3079, 2019. doi:10.3390/s19143079
 2. Schmidt, P., et al. Introducing WESAD. *ICMI 2018*:400–408. doi:10.1145/3242969.3242985

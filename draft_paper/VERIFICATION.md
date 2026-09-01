@@ -104,6 +104,6 @@ local judge 8.1 s/call (measured, replaces v1's unarchived 5.6 s); API spend $0.
    agreement stats (§4.5/§4.6 slots marked PENDING-API-KEY); est. < $1, ~1 hr.
 2. **Clinician ratings** via `clinician_eval/` kit (sample selection requires
    `select_sample.py` run) → §Human Evaluation.
-3. References marked `verify-before-submit` in `references_v2_additions.bib`
+3. References marked `verify-before-submit` in the v2-additions section of `references.bib`
    (4 entries with indirect DOIs).
 4. Optional: re-sign commits (`--no-gpg-sign` used after pinentry timeout).

@@ -46,7 +46,7 @@ English. Exclusion: blogs, news coverage, non-peer-reviewed industry pages.
 
 ## Compiled references
 
-See `draft_paper/references_v2_additions.bib`. Verification status per entry:
+Merged into `draft_paper/references.bib` (section 'v2 additions'). Verification status per entry:
 `verified` = DOI/URL resolved via search results or canonical knowledge;
 `verify-before-submit` = DOI from secondary source, recheck at submission
 (marked with a comment in the .bib).
