@@ -40,7 +40,8 @@ abstract: |
   devices guide; 2023 ACC/AHA AF guideline) raises guideline reach from 6.5%
   to 17.6% of alerts and reduces explanation duplication (near-duplicate
   clusters 173→237). A ready-to-run clinician evaluation kit (60 stratified
-  items, 3+ raters, Fleiss' κ) accompanies the paper; ratings pending. All
+  items, 3+ raters, Fleiss' κ) is released for future human evaluation; no
+  clinical-adequacy claim is made in this paper. All
   protocols were pre-registered before any run; every number is recomputable
   from released artifacts. The systems idea survives; the original claims did
   not.
@@ -168,7 +169,7 @@ Ablations run in the same cycle: a 300-word-cap prompt variant on 50 alerts (the
 
 *Atomic-claim verification (FActScore-style).* On a 60-item sample (30 wearable alerts, 30 labeled events), the generator model decomposes each explanation into atomic claims; a *different-family* verifier (gemma4:e4b) labels each claim SUPPORTED / UNSUPPORTED / UNVERIFIABLE from the retrieved context alone. This partially breaks the closed loop of v1, where judges saw exactly the generator's context and nothing else was checked; what remains closed (verification is still context-relative, not source-document- or clinician-relative) is stated as a limitation.
 
-*Human evaluation (protocol included; ratings pending).* A stratified 60-item kit (20 labeled events, 20 in-the-wild flags, 10 word-cap items, 10 random) with plain-language instructions, anchored rubrics (faithfulness, actionability, potential-for-harm, overall adequacy), and a Fleiss' κ analysis script is released in `clinician_eval/`. Results will be reported when ≥3 qualified raters complete it; no clinical-sufficiency claim is made until then.
+*Human evaluation (protocol released; ratings are future work).* A stratified 60-item kit (20 labeled events, 20 in-the-wild flags, 10 word-cap items, 10 random) with plain-language instructions, anchored rubrics (faithfulness, actionability, potential-for-harm, overall adequacy), and a Fleiss' κ analysis script is released in `clinician_eval/` so that any group with clinical collaborators can run it unchanged. We could not recruit qualified raters within this revision, so no human ratings are reported and no clinical-sufficiency claim is made; everything the machine side can check is checked above.
 
 *System.* End-to-end latency per alert (retrieval + generation) on the local GPU; judge latency re-measured (v1's 5.6 s figure was dev-history; measured now).
 
@@ -254,7 +255,7 @@ The exact judge behind v1's "zero hallucination verdicts" (llama3.1:8b) detects 
 | MIT-BIH ectopy | 50 | 2.36 / 2.02 | 3.00 / 2.72 | 2.56 / 2.28 |
 | PTB-XL pathology | 48 | 2.45 / 2.00 | 3.00 / 2.41 | 2.13 / 2.16 |
 
-On the 398 wearable alerts the local faithfulness distribution is: 3 → 176 (44%), 2 → 175 (44%), 1 → 2 (hallucination verdicts, the first non-zero count any judge of this system has produced), 0 → 45 (parse failures). The API judge's distribution is harsher on faithfulness (2 → 313, 3 → 40, no 1s) yet more generous on completeness (2.50 vs 2.19) and systematically harsher on the labeled clinical events (2.00–2.02 faithfulness across all three event sets). Cross-judge agreement (353 valid pairs): raw agreement 0.592 / 0.751 / 0.602 (faithfulness / relevance / completeness), within-1 agreement 1.000 on all axes, Gwet's AC1 0.476 / 0.680 / 0.489. The judges never differ by more than one point, but the moderate raw agreement, the validation asymmetry, and both judges' cross-run instability (§4.5) mean neither distribution should be read as ground truth, and that is the territory the clinician kit adjudicates. This replaces v1's degenerate "2.99 / zero hallucinations / 100% within-1 agreement" framing. System latency: generation 11.0 s mean per alert (RTX 5060 laptop), retrieval 25 ms (p95 32 ms), local judging 8.1 s/call, API judging ~2.5 s/call.
+On the 398 wearable alerts the local faithfulness distribution is: 3 → 176 (44%), 2 → 175 (44%), 1 → 2 (hallucination verdicts, the first non-zero count any judge of this system has produced), 0 → 45 (parse failures). The API judge's distribution is harsher on faithfulness (2 → 313, 3 → 40, no 1s) yet more generous on completeness (2.50 vs 2.19) and systematically harsher on the labeled clinical events (2.00–2.02 faithfulness across all three event sets). Cross-judge agreement (353 valid pairs): raw agreement 0.592 / 0.751 / 0.602 (faithfulness / relevance / completeness), within-1 agreement 1.000 on all axes, Gwet's AC1 0.476 / 0.680 / 0.489. The judges never differ by more than one point, but the moderate raw agreement, the validation asymmetry, and both judges' cross-run instability (§4.5) mean neither distribution should be read as ground truth, and that is the territory the released human-evaluation kit is designed to adjudicate. This replaces v1's degenerate "2.99 / zero hallucinations / 100% within-1 agreement" framing. System latency: generation 11.0 s mean per alert (RTX 5060 laptop), retrieval 25 ms (p95 32 ms), local judging 8.1 s/call, API judging ~2.5 s/call.
 
 ## 4.7 Labeled-event concordance: the integration result
 
@@ -268,7 +269,7 @@ On the 398 wearable alerts the local faithfulness distribution is: 3 → 176 (44
 
 Per-class PTB-XL: MI 0/12, STTC 1/12, CD 2/12, HYP 0/12; MIT-BIH: VEB 1/25, SVEB 5/25.
 
-This is the paper's central negative result, and the one the v1 evaluation could never have produced by design (it judged only unlabeled flags). Where the true event is a strong sympathetic deviation (WESAD stress), the system's explanations are usually right (94%). Where the true event is clinical pathology (ventricular ectopy on ambulatory ECG, infarction or conduction disease on a resting 12-lead), the explanations almost never name the condition (6–12%), and in 42–56% of cases attribute the finding to motion or sensor artifact. A conservative artifact-first posture is safe on unlabeled wearable noise but becomes a safety liability when the underlying event is real pathology: the explanation actively reassures. The root causes are structural: unsupervised detectors at or near chance on inter-patient ECG (§4.1) supply uninformative deviation features; 12 summary statistics carry no morphology; and a corpus bucketed towards signal-quality literature reinforces artifact framings. We flag the crude keyword-lexicon concordance measure itself as a limitation; the released clinician kit adjudicates these same items with human raters.
+This is the paper's central negative result, and the one the v1 evaluation could never have produced by design (it judged only unlabeled flags). Where the true event is a strong sympathetic deviation (WESAD stress), the system's explanations are usually right (94%). Where the true event is clinical pathology (ventricular ectopy on ambulatory ECG, infarction or conduction disease on a resting 12-lead), the explanations almost never name the condition (6–12%), and in 42–56% of cases attribute the finding to motion or sensor artifact. A conservative artifact-first posture is safe on unlabeled wearable noise but becomes a safety liability when the underlying event is real pathology: the explanation actively reassures. The root causes are structural: unsupervised detectors at or near chance on inter-patient ECG (§4.1) supply uninformative deviation features; 12 summary statistics carry no morphology; and a corpus bucketed towards signal-quality literature reinforces artifact framings. We flag the crude keyword-lexicon concordance measure itself as a limitation; the released kit is built to adjudicate these same items with human raters, which remains future work.
 
 *Before/after query-and-corpus fix (398 wearable alerts, same flags):* effective explanation clusters at cosine 0.9 rise 173 → 237; mean nearest-neighbor similarity falls 0.936 → 0.915; alerts sharing a >0.9-similar twin fall 81.7% → 67.6%; guideline content reaches 17.6% of alert contexts (70/398) versus 6.5% in v1 (one explanation citing the EHRA digital-devices guide verbatim appears in §4.10). One trade-off is reported plainly: the corrected queries concentrate retrieval (44 unique documents used vs 53 under the wrong-reference v1 queries), so deviation-semantic accuracy traded against raw document spread. Duplication remains high in absolute terms: five-channel summary statistics bound the semantic space of queries, and two-thirds of alerts still have a near-identical twin explanation.
 
@@ -278,7 +279,7 @@ This is the paper's central negative result, and the one the v1 evaluation could
 
 ## 4.9 Atomic-claim verification
 
-On a 60-explanation sample (30 wearable alerts, 30 labeled events), decomposed into 797 atomic claims and verified against the retrieved context alone by a different-family model (gemma4:e4b, thinking disabled): 52.3% SUPPORTED, 47.7% UNVERIFIABLE, 0% UNSUPPORTED (by group: wearable 47.3%, WESAD 54.3%, MIT-BIH 68.0%, PTB-XL 53.5%). The zero contradiction rate is reassuring but largely reflects the system's hedged phrasing; the operative number is that roughly half of the atomic content of these explanations is not verifiable from the evidence the system itself retrieved, which is quantitatively consistent with the validated judge scoring ~44% of full explanations as "slightly extrapolated" (§4.6). Verification remains context-relative (not full-source or clinician-relative); the released clinician kit is the adjudication step.
+On a 60-explanation sample (30 wearable alerts, 30 labeled events), decomposed into 797 atomic claims and verified against the retrieved context alone by a different-family model (gemma4:e4b, thinking disabled): 52.3% SUPPORTED, 47.7% UNVERIFIABLE, 0% UNSUPPORTED (by group: wearable 47.3%, WESAD 54.3%, MIT-BIH 68.0%, PTB-XL 53.5%). The zero contradiction rate is reassuring but largely reflects the system's hedged phrasing; the operative number is that roughly half of the atomic content of these explanations is not verifiable from the evidence the system itself retrieved, which is quantitatively consistent with the validated judge scoring ~44% of full explanations as "slightly extrapolated" (§4.6). Verification remains context-relative (not full-source or clinician-relative); human adjudication via the released kit remains future work.
 
 ## 4.10 Example alert (v2)
 
@@ -302,7 +303,7 @@ Contrast this with v1's showcase alert, which asserted an "abrupt isolated spike
 
 *Query construction matters, but retrieval diversity is not explanation diversity.* The corrected query semantics (subject-baseline reference, evidence-tied character) pass a strong sanity check (stress vs baseline separation, p ≈ 10⁻¹³⁸). Yet the v1 data show document-level diversity (53 docs) coexisting with content-level duplication (173 clusters, mean NN cosine 0.936): five-channel summary statistics bound the semantic space of queries. The v2 results (§4.4–4.7) test whether the expanded corpus and corrected queries reduce duplication and raise guideline utilization, and report whatever the answer is.
 
-*What "100% citation accuracy" does and does not mean.* Citation validity is a membership check (cited ID ∈ retrieved set), necessary but far from sufficient for grounding; the canonicalizer can even snap a mistyped identifier onto a document that does not support the claim. Hence the snap log, the raw-text audit, the atomic-claim verification, and the (pending) clinician ratings. We no longer headline citation accuracy at all.
+*What "100% citation accuracy" does and does not mean.* Citation validity is a membership check (cited ID ∈ retrieved set), necessary but far from sufficient for grounding; the canonicalizer can even snap a mistyped identifier onto a document that does not support the claim. Hence the snap log, the raw-text audit, and the atomic-claim verification; human clinical adjudication is the remaining step, released as a runnable kit for future work. We no longer headline citation accuracy at all.
 
 *Judges must be validated, not assumed.* The v1 local judge scored 397/398 items identically; under the v1 reporting this surfaced as "100% within-1 agreement." A judge that cannot discriminate is worse than no judge: it launders whatever the generator produced. The corruption benchmark is cheap (200 local calls) and, we argue, should precede any LLM-judge evaluation in clinical NLP.
 
@@ -310,7 +311,7 @@ Contrast this with v1's showcase alert, which asserted an "abrupt isolated spike
 
 # 6 Limitations
 
-1. No completed clinician ratings yet. The kit is released and the protocol fixed; until ≥3 raters complete it, no clinical-adequacy claim is made.
+1. No human clinical evaluation. We could not recruit qualified raters for this revision, so every faithfulness judgment in the paper is machine-side (validated LLM judges, atomic verification, objective audits). The complete rating kit is released for any group that can run it, and no clinical-adequacy claim is made here.
 2. Atomic verification remains context-relative. Claims are checked against the retrieved chunks, not against full source documents or clinical reality; fully open verification and clinician adjudication are the remaining steps.
 3. Cohort size (wearables): 15 subjects each in PPG-DaLiA/WESAD; LOSO mitigates but does not eliminate.
 4. Label mismatch: wearable ground truth is lab stress, not disease; true pathology enters only via ECG datasets; no public dataset pairs wearable multichannel signals with clinical outcomes.
@@ -325,7 +326,7 @@ The system is a research decision-support tool, not a diagnostic device; every a
 
 # 8 Conclusion
 
-We built an alert-triggered RAG pipeline for wearable biosignal anomalies and then subjected our own earlier evaluation of it to the audit it should have had. Under clean, pre-registered protocols the detection story changes materially: an apparent 0.899 AUC collapses to chance under inter-patient evaluation, a simple autoencoder beats both classic detectors on WESAD, and the explanation evaluation now includes labeled events, validated judges, raw-text citation audits, atomic-claim verification, and a released clinician-rating kit. The systems idea survives; the original numbers did not. We release every artifact (pre-registration, caches, per-alert outputs, judge benchmarks, analysis scripts) so that each number in this paper can be recomputed, and we suggest the protocol set (inter-patient/LOSO evaluation, validation-derived thresholds, judge validation on injected corruptions, raw-text preservation) as a minimum standard for grounded clinical-alert generation.
+We built an alert-triggered RAG pipeline for wearable biosignal anomalies and then subjected our own earlier evaluation of it to the audit it should have had. Under clean, pre-registered protocols the detection story changes materially: an apparent 0.899 AUC collapses to chance under inter-patient evaluation, a simple autoencoder beats both classic detectors on WESAD, and the explanation evaluation now includes labeled events, validated judges, raw-text citation audits, and atomic-claim verification, with a ready-to-run clinician-rating kit released for the human evaluation this paper does not include. The systems idea survives; the original numbers did not. We release every artifact (pre-registration, caches, per-alert outputs, judge benchmarks, analysis scripts) so that each number in this paper can be recomputed, and we suggest the protocol set (inter-patient/LOSO evaluation, validation-derived thresholds, judge validation on injected corruptions, raw-text preservation) as a minimum standard for grounded clinical-alert generation.
 
 # Data and Code Availability
 
@@ -341,7 +342,7 @@ None declared.
 
 # Human Evaluation Statement
 
-The clinician evaluation kit is included (`clinician_eval/`); ratings were pending at submission and will be reported in revision.
+No human ratings are reported in this paper. The complete evaluation kit (60-item stratified sample, rubrics, forms, analysis script) is released in `clinician_eval/` so that clinical groups can execute it without further engineering; running it is stated as future work.
 
 ---
 

@@ -65,10 +65,9 @@ in `.env` (read at init; never called on re-runs).
 
 ## 5. What remains before submission
 
-1. **Clinician ratings** — send `clinician_eval/` (instructions, rubric, forms,
-   pre-drawn 60-item sample) to ≥3 qualified raters; run
-   `python clinician_eval/analyze_ratings.py` on the returned forms; fill the
-   Human Evaluation section.
+1. Clinician ratings — **moved to future work** (cannot recruit raters now). The
+   kit in `clinician_eval/` is complete and released for any clinical group to run;
+   the paper explicitly claims no clinical adequacy.
 2. Four references in `draft_paper/references_v2_additions.bib` are marked
    `verify-before-submit` (indirect DOIs) — recheck at submission.
 3. Optional: re-sign commits (GPG pinentry timed out mid-revision; later commits

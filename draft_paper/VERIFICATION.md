@@ -102,8 +102,8 @@ local judge 8.1 s/call (measured, replaces v1's unarchived 5.6 s); API spend $0.
 
 1. **API key renewal** → API-judge validation row + main-judging columns +
    agreement stats (§4.5/§4.6 slots marked PENDING-API-KEY); est. < $1, ~1 hr.
-2. **Clinician ratings** via `clinician_eval/` kit (sample selection requires
-   `select_sample.py` run) → §Human Evaluation.
+2. Clinician ratings: MOVED TO FUTURE WORK (author cannot recruit raters;
+   kit released for community use; paper states no clinical-adequacy claim).
 3. References marked `verify-before-submit` in the v2-additions section of `references.bib`
    (4 entries with indirect DOIs).
 4. Optional: re-sign commits (`--no-gpg-sign` used after pinentry timeout).
