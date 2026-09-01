@@ -1,7 +1,7 @@
 ---
 title: "Alert-Triggered Retrieval-Augmented Generation for Grounded Explanations of Continuous Biosignal Anomaly Alerts: A Contamination-Hardened Evaluation"
 author: "Md Tanvir Hasan Turja"
-date: "August 2026"
+date: "September 2026"
 abstract: |
   Continuous wearable monitoring flags far more events than clinicians can review,
   and the alerts themselves say nothing about what was detected. Large language
