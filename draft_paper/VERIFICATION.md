@@ -100,8 +100,9 @@ local judge 8.1 s/call (measured, replaces v1's unarchived 5.6 s); API spend $0.
 
 ## Open items before submission
 
-1. **API key renewal** → API-judge validation row + main-judging columns +
-   agreement stats (§4.5/§4.6 slots marked PENDING-API-KEY); est. < $1, ~1 hr.
+1. ~~API key renewal + API-judge columns~~ DONE (977 checkpointed calls, $0.36;
+   validation 0.44/0.07 with cross-run instability documented; agreement stats
+   in §4.6 and agreement_v2.json).
 2. Clinician ratings: MOVED TO FUTURE WORK (author cannot recruit raters;
    kit released for community use; paper states no clinical-adequacy claim).
 3. References marked `verify-before-submit` in the v2-additions section of `references.bib`

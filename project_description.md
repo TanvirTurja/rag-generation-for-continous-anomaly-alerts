@@ -1,11 +1,11 @@
 # Retrieval-Augmented Generation for Continuous Anomaly Alerts — v2
 
-> Plain-English description of the project after the **v2 revision** (branch `fix/v2`).
+> Plain-English description of the project after the **v2 revision** (merged to `main`).
 > The v1 draft claimed strong results; a protocol audit showed three defects, and the
 > corrected evaluation — pre-registered in `THRESHOLDS.md` before any v2 run — tells a
 > different, honest story. This file summarizes the current state.
 >
-> **Author:** Md Tanvir Hasan Turja · Revised August 2026
+> **Author:** Md Tanvir Hasan Turja · Revised September 2026
 
 ---
 
@@ -18,14 +18,14 @@ protocols, on labeled clinical events, with validated judges.
 
 ## 2. What the v2 revision fixed (and what it revealed)
 
-| v1 claim | v2 reality |
+| Original-protocol result | Clean-protocol result |
 |---|---|
 | MIT-BIH LOF AUC 0.899 | **0.502 — chance** under the standard inter-patient protocol (IF holds 0.670) |
 | WESAD LOF 0.910 | 0.827 [0.800–0.852] under leave-one-subject-out |
 | "100% citation accuracy" | raw text: **99.01%** — 12 fabricated citations in 9 of 546 explanations |
-| "Zero hallucination verdicts" | v1's judge detects **0 of 100** injected corruptions — a null instrument; the validated judge finds 2 hallucination verdicts and ~44% "slightly extrapolated" |
+| "Zero hallucination verdicts" | the original judge detects **0 of 100** injected corruptions — a null instrument; the validated judge finds 2 hallucination verdicts and ~44% "slightly extrapolated" |
 | (never evaluated on labeled events) | explanations name the true condition for **94%** of stress events but **12%** of arrhythmic windows and **6%** of pathology ECGs — attributing 42–56% of true pathology to "artifact" |
-| 4 guidelines "anchoring" the corpus | guideline content reached 6.5% of v1 alerts; corpus expanded (EHRA 2022 digital-devices guide + 2023 ACC/AHA AF guideline) → 17.6% |
+| 4 guidelines "anchoring" the corpus | guideline content reached 6.5% of alerts under the original corpus; corpus expanded (EHRA 2022 digital-devices guide + 2023 ACC/AHA AF guideline) → 17.6% |
 
 Additional honest findings: a trivial autoencoder beats both classic detectors on
 WESAD (0.855); neither local nor API judges are cross-run stable (gemma4 means
