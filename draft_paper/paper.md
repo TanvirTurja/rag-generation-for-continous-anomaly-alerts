@@ -209,6 +209,12 @@ Paired-bootstrap tests (IF vs LOF): WESAD p = 0.008 (LOF ahead), MIT-BIH p = 0.0
 
 The protocol effect dwarfs everything else in this table. LOF's 0.899 on MIT-BIH exists only under the intra-patient protocol; under the community-standard inter-patient protocol it falls to chance (0.502), which inverts the intra-patient conclusion "LOF matches or exceeds IF on every dataset." Second, a PTB-XL threshold set at the 43rd percentile of test scores to match test prevalence is circular by construction; the pre-registered validation-fold rule instead selects a near-saturating operating point (high recall, low precision), and we therefore report the full threshold-sensitivity curve (Figure 4) rather than a single F1. Third, simple learned baselines matter: a 3-layer autoencoder beats both classic detectors on WESAD (0.855), so neither IF nor LOF should anchor a deployment claim.
 
+![Figure 2: ROC curves under clean protocols: WESAD LOSO (pooled), MIT-BIH inter-patient DS2, PTB-XL fold 10; four detectors each.](figures_v2/roc_wesad.png)
+
+![Figure 3: PTB-XL threshold-sensitivity (LOF, fold 10): precision/recall/F1 vs score percentile; the pre-registered validation rule selects pct 5.](figures_v2/ptbxl_threshold_curve.png)
+
+Supplementary material in the released repository: per-dataset ROC curves and the WESAD per-subject AUC distribution.
+
 *Feature ablation (PTB-XL, LOF):* dropping dynamics features hurts most (AUC 0.682 → 0.646), dropping location features least (→ 0.677); dropping spread → 0.633, shape → 0.666. The earlier "feature budget ceiling" assumption is replaced by this measured sensitivity: the 12 statistics are not interchangeable, and morphology-aware features remain the plausible route to better ceilings.
 
 ## 4.2 The alert stream
@@ -391,11 +397,3 @@ No human ratings are reported in this paper. The complete evaluation kit (60-ite
 38. Turja, M.T.H. AMR forecasting with RAG. arXiv:2602.22673, 2026.
 
 ---
-
-# Figures
-
-![Figure 2: ROC curves under clean protocols: WESAD LOSO (pooled), MIT-BIH inter-patient DS2, PTB-XL fold 10; four detectors each.](figures_v2/roc_wesad.png)
-
-![Figure 3: PTB-XL threshold-sensitivity (LOF, fold 10): precision/recall/F1 vs score percentile; the pre-registered validation rule selects pct 5.](figures_v2/ptbxl_threshold_curve.png)
-
-*(Figure 1: pipeline diagram (`figures_v2/pipeline_v2.png`); supplementary: per-dataset ROCs, WESAD per-subject AUC distribution `wesad_loso_per_subject.csv`.)*
