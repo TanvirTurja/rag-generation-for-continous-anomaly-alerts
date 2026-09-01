@@ -148,7 +148,7 @@ Labeled-event queries (WESAD stress windows, MIT-BIH arrhythmic windows, PTB-XL 
 
 ## 3.8 Grounded generation with raw-text preservation and snap-logged canonicalization
 
-Generation uses Qwen3.5 9B served locally by Ollama (temperature 0.1, thinking disabled, 10k context), under a strict answer-only-from-context prompt with the fixed DETECTED / EVIDENCE / RECOMMENDATION / DISCLAIMER output format. Two changes from the initial configuration:
+Generation uses Qwen3.5 9B [@qwen2025qwen35] served locally by Ollama (temperature 0.1, thinking disabled, 10k context), under a strict answer-only-from-context prompt with the fixed DETECTED / EVIDENCE / RECOMMENDATION / DISCLAIMER output format. Two changes from the initial configuration:
 
 1. Raw text is preserved before canonicalization. An earlier one-pass setup could not be audited: it canonicalized in-line and never saved the pre-repair text (documented in `rag_analysis_v1/prerepair_note.json`). Here, raw and canonicalized text are both stored, and the citation audit runs on both.
 2. Every canonicalizer snap is logged (before → after), enabling a repair audit: how many citations were snapped, and whether snaps could re-target a citation to a document that does not support the claim.
@@ -356,44 +356,6 @@ No human ratings are reported in this paper. The complete evaluation kit (60-ite
 # References
 
 (Rendered from `draft_paper/references.bib`; see also `SEARCH_PROTOCOL.md`.)
-
-1. Reiss, A., et al. Deep PPG. *Sensors* 19(14):3079, 2019. doi:10.3390/s19143079
-2. Schmidt, P., et al. Introducing WESAD. *ICMI 2018*:400–408. doi:10.1145/3242969.3242985
-3. Moody, G.B., Mark, R.G. The impact of the MIT-BIH Arrhythmia Database. *IEEE EMBM* 20(3):45–50, 2001. doi:10.1109/51.932724
-4. Wagner, P., et al. PTB-XL. *Sci Data* 7:154, 2020. doi:10.1038/s41597-020-0495-6
-5. Goldberger, A.L., et al. PhysioBank/PhysioToolkit/PhysioNet. *Circulation* 101(23):e215–e220, 2000.
-6. Liu, F.T., et al. Isolation Forest. *ICDM 2008*:413–422. doi:10.1109/ICDM.2008.17
-7. Breunig, M.M., et al. LOF. *SIGMOD 2000*:93–104. doi:10.1145/335191.335388
-8. Pedregosa, F., et al. Scikit-learn. *JMLR* 12:2825–2830, 2011.
-9. Lewis, P., et al. RAG. *NeurIPS 2020*. arXiv:2005.11401
-10. Reimers & Gurevych. Sentence-BERT. *EMNLP 2019*. doi:10.18653/v1/D19-1410
-11. Wang, W., et al. MiniLM. *NeurIPS 2020*. arXiv:2002.10957
-12. Zheng, L., et al. LLM-as-a-Judge. *NeurIPS 2023 D&B*. arXiv:2306.05685
-13. Cohen, J. Coefficient of Agreement. *EPM* 20(1):37–46, 1960.
-14. Clifford, G.D., et al. PhysioNet/CinC Challenge 2015. *Comput Cardiol* 42:273–276, 2015.
-15. Cvach, M. Monitor alarm fatigue. *Biomed Instrum Technol* 47(4):268–277, 2013.
-16. de Chazal, P., et al. Automatic classification of heartbeats. *IEEE TBME* 51(7):1196–1200, 2004.
-17. Ansari, M.Y., et al. Transformers and LLMs for ECG diagnosis: a survey. *Artif Intell Rev* 58:261, 2025.
-18. ECG-Chat. arXiv:2408.08849, 2024.
-19. ECG-LM. *Health Data Science* 5:0221, 2025.
-20. Thirunavukarasu, A.J., et al. Large language models in medicine. *Nat Med* 29:1930–1940, 2023.
-21. Abo El-Enen, M., et al. RAG for healthcare: a survey. *Neural Comput Appl* 37:28191–28267, 2025.
-22. Neha, F., et al. RAG in Healthcare: a review. *AI* 6:226, 2025.
-23. Xiong, G., et al. Benchmarking RAG for medicine. arXiv:2402.13178, 2024.
-24. Sohn, J., et al. Rationale-guided medical RAG. *NAACL 2025*.
-25. Shuster, K., et al. Retrieval augmentation reduces hallucination. *EMNLP 2021 Findings*.
-26. Es, S., et al. RAGAS. *EACL 2024 Demo*:150–158.
-27. Min, S., et al. FActScore. *EMNLP 2023*. arXiv:2305.14251
-28. Gao, T., et al. Text with citations. *EMNLP 2023*. arXiv:2306.05575
-29. Wataoka, K., et al. Self-Preference Bias in LLM-as-a-Judge. arXiv:2410.21819, 2024.
-30. Panickssery, A., et al. LLM evaluators favor their own generations. *NeurIPS 2024*.
-31. Perez, M.V., et al. Apple Heart Study. *NEJM* 381:1909–1917, 2019.
-32. Lubitz, S.A., et al. Fitbit Heart Study. *Circulation* 146:1415–1424, 2022.
-33. Svennberg, E., et al. EHRA practical guide: digital devices for arrhythmias. *EP Europace* 24(6):979–1005, 2022.
-34. Joglar, J.A., et al. 2023 ACC/AHA/ACCP/HRS AF Guideline. *Circulation* 149(1):e1–e156, 2024.
-35. Van Gelder, I.C., et al. 2024 ESC AF Guidelines. *Eur Heart J* 45(36):3314–3414, 2024.
-36. Qwen Team. Qwen3.5-Omni Technical Report. arXiv:2604.15804, 2026. (family report; 9B variant per model card)
-37. Turja, M.T.H. Unsupervised anomaly detection in wearable foot sensor data. *BSPC* 123:110416, 2026.
-38. Turja, M.T.H. AMR forecasting with RAG. arXiv:2602.22673, 2026.
+The bibliography is generated from `draft_paper/references.bib` (51 entries, all DOIs resolved against CrossRef/arXiv at submission).
 
 ---
