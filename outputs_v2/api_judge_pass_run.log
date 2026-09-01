@@ -1,0 +1,38 @@
+checkpoint: 300 cached calls, $0.117 spent
+API validation: {'detection_rate': 0.42, 'false_positive_rate': 0.31, 'detection_by_type': {'citation_swap': 0.0, 'diagnostic_exaggeration': 1.0, 'fabricated_citation': 0.04, 'fabricated_fact': 0.64}, 'n': 200}
+  judged 50/646 ($0.12, 0s)
+  judged 100/646 ($0.12, 3s)
+  judged 150/646 ($0.14, 278s)
+  judged 200/646 ($0.15, 637s)
+  judged 250/646 ($0.17, 860s)
+  judged 300/646 ($0.19, 1022s)
+  judged 350/646 ($0.21, 1179s)
+  judged 400/646 ($0.23, 1326s)
+  judged 450/646 ($0.24, 1480s)
+  judged 500/646 ($0.25, 1630s)
+  judged 550/646 ($0.27, 1847s)
+  judged 600/646 ($0.29, 2065s)
+{
+  "faithfulness": {
+    "local_dist": {},
+    "api_dist": {},
+    "raw_agreement": NaN,
+    "within1_agreement": NaN,
+    "gwet_ac1": null
+  },
+  "relevance": {
+    "local_dist": {},
+    "api_dist": {},
+    "raw_agreement": NaN,
+    "within1_agreement": NaN,
+    "gwet_ac1": null
+  },
+  "completeness": {
+    "local_dist": {},
+    "api_dist": {},
+    "raw_agreement": NaN,
+    "within1_agreement": NaN,
+    "gwet_ac1": null
+  }
+}
+DONE — 827 API calls, $0.307

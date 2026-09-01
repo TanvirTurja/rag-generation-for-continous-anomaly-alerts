@@ -33,8 +33,9 @@ abstract: |
   (llama3.1:8b) detects 0 of 100 injected fabrications — empirically
   confirming that the v1 "zero hallucination verdicts" were uninformative —
   while a validated local judge (gemma4:e4b: 48% detection, 1% false
-  positives) catches fabricated facts and exaggerations but not citation
-  swaps. Raw-text citation auditing shows a genuine 1% citation-fabrication
+  positives) outperforms a 284B API judge whose false-positive rate ranged
+  7–31% across two identical runs, and no judge catches citation swaps.
+  Raw-text citation auditing shows a genuine 1% citation-fabrication
   rate that post-repair reporting hid.
   A corpus expansion with wearable-relevant guidelines (EHRA 2022 digital-
   devices guide; 2023 ACC/AHA AF guideline) raises guideline reach from 6.5%
@@ -239,23 +240,22 @@ With raw generation text preserved and the canonicalizer's identifier capture fi
 |---|---|---|---|
 | llama3.1:8b (v1's judge) | **0.00** | 0.00 | 0.00 on all four types |
 | gemma4:e4b (thinking disabled) | **0.48** | 0.01 | exaggeration 0.96, fabricated fact 0.80, fabricated citation 0.16, citation swap 0.00 |
-| DeepSeek-V4-Flash (API) | PENDING-API-KEY | — | — |
+| DeepSeek-V4-Flash (API) | **0.44** (rerun: 0.42) | **0.07** (rerun: 0.31) | exaggeration 0.80, fabricated fact 0.64, citation swap/fabricated citation 0.16 |
 
-Two findings. First, the exact judge behind v1's "zero hallucination verdicts" (llama3.1:8b) detects **none** of the injected fabrications — combined with its 397/398 constant scoring in v1, it was a null instrument, and the v1 safety claim was an artifact of asking a question this judge could not answer. Second, the validated local judge (gemma4:e4b, selected by the pre-registered criterion) catches fabricated facts and diagnostic exaggerations well (0.80–0.96) but almost never catches **citation swaps** (0.00) or most fabricated identifiers (0.16): LLM judges of this size verify that text *sounds* supported, not that cited documents *are* the right ones — which is precisely why the objective raw-text citation audit and the human kit remain necessary. (A methodological note we report for reproducibility: gemma4's first validation pass returned empty contents because its default thinking mode consumed the token budget; disabling thinking exposed genuine discrimination. The invalidated artifact is preserved with an `_INVALID` suffix.)
+Three findings. First, the exact judge behind v1's "zero hallucination verdicts" (llama3.1:8b) detects **none** of the injected fabrications — combined with its 397/398 constant scoring in v1, it was a null instrument, and the v1 safety claim was an artifact of asking a question this judge could not answer. Second, the validated local judge (gemma4:e4b, selected by the pre-registered criterion) catches fabricated facts and diagnostic exaggerations well (0.80–0.96) at a 1% false-positive rate. Third, the much larger API judge is *not* automatically better *and not stable*: across two identical benchmark repetitions its false-positive rate ranged 7–31% (both runs preserved in the released checkpoint) — a 284B API judge can be as trigger-happy or as lenient as provider routing and decoding noise decide on a given day, which is itself an argument for validated local judges plus human adjudication. No judge of any size caught citation swaps reliably (0.00–0.16): LLM judges verify that text *sounds* supported, not that cited documents *are* the right ones — precisely why the objective raw-text citation audit and the human kit remain necessary. (Reproducibility notes we report for the record: gemma4's default thinking mode silently consumed the token budget and returned empty content until disabled — the invalidated first pass is preserved with an `_INVALID` suffix; local-judge scores are not bit-reproducible across runs on partial-GPU-offload hardware, with identical-input dalia faithfulness means ranging 2.21–2.69 across three runs; all paper numbers come from the final complete run.)
 
-## 4.6 Main judge scores (validated local judge; API judge pending key renewal)
+## 4.6 Main judge scores and cross-judge agreement
 
-*Table 7: gemma4:e4b (validated: 48% corruption detection, 1% FP) over all v2 generations. Score 0 = parse failure (excluded from means); parse success 347–353/398 per axis.*
+*Table 7: both validated judges over all v2 generations (local = gemma4:e4b, API = DeepSeek-V4-Flash; 977 checkpointed API calls in total across all runs, cumulative spend $0.36, hard $10 cap in-script; judging cells in the released notebook are cache-only — re-execution costs nothing). Score 0 = parse failure (61/646 = 9.4% for the local judge; excluded from statistics and reported).*
 
-| Group | n | Faithfulness | Relevance | Completeness | Faithfulness = 1 (hallucination verdicts) |
-|---|---|---|---|---|---|
-| PPG-DaLiA alerts | 398 | 2.21 | 2.65 | 2.20 | 2 |
-| Labeled events (all) | 148 | 2.53 | 3.00 | 2.54 | 0 |
-| — WESAD stress | 50 | 2.74 | 3.00 | 2.70 | 0 |
-| — MIT-BIH ectopy | 50 | 2.34 | 3.00 | 2.58 | 0 |
-| — PTB-XL pathology | 48 | 2.50 | 3.00 | 2.33 | 0 |
+| Group | n | Faithfulness (local / API) | Relevance (local / API) | Completeness (local / API) |
+|---|---|---|---|---|
+| PPG-DaLiA alerts | 398 | 2.21 / 2.10 | 2.66 / 2.75 | 2.19 / 2.50 |
+| WESAD stress | 50 | 2.78 / 2.02 | 3.00 / 2.92 | 2.76 / 2.46 |
+| MIT-BIH ectopy | 50 | 2.36 / 2.02 | 3.00 / 2.72 | 2.56 / 2.28 |
+| PTB-XL pathology | 48 | 2.45 / 2.00 | 3.00 / 2.41 | 2.13 / 2.16 |
 
-On the 398 wearable alerts the faithfulness distribution is: 3 → 175 (44%), 2 → 176 (44%), 1 → 2 (hallucination verdicts — the first non-zero hallucination count any judge of this system has produced), 0 → 45 (parse failures). This replaces v1's degenerate "2.99 / zero hallucinations" with a distribution an evaluator can actually use: under a validated judge, **roughly half of the system's explanations contain claims the judge considers vague or slightly extrapolated**, consistent with the atomic-verification results (§4.9) and squarely in the territory that clinician raters should adjudicate. PENDING-API-KEY: API-judge (DeepSeek-V4-Flash) columns and cross-judge agreement statistics, once the OpenRouter key is renewed. System latency: generation 11.0 s mean per alert (RTX 5060 laptop), retrieval 25 ms (p95 32 ms), local judging 8.1 s/call.
+On the 398 wearable alerts the local faithfulness distribution is: 3 → 176 (44%), 2 → 175 (44%), 1 → 2 (hallucination verdicts — the first non-zero count any judge of this system has produced), 0 → 45 (parse failures). The API judge's distribution is harsher on faithfulness (2 → 313, 3 → 40, no 1s) yet *more* generous on completeness (2.50 vs 2.19) and systematically harsher on the labeled clinical events (2.00–2.02 faithfulness across all three event sets). **Cross-judge agreement** (353 valid pairs): raw agreement 0.592 / 0.751 / 0.602 (faithfulness / relevance / completeness), within-1 agreement 1.000 on all axes, Gwet's AC1 0.476 / 0.680 / 0.489. The judges never differ by more than one point, but the moderate raw agreement, the validation asymmetry, and both judges' cross-run instability (§4.5) mean neither distribution should be read as ground truth — exactly the territory the clinician kit adjudicates. This replaces v1's degenerate "2.99 / zero hallucinations / 100% within-1 agreement" framing. System latency: generation 11.0 s mean per alert (RTX 5060 laptop), retrieval 25 ms (p95 32 ms), local judging 8.1 s/call, API judging ~2.5 s/call.
 
 ## 4.7 Labeled-event concordance: the integration result
 
@@ -330,7 +330,7 @@ We built an alert-triggered RAG pipeline for wearable biosignal anomalies and th
 
 # Data and Code Availability
 
-Datasets are public (PPG-DaLiA 10.24432/C53890; WESAD 10.24432/C57K5T; MIT-BIH 10.13026/C2F61Q; PTB-XL 10.1038/s41597-020-0495-6). Released with this paper: `THRESHOLDS.md` (pre-registration), `SEARCH_PROTOCOL.md` (literature search), `detection_v2.ipynb` and `rag_v2.ipynb` (executed notebooks that rebuild the entire v2 evaluation from raw data on a cold start and load cached artifacts otherwise), `scripts/v2/` (all pipeline and analysis code), `outputs_v2/` (all per-alert artifacts, judge benchmarks, caches), `outputs_v1_archive/` (original artifacts, preserved), `clinician_eval/` (human-evaluation kit with the pre-drawn 60-item sample), `Dataset/Tier1_v2/manifest.csv` (guideline provenance). Model identifiers are verified against public listings (Qwen3.5 family: arXiv:2604.15804; DeepSeek-V4-Flash 0731: OpenRouter model card, 2026-08-28).
+Datasets are public (PPG-DaLiA 10.24432/C53890; WESAD 10.24432/C57K5T; MIT-BIH 10.13026/C2F61Q; PTB-XL 10.1038/s41597-020-0495-6). Released with this paper: `THRESHOLDS.md` (pre-registration), `SEARCH_PROTOCOL.md` (literature search), `detection_v2.ipynb` and `rag_v2.ipynb` — the two executed, self-contained notebooks that rebuild the entire v2 evaluation from raw data on a cold start and load cached artifacts otherwise — plus `outputs_v2/` (all per-alert artifacts, judge benchmarks, API checkpoint), `outputs_v1_archive/` (original artifacts, preserved), `clinician_eval/` (human-evaluation kit with the pre-drawn 60-item sample), and `Dataset/Tier1_v2/manifest.csv` (guideline provenance). Model identifiers are verified against public listings (Qwen3.5 family: arXiv:2604.15804; DeepSeek-V4-Flash 0731: OpenRouter model card, 2026-08-28).
 
 # Author Contributions
 

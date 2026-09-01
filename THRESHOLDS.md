@@ -1,7 +1,7 @@
 # Pre-Registered Protocols and Operating Points — v2 Detection Evaluation
 
 **Written: 2026-08-28 14:30 (local), BEFORE any v2 detection run.**
-This file fixes all evaluation design choices for `scripts/v2/detection_v2.py` in advance.
+This file fixes all evaluation design choices for `detection_v2.ipynb` in advance.
 Any deviation discovered during execution must be logged in the Deviations section at the
 bottom with a reason. Results reported in the manuscript must follow this file.
 

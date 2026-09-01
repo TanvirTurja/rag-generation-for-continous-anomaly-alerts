@@ -3,7 +3,7 @@
 Every quantitative claim in the revised manuscript, traced to a v2 artifact.
 Generated 2026-08-28 by `scripts/v2/verify_claims_v2.py` (recomputes from
 `outputs_v2/` and string-matches `draft_paper/paper.md`). Run it yourself:
-`python scripts/v2/verify_claims_v2.py` → `outputs_v2/verification_v2.json`.
+`see draft_paper/verify_claims_v2.py` → `outputs_v2/verification_v2.json`.
 
 v2 changes vs v1: pre-registered protocols (`THRESHOLDS.md`, timestamped before
 runs); zero dev-history-only claims; every load-bearing number recomputable.
@@ -48,27 +48,35 @@ runs); zero dev-history-only claims; every load-bearing number recomputable.
 | Guideline name-citations | 109 valid, 8 unmatched |
 | v1 pre-repair "99.3%" | NOT reconstructable from v1 artifacts (`rag_analysis_v1/prerepair_note.json`); superseded |
 
-## E. Judge validation — `judge_validation.json` + per-judge CSVs
+## E. Judge validation — `judge_validation.json` + per-judge CSVs + `api_judge_checkpoint_v2.jsonl`
 
 | Judge | Detection | FP | Notes |
 |---|---|---|---|
 | llama3.1:8b (v1's judge) | **0.00** | 0.00 | null instrument; explains v1's "zero hallucination" |
-| gemma4:e4b (think=False) | **0.48** | 0.01 | exaggeration .96, fab-fact .80, fab-citation .16, citation-swap .00 |
-| DeepSeek-V4-Flash | PENDING-API-KEY | — | key expired 2026-08; rerun on renewal |
+| gemma4:e4b (think=False) | **0.48** | 0.01 | exaggeration .96, fab-fact .80, fab-cit .16, citation-swap .00 |
+| DeepSeek-V4-Flash | **0.44** (rerun 0.42) | **0.07** (rerun 0.31) | cross-run instability; both runs in the checkpoint (977 calls, $0.36 total) |
 
-Invalidated artifact kept for transparency: `judge_validation_gemma4_e4b_INVALID_empty_thinking.csv`
-(default thinking mode consumed the token budget → empty outputs).
+Invalidated artifacts kept for transparency: `judge_validation_gemma4_e4b_INVALID_empty_thinking.csv`
+(default thinking mode consumed the token budget → empty outputs). Local-judge
+scores are not bit-reproducible across runs (dalia faithfulness means 2.21–2.69
+over three identical-input runs; paper uses the final complete run). Judge cells
+in `rag_v2.ipynb` are **cache-only** — notebook re-execution makes zero API calls.
 
-## F. Main judging (validated local judge) — `rag_evaluation_v2.csv`
+## F. Main judging (both validated judges) — `rag_evaluation_v2.csv` (646 rows, 100% API coverage)
 
-| Group | n | Faith | Rel | Compl | Faith=1 |
-|---|---|---|---|---|---|
-| PPG-DaLiA | 398 | 2.21 | 2.65 | 2.20 | 2 |
-| WESAD stress | 50 | 2.74 | 3.00 | 2.70 | 0 |
-| MIT-BIH ectopy | 50 | 2.34 | 3.00 | 2.58 | 0 |
-| PTB-XL pathology | 48 | 2.50 | 3.00 | 2.33 | 0 |
-| Word-cap 300 | 50 | 2.02 | 2.52 | 2.12 | — |
-| llama3.1 generator | 50 | 1.78 | 2.34 | 1.52 | — |
+| Group | n | local f/r/c | API f/r/c |
+|---|---|---|---|
+| PPG-DaLiA | 398 | 2.21 / 2.66 / 2.19 | 2.10 / 2.75 / 2.50 |
+| WESAD stress | 50 | 2.78 / 3.00 / 2.76 | 2.02 / 2.92 / 2.46 |
+| MIT-BIH ectopy | 50 | 2.36 / 3.00 / 2.56 | 2.02 / 2.72 / 2.28 |
+| PTB-XL pathology | 48 | 2.45 / 3.00 / 2.13 | 2.00 / 2.41 / 2.16 |
+| Word-cap 300 | 50 | 2.02 / 2.52 / 2.08 | 2.08 / 2.82 / 2.70 |
+| llama3.1 generator | 50 | 1.84 / 2.34 / 1.46 | 1.94 / 2.24 / 1.80 |
+
+Local parse failures: 61/646 (9.4%), excluded from statistics and reported.
+Dalia faithfulness: local {3:176, 2:175, 1:2, 0:45}, API {3:40, 2:313}.
+Agreement (353 valid pairs): raw .592/.751/.602, within-1 1.000 all axes,
+Gwet AC1 .476/.680/.489 (`agreement_v2.json`; recomputed live in the notebook).
 
 ## G. Concordance — `concordance_v2.json` (labels never in queries)
 

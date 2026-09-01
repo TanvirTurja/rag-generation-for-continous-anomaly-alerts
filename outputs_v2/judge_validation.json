@@ -23,7 +23,15 @@
       "n": 200
     },
     "api_deepseek_v4_flash": {
-      "error": "HTTP Error 401: Unauthorized"
+      "detection_rate": 0.42,
+      "false_positive_rate": 0.31,
+      "detection_by_type": {
+        "citation_swap": 0.0,
+        "diagnostic_exaggeration": 1.0,
+        "fabricated_citation": 0.04,
+        "fabricated_fact": 0.64
+      },
+      "n": 200
     }
   },
   "selected_local_judge": {

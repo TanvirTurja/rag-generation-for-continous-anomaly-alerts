@@ -5,9 +5,9 @@ citation audit: {'raw': {'citations': 1208, 'valid': 1196, 'rows_all_valid': 389
 llama3.1:8b: detection 0.00, FP 0.00, by type {'citation_swap': 0.0, 'diagnostic_exaggeration': 0.0, 'fabricated_citation': 0.0, 'fabricated_fact': 0.0}
   gemma4:e4b: loaded cached validation (200 rows)
 gemma4:e4b: detection 0.48, FP 0.01, by type {'citation_swap': 0.0, 'diagnostic_exaggeration': 0.96, 'fabricated_citation': 0.16, 'fabricated_fact': 0.8}
-API validation failed: HTTP Error 401: Unauthorized
+API validation failed: 'NoneType' object is not subscriptable
 selected local judge: gemma4:e4b
-api disabled after 3 consecutive failures (last: HTTP Error 401: Unauthorized); continuing with local judge only
+api disabled after 3 consecutive failures (last: 'NoneType' object is not subscriptable); continuing with local judge only
   judged 50/646 (api spent $0.00)
   judged 100/646 (api spent $0.00)
   judged 150/646 (api spent $0.00)
