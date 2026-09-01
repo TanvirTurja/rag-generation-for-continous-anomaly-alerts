@@ -157,7 +157,7 @@ Ablations run in the same cycle: a 300-word-cap prompt variant on 50 alerts (the
 
 ## 3.9 Evaluation protocol
 
-*Citation audit (objective, deterministic).* Every `[PMC…]` bracket is checked against that alert's retrieved sources, on raw and on canonicalized text. Tier-1 sources carry no PMC identifier, so tier usage is measured at retrieval, not citation.
+*Citation audit (objective, deterministic).* Every `[PMC...]` bracket is checked against that alert's retrieved sources, on raw and on canonicalized text. Tier-1 sources carry no PMC identifier, so tier usage is measured at retrieval, not citation.
 
 *Judge validation on a corruption benchmark.* 100 explanations are corrupted four ways (25 each): citation swap to a wrong retrieved document; insertion of a fabricated clinical fact; fabricated PMC identifier; diagnostic exaggeration ("diagnostic of acute myocardial infarction"). Judges score the 100 corrupted plus their 100 clean originals. Per judge: detection rate (faithfulness = 1 on corrupted, overall and by corruption type) and false-positive rate on clean rows. The local judge for the main run is selected by this benchmark among llama3.1:8b, gemma4:e4b, and gpt-oss:20b; the API judge is DeepSeek-V4-Flash (OpenRouter, reasoning disabled). One candidate (llama3.1:8b) had shown near-constant scoring in earlier use (397/398 identical); it is retained only if it now demonstrates discrimination.
 
