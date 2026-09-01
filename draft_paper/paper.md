@@ -353,9 +353,3 @@ No human ratings are reported in this paper. The complete evaluation kit (60-ite
 
 ---
 
-# References
-
-(Rendered from `draft_paper/references.bib`; see also `SEARCH_PROTOCOL.md`.)
-The bibliography is generated from `draft_paper/references.bib` (51 entries, all DOIs resolved against CrossRef/arXiv at submission).
-
----
