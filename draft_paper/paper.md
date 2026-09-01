@@ -1,5 +1,5 @@
 ---
-title: "Alert-Triggered Retrieval-Augmented Generation for Grounded Explanations of Continuous Biosignal Anomaly Alerts: A Contamination-Hardened Evaluation"
+title: "Explaining Wearable Biosignal Anomaly Alerts with RAG: A Contamination-Hardened Evaluation"
 author: "Md Tanvir Hasan Turja"
 date: "September 2026"
 abstract: |
