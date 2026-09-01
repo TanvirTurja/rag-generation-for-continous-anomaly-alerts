@@ -81,7 +81,7 @@ The evaluation design matters as much as the system here, because the shortcuts 
 
 The system is a five-stage pipeline (Figure 1): (1) signal ingestion from chest and wrist sensors; (2) windowing and feature extraction; (3) unsupervised anomaly detection with two models; (4) alert-triggered, deviation-aware retrieval over a two-tier medical corpus; (5) grounded explanation generation with citation canonicalization. Stages 1–3 run continuously; stages 4–5 fire only when a window is flagged.
 
-![Figure 1: System pipeline. Stages 4–5 are alert-triggered. v2 changes are highlighted: per-subject normal-reference queries, validated judges, raw-text preservation.](figures_v2/pipeline_v2.png)
+![Figure 1: System pipeline. Stages 4–5 are alert-triggered; the highlighted elements (per-subject normal-reference queries, validated judges, raw-text preservation) are the evaluation-critical components.](figures_v2/pipeline_v2.png)
 
 ## 3.2 Signal datasets
 
@@ -91,7 +91,7 @@ Four public datasets (Table 1), covering in-the-wild noisy wearables without lab
 
 *WESAD* [@schmidt2018wesad; @wesad2023]: 15 subjects (S2–S17), expert-annotated baseline/stress/amusement. Labels are used only for evaluation.
 
-*MIT-BIH Arrhythmia Database* [@moody2001mitbih; @mitbih2023]: 48 half-hour two-lead ambulatory ECG records, 360 Hz, beat-level annotations. v2 uses the standard inter-patient split with paced records 102, 104, 107, 217 excluded: DS1 (22 records) for training, DS2 (22 records) for testing [@dechazal2004interpatient].
+*MIT-BIH Arrhythmia Database* [@moody2001mitbih; @mitbih2023]: 48 half-hour two-lead ambulatory ECG records, 360 Hz, beat-level annotations. This paper uses the standard inter-patient split with paced records 102, 104, 107, 217 excluded: DS1 (22 records) for training, DS2 (22 records) for testing [@dechazal2004interpatient].
 
 *PTB-XL* [@wagner2020ptbxl]: 21,799 clinical 12-lead 10-second ECGs with diagnostic superclasses and patient-stratified folds; 21,388 usable after dropping records without a superclass; folds 1–8 train, fold 9 validation, fold 10 test.
 
@@ -106,23 +106,23 @@ Four public datasets (Table 1), covering in-the-wild noisy wearables without lab
 
 ## 3.3 Preprocessing, windowing, features
 
-Identical across all protocol variants in this paper (so that all differences are protocol, not features): per-channel cleaning, non-overlapping 30-second windows, 12 summary statistics per channel (mean, std, min, max, peak-to-peak, median, skewness, kurtosis, p25, p75, up-crossing ratio, RMS roughness) → 60 features for the five wearable channels. MIT-BIH: fixed 0.8 s beat segments (±144 samples, lead MLII); v2 labels use the full AAMI normal set {N, L, R, e, j}, with all other beat symbols anomalous, and non-beat annotations excluded (the initial variant used the reduced set {N, L, R, e}). PTB-XL: lead I, one 12-feature vector per 10 s recording; normal iff superclass set is exactly {NORM}.
+Identical across all protocol variants in this paper (so that all differences are protocol, not features): per-channel cleaning, non-overlapping 30-second windows, 12 summary statistics per channel (mean, std, min, max, peak-to-peak, median, skewness, kurtosis, p25, p75, up-crossing ratio, RMS roughness) → 60 features for the five wearable channels. MIT-BIH: fixed 0.8 s beat segments (±144 samples, lead MLII); labels use the full AAMI normal set {N, L, R, e, j}, with all other beat symbols anomalous, and non-beat annotations excluded (the initial variant used the reduced set {N, L, R, e}). PTB-XL: lead I, one 12-feature vector per 10 s recording; normal iff superclass set is exactly {NORM}.
 
 ## 3.4 Anomaly detectors and pre-registered evaluation protocols
 
-Detectors: Isolation Forest (100 trees), KNN-LOF (k = 20, novelty mode), plus two baselines new in v2: a one-class SVM (RBF, γ = scale, ν = contamination) and a dense autoencoder (d → d/2 → d/4 → d/2 → d, MSE, Adam, early stopping), with reconstruction error as the score. All hyperparameters were fixed in `THRESHOLDS.md`, timestamped before any v2 run; the single deviation (DeLong → paired bootstrap) is logged there.
+Detectors: Isolation Forest (100 trees), KNN-LOF (k = 20, novelty mode), plus two baselines often omitted from such comparisons: a one-class SVM (RBF, γ = scale, ν = contamination) and a dense autoencoder (d → d/2 → d/4 → d/2 → d, MSE, Adam, early stopping), with reconstruction error as the score. All hyperparameters were fixed in `THRESHOLDS.md`, timestamped before any reported run; the single deviation (DeLong → paired bootstrap) is logged there.
 
-*WESAD (v2).* Leave-one-subject-out: per fold, train on the other 14 subjects' baseline windows; evaluate the held-out subject's baseline+stress+amusement windows (stress = positive). Threshold: 85th percentile of each fold's *training* scores. This removes both train-inside-eval overlap and intra-subject leakage.
+*WESAD.* Leave-one-subject-out: per fold, train on the other 14 subjects' baseline windows; evaluate the held-out subject's baseline+stress+amusement windows (stress = positive). Threshold: 85th percentile of each fold's *training* scores. This removes both train-inside-eval overlap and intra-subject leakage.
 
-*MIT-BIH (v2).* Train on DS1 normal beats; test on DS2 beats only. Paced records excluded everywhere. No DS1 beat is scored.
+*MIT-BIH.* Train on DS1 normal beats; test on DS2 beats only. Paced records excluded everywhere. No DS1 beat is scored.
 
-*PTB-XL (v2).* Threshold percentile selected on fold 9 by F1-maximization, frozen, applied to fold 10. The full threshold-sensitivity curve is reported.
+*PTB-XL.* Threshold percentile selected on fold 9 by F1-maximization, frozen, applied to fold 10. The full threshold-sensitivity curve is reported.
 
 *Uncertainty.* IF is run with 10 seeds (mean ± SD); AUCs carry bootstrap 95% CIs (1,000 resamples); IF-vs-LOF differences are tested with a paired bootstrap over the same resamples. (the contaminated variant used single runs, no CIs, no tests.)
 
 *PPG-DaLiA alert stream.* Held fixed across all variants for comparability: 95th-percentile flag per detector over the joint 4,308 windows; the union (398 alerts: 216 IF, 216 LOF, 34 both, Jaccard 0.085) is archived in `flagged_windows.parquet` and reused verbatim throughout; later variants change the queries and evaluation, not the flags.
 
-## 3.5 RAG knowledge corpus (v2: expanded)
+## 3.5 RAG knowledge corpus
 
 The initial guideline tier (4 society PDFs on syncope and ventricular arrhythmias) matched almost none of the alerts the system actually produces (393 of 398 alerts in the original corpus run cited zero guideline content), so two wearable-relevant documents were added, fetched with recorded provenance and access route (`Dataset/Tier1_v2/manifest.csv`): the 2022 EHRA practical guide on using digital devices to detect and manage arrhythmias [@svennberg2022ehra] (20,524 words) and the 2023 ACC/AHA/ACCP/HRS AF guideline [@joglar2024afguideline] (119,730 words). The 2024 ESC AF guideline was attempted but is not programmatically accessible (publisher bot-blocked; exclusion recorded). The corpus totals 206 documents and 5,045 chunks (992 guideline chunks, 4,053 Tier-2 article chunks; 500-word chunks, 50-word overlap, mean 489 words), embedded with `all-MiniLM-L6-v2` into a fresh `chroma_db_v2` collection.
 
@@ -130,7 +130,7 @@ The initial guideline tier (4 society PDFs on syncope and ventricular arrhythmia
 
 Dense cosine retrieval with a source-diversity constraint (candidate pool 20, at most 1 chunk per source, top-5 context) in all variants. The final configuration additionally measures retrieval latency (embed + search): mean 25 ms, p95 32 ms per query (n = 398).
 
-## 3.7 Deviation-aware query construction (v2: corrected reference class)
+## 3.7 Deviation-aware query construction
 
 The original query construction computed the "top-2 deviating channels" as z-scores across the 398 flagged windows themselves: deviations measured against other anomalies, in batch across all 15 subjects, with a template character phrase ("abrupt isolated spike") keyed only to which detector fired. Its showcase alert named two channels at |z| = 0.5 while asserting a "spike."
 
@@ -155,7 +155,7 @@ Generation uses Qwen3.5 9B served locally by Ollama (temperature 0.1, thinking d
 
 Ablations run in the same cycle: a 300-word-cap prompt variant on 50 alerts (the completeness/brevity trade-off implied by the word cap is measured), and a generator ablation (llama3.1:8b, 50 alerts).
 
-## 3.9 Evaluation protocol (v2)
+## 3.9 Evaluation protocol
 
 *Citation audit (objective, deterministic).* Every `[PMC…]` bracket is checked against that alert's retrieved sources, on raw and on canonicalized text. Tier-1 sources carry no PMC identifier, so tier usage is measured at retrieval, not citation.
 
@@ -177,7 +177,7 @@ Ablations run in the same cycle: a 300-word-cap prompt variant on 50 alerts (the
 
 ## 4.1 Detection under clean protocols (protocol-sensitivity analysis)
 
-*Table 2: Detection results under pre-registered v2 protocols. AUC with bootstrap 95% CI; IF additionally mean ± SD over 10 seeds.*
+*Table 2: Detection results under the pre-registered protocols. AUC with bootstrap 95% CI; IF additionally mean ± SD over 10 seeds.*
 
 | Dataset (protocol) | Model | AUC [95% CI] | Precision | Recall | F1 |
 |---|---|---|---|---|---|
@@ -226,9 +226,9 @@ The 398 PPG-DaLiA flags (archived and reused verbatim; all 15 subjects contribut
 | Deviation-aware (original), diversity OFF | 51 | 14.0% | 21/398 (5.3%) |
 | Deviation-aware (original), diversity ON (archived run) | 53 | 11.8% | 26/398 (6.5%) |
 
-The results here cut both ways. Deviation-aware queries do spread retrieval (5 → 53 unique documents), and the diversity constraint adds a small further gain (51 → 53) while cutting top-source dominance. But even the best original configuration used only 53 of 204 corpus documents (26%) and brought guideline content into just 6.5% of alert contexts: a corpus/alert-space mismatch that motivated the corpus expansion. Near-duplication quantifies a templating problem that document-level diversity metrics miss: mean nearest-neighbor cosine similarity across the 398 explanations is 0.936; 99.75% of alerts have a neighbor above 0.8 and 81.7% above 0.9, collapsing into only 173 effective clusters. Retrieval diversity at the document level did not translate into explanation diversity at the content level, and v2's corpus and query changes are evaluated against this metric below.
+The results here cut both ways. Deviation-aware queries do spread retrieval (5 → 53 unique documents), and the diversity constraint adds a small further gain (51 → 53) while cutting top-source dominance. But even the best original configuration used only 53 of 204 corpus documents (26%) and brought guideline content into just 6.5% of alert contexts: a corpus/alert-space mismatch that motivated the corpus expansion. Near-duplication quantifies a templating problem that document-level diversity metrics miss: mean nearest-neighbor cosine similarity across the 398 explanations is 0.936; 99.75% of alerts have a neighbor above 0.8 and 81.7% above 0.9, collapsing into only 173 effective clusters. Retrieval diversity at the document level did not translate into explanation diversity at the content level, and the expanded corpus and corrected queries are evaluated against this metric below.
 
-## 4.4 Citation accuracy: raw vs canonicalized (v2)
+## 4.4 Citation accuracy: raw vs canonicalized
 
 The canonicalizer's identifier capture was corrected during development (a greedy regex had captured full source-name slugs, silently dropping valid citations written in long form), and raw generation text is preserved, so the objective audit over all 546 main explanations (398 wearable alerts plus 148 labeled events) sees both states: 1,208 inline PMC citations on raw text, 1,196 valid (99.01%). That is 12 invalid citations across 9 explanations, a fabrication or mistyping rate of about 1%. The repaired text reaches 100% validity by dropping those 12 (zero near-miss snaps were needed; the invalid IDs were not digit transpositions of retrieved IDs but largely identifiers of documents outside the alert's context). Tier-1 guideline sources, which carry no PMC identifier, received 109 valid name-style citations across the corpus (8 unmatched name citations, a further fabrication signal). We no longer headline citation accuracy: validity is a set-membership check, necessary but far from sufficient for grounding.
 
@@ -246,7 +246,7 @@ The near-constant scorer (llama3.1:8b) detects none of the injected fabrications
 
 ## 4.6 Main judge scores and cross-judge agreement
 
-*Table 7: both validated judges over all v2 generations (local = gemma4:e4b, API = DeepSeek-V4-Flash; 977 checkpointed API calls in total across all runs, cumulative spend $0.36, hard $10 cap in-script; judging cells in the released notebook are cache-only, so re-execution costs nothing). Score 0 = parse failure (61/646 = 9.4% for the local judge; excluded from statistics and reported).*
+*Table 7: both validated judges over all generations (local = gemma4:e4b, API = DeepSeek-V4-Flash; 977 checkpointed API calls in total across all runs, cumulative spend $0.36, hard $10 cap in-script; judging cells in the released notebook are cache-only, so re-execution costs nothing). Score 0 = parse failure (61/646 = 9.4% for the local judge; excluded from statistics and reported).*
 
 | Group | n | Faithfulness (local / API) | Relevance (local / API) | Completeness (local / API) |
 |---|---|---|---|---|
@@ -281,7 +281,7 @@ This is the paper's central negative result, and one that an unlabeled-flag eval
 
 On a 60-explanation sample (30 wearable alerts, 30 labeled events), decomposed into 797 atomic claims and verified against the retrieved context alone by a different-family model (gemma4:e4b, thinking disabled): 52.3% SUPPORTED, 47.7% UNVERIFIABLE, 0% UNSUPPORTED (by group: wearable 47.3%, WESAD 54.3%, MIT-BIH 68.0%, PTB-XL 53.5%). The zero contradiction rate is reassuring but largely reflects the system's hedged phrasing; the operative number is that roughly half of the atomic content of these explanations is not verifiable from the evidence the system itself retrieved, which is quantitatively consistent with the validated judge scoring ~44% of full explanations as "slightly extrapolated" (§4.6). Verification remains context-relative (not full-source or clinician-relative); human adjudication via the released kit remains future work.
 
-## 4.10 Example alert (v2)
+## 4.10 Example alert
 
 **QUERY (constructed, subject 3, window 270–300 s, true label: stress):** "Biosignal window flagged by anomaly detection. reduced bvp (z=−7.2 vs subject baseline) elevated wrist_eda (z=+4.0 vs subject baseline). Relevant topics: electrodermal activity skin conductance sympathetic arousal stress physiology photoplethysmography heart rate variability ECG."
 
@@ -293,7 +293,7 @@ On a 60-explanation sample (30 wearable alerts, 30 labeled events), decomposed i
 >
 > **DISCLAIMER:** Research decision-support tool. Not a diagnostic device. Does not replace clinical judgment.
 
-Contrast this with the original query semantics, which asserted an "abrupt isolated spike" while naming two channels at |z| = 0.5 measured against other anomalies. The v2 query states detector facts and real deviations against the subject's own baseline (z = −7.2, +4.0), and the explanation names the correct physiological process; this is the concordant case. §4.7 quantifies how often this succeeds and where it fails.
+Contrast this with the original query semantics, which asserted an "abrupt isolated spike" while naming two channels at |z| = 0.5 measured against other anomalies. The corrected query states detector facts and real deviations against the subject's own baseline (z = −7.2, +4.0), and the explanation names the correct physiological process; this is the concordant case. §4.7 quantifies how often this succeeds and where it fails.
 
 # 5 Discussion
 
@@ -301,13 +301,13 @@ Contrast this with the original query semantics, which asserted an "abrupt isola
 
 *Detector choice, honestly.* LOF > IF on WESAD (p = 0.008) and PTB-XL (p = 0.001), but chance on inter-patient MIT-BIH while IF holds 0.670: detector rankings do not transfer across granularity (windows vs beats) or evaluation protocols. A trivial autoencoder winning WESAD (0.855) suggests the field's shallow-detector comparisons underweight reconstruction baselines.
 
-*Query construction matters, but retrieval diversity is not explanation diversity.* The corrected query semantics (subject-baseline reference, evidence-tied character) pass a strong sanity check (stress vs baseline separation, p ≈ 10⁻¹³⁸). Yet the original query semantics show document-level diversity (53 docs) coexisting with content-level duplication (173 clusters, mean NN cosine 0.936): five-channel summary statistics bound the semantic space of queries. The v2 results (§4.4–4.7) test whether the expanded corpus and corrected queries reduce duplication and raise guideline utilization, and report whatever the answer is.
+*Query construction matters, but retrieval diversity is not explanation diversity.* The corrected query semantics (subject-baseline reference, evidence-tied character) pass a strong sanity check (stress vs baseline separation, p ≈ 10⁻¹³⁸). Yet the original query semantics show document-level diversity (53 docs) coexisting with content-level duplication (173 clusters, mean NN cosine 0.936): five-channel summary statistics bound the semantic space of queries. §4.4–4.7 test whether the expanded corpus and corrected queries reduce duplication and raise guideline utilization, and report whatever the answer is.
 
 *What "100% citation accuracy" does and does not mean.* Citation validity is a membership check (cited ID ∈ retrieved set), necessary but far from sufficient for grounding; the canonicalizer can even snap a mistyped identifier onto a document that does not support the claim. Hence the snap log, the raw-text audit, and the atomic-claim verification; human clinical adjudication is the remaining step, released as a runnable kit for future work. We no longer headline citation accuracy at all.
 
 *Judges must be validated, not assumed.* The near-constant local judge scored 397/398 items identically; under naive reporting this surfaces as "100% within-1 agreement." A judge that cannot discriminate is worse than no judge: it launders whatever the generator produced. The corruption benchmark is cheap (200 local calls) and, we argue, should precede any LLM-judge evaluation in clinical NLP.
 
-*Deployment envelope.* Retrieval is 25 ms (p95 32 ms); generation and judge latency are reported with the v2 runs. The query builder is online-implementable (per-subject running statistics); the original batch, cross-subject construction was not.
+*Deployment envelope.* Retrieval is 25 ms (p95 32 ms); generation and judge latency are reported with the results. The query builder is online-implementable (per-subject running statistics); the original batch, cross-subject construction was not.
 
 # 6 Limitations
 
@@ -317,7 +317,7 @@ Contrast this with the original query semantics, which asserted an "abrupt isola
 4. Label mismatch: wearable ground truth is lab stress, not disease; true pathology enters only via ECG datasets; no public dataset pairs wearable multichannel signals with clinical outcomes.
 5. Detection ceilings: 12 summary statistics; the feature ablation shows sensitivity, and morphology-aware features are future work; inter-patient MIT-BIH AUCs (≤0.675) remain far below published supervised systems, appropriately so for an unsupervised baseline.
 6. PTB-XL operating point: the validation-F1 rule selects near-saturated recall/low precision at this prevalence; we report the full sensitivity curve and do not claim a deployable threshold.
-7. Corpus authority asymmetry: the wearable-relevant guidance added in v2 improves the alert-space match, but PPG-specific reasoning still rests largely on Tier-2 literature; the 2024 ESC AF guideline could not be included (programmatic access blocked).
+7. Corpus authority asymmetry: the wearable-relevant guidance added to the corpus improves the alert-space match, but PPG-specific reasoning still rests largely on Tier-2 literature; the 2024 ESC AF guideline could not be included (programmatic access blocked).
 8. Mid-size generator: Qwen3.5 9B is a privacy/quality compromise.
 
 # 7 Ethical Considerations
@@ -330,7 +330,7 @@ We built an alert-triggered RAG pipeline for wearable biosignal anomalies and ev
 
 # Data and Code Availability
 
-Datasets are public (PPG-DaLiA 10.24432/C53890; WESAD 10.24432/C57K5T; MIT-BIH 10.13026/C2F61Q; PTB-XL 10.1038/s41597-020-0495-6). Released with this paper: `THRESHOLDS.md` (pre-registration), `SEARCH_PROTOCOL.md` (literature search), `detection_v2.ipynb` and `rag_v2.ipynb`, the two executed, self-contained notebooks that rebuild the entire v2 evaluation from raw data on a cold start and load cached artifacts otherwise, plus `outputs_v2/` (all per-alert artifacts, judge benchmarks, API checkpoint), `outputs_v1_archive/` (original artifacts, preserved), `clinician_eval/` (human-evaluation kit with the pre-drawn 60-item sample), and `Dataset/Tier1_v2/manifest.csv` (guideline provenance). Model identifiers are verified against public listings (Qwen3.5 family: arXiv:2604.15804; DeepSeek-V4-Flash 0731: OpenRouter model card, 2026-08-28).
+Datasets are public (PPG-DaLiA 10.24432/C53890; WESAD 10.24432/C57K5T; MIT-BIH 10.13026/C2F61Q; PTB-XL 10.1038/s41597-020-0495-6). Released with this paper: `THRESHOLDS.md` (pre-registration), `SEARCH_PROTOCOL.md` (literature search), `detection_v2.ipynb` and `rag_v2.ipynb`, the two executed, self-contained notebooks that rebuild the entire evaluation from raw data on a cold start and load cached artifacts otherwise, plus `outputs_v2/` (all per-alert artifacts, judge benchmarks, API checkpoint), `outputs_v1_archive/` (original artifacts, preserved), `clinician_eval/` (human-evaluation kit with the pre-drawn 60-item sample), and `Dataset/Tier1_v2/manifest.csv` (guideline provenance). Model identifiers are verified against public listings (Qwen3.5 family: arXiv:2604.15804; DeepSeek-V4-Flash 0731: OpenRouter model card, 2026-08-28).
 
 # Author Contributions
 
