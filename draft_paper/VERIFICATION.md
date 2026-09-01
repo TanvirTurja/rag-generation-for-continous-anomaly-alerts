@@ -1,7 +1,7 @@
 # Claim-by-Claim Verification — `paper.md` (v2)
 
 Every quantitative claim in the revised manuscript, traced to a v2 artifact.
-Generated 2026-08-28 by `scripts/v2/verify_claims_v2.py` (recomputes from
+Generated 2026-08-28 by `draft_paper/verify_claims_v2.py` (recomputes from
 `outputs_v2/` and string-matches `draft_paper/paper.md`). Run it yourself:
 `see draft_paper/verify_claims_v2.py` → `outputs_v2/verification_v2.json`.
 
