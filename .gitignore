@@ -9,3 +9,7 @@ project_description.md.zcode/
 __pycache__/
 chroma_db_v2/
 outputs_v2/cache/
+
+# private deliverables (not for publication)
+arxiv/
+PLAIN_ENGLISH.md
