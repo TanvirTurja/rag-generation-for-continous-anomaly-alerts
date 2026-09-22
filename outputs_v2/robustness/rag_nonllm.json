@@ -1,0 +1,77 @@
+{
+ "retrieval_jaccard_v1_vs_v2": {
+  "n_alerts": 398,
+  "mean_jaccard": 0.12011446119486321,
+  "median_jaccard": 0.1111111111111111,
+  "identical_sets": 0,
+  "identical_pct": 0.0,
+  "v1_unique_docs": 54,
+  "v2_unique_docs": 44,
+  "v2_rerun_matches_stored": 398,
+  "guideline_reach_v1_queries_pct": 12.56281407035176,
+  "guideline_reach_v2_queries_pct": 17.587939698492463
+ },
+ "f10_flag_status": {
+  "wesad_flagged_of_50_LOSO_LOF_thr85": 7,
+  "wesad_mean_flag_score_percentile_note": "scores archived in f10 wesad_flag_scores",
+  "mitbih_majority_beats_flagged_of_50": 19,
+  "mitbih_mean_beat_flag_fraction": 0.4861223519932901,
+  "ptbxl": {
+   "pre_registered_p_star": 5,
+   "flagged_of_48": 44
+  }
+ },
+ "concordance_ci": {
+  "wesad": {
+   "n": 50,
+   "concordant": 47,
+   "pct": 94.0,
+   "wilson95": [
+    0.838,
+    0.979
+   ],
+   "cluster_ci95": [
+    0.887,
+    1.0
+   ],
+   "n_clusters": 7,
+   "artifact_language": 28,
+   "concordant_AND_artifact": 26,
+   "artifact_given_true_pathology_only": null
+  },
+  "mitbih": {
+   "n": 50,
+   "concordant": 6,
+   "pct": 12.0,
+   "wilson95": [
+    0.056,
+    0.238
+   ],
+   "cluster_ci95": [
+    0.0,
+    0.241
+   ],
+   "n_clusters": 6,
+   "artifact_language": 28,
+   "concordant_AND_artifact": 6,
+   "artifact_given_true_pathology_only": null
+  },
+  "ptbxl": {
+   "n": 48,
+   "concordant": 3,
+   "pct": 6.2,
+   "wilson95": [
+    0.021,
+    0.168
+   ],
+   "cluster_ci95": [
+    0.0,
+    0.133
+   ],
+   "n_clusters": 27,
+   "artifact_language": 20,
+   "concordant_AND_artifact": 0,
+   "artifact_given_true_pathology_only": 20
+  }
+ }
+}

@@ -1,0 +1,279 @@
+{
+ "ptbxl_patient_ci": {
+  "LOF": {
+   "auc": 0.6824337881219904,
+   "patient_ci95": [
+    0.6592912850425153,
+    0.7073051032497665
+   ],
+   "n_patients": 1877
+  },
+  "IF": {
+   "auc": 0.6323313550730759,
+   "patient_ci95": [
+    0.6107415707601623,
+    0.6560753319212338
+   ],
+   "n_patients": 1877
+  },
+  "OCSVM": {
+   "auc": 0.6279700304131114,
+   "patient_ci95": [
+    0.6021830023050087,
+    0.6514121626080406
+   ],
+   "n_patients": 1877
+  },
+  "AE": {
+   "auc": 0.6279216299174903,
+   "patient_ci95": [
+    0.6043506171117052,
+    0.6511757473505638
+   ],
+   "n_patients": 1877
+  }
+ },
+ "if_seedmean": {
+  "MIT-BIH": {
+   "auc": 0.6706531612819168,
+   "window_ci95": [
+    0.6619540613730384,
+    0.6789243258174252
+   ],
+   "record_ci95": [
+    0.47978601769977547,
+    0.8484175169898267
+   ]
+  },
+  "WESAD": {
+   "auc": 0.8229359041369031,
+   "subject_ci95": [
+    0.74223472093377,
+    0.9014196880344597
+   ],
+   "window_ci95": [
+    0.7959164259191145,
+    0.8478027026957732
+   ]
+  },
+  "PTB-XL": {
+   "auc": 0.6331823237869956,
+   "record_ci95": [
+    0.6102091495158247,
+    0.6567069318163085
+   ],
+   "window_ci95": [
+    0.6097287222350575,
+    0.6561940859456311
+   ]
+  }
+ },
+ "orig_insufficiency": {
+  "wesad": 0,
+  "mitbih": 0,
+  "ptbxl": 0
+ },
+ "paired_ifseedmean_vs_lof": {
+  "WESAD": 0.97,
+  "MIT-BIH": 0.139,
+  "PTB-XL": 0.001
+ },
+ "refusals": {
+  "original": {
+   "wesad": 1,
+   "mitbih": 1,
+   "ptbxl": 1
+  },
+  "blind_r1": {
+   "wesad": 1,
+   "mitbih": 0,
+   "ptbxl": 1
+  }
+ },
+ "blind_runs": {
+  "r2": {
+   "wesad": {
+    "n": 50,
+    "ok": 36,
+    "pct": 72.0,
+    "art": 35,
+    "ins": 0
+   },
+   "mitbih": {
+    "n": 50,
+    "ok": 3,
+    "pct": 6.0,
+    "art": 41,
+    "ins": 0
+   },
+   "ptbxl": {
+    "n": 48,
+    "ok": 6,
+    "pct": 12.5,
+    "art": 35,
+    "ins": 0
+   }
+  },
+  "r3": {
+   "wesad": {
+    "n": 50,
+    "ok": 35,
+    "pct": 70.0,
+    "art": 35,
+    "ins": 0
+   },
+   "mitbih": {
+    "n": 50,
+    "ok": 8,
+    "pct": 16.0,
+    "art": 41,
+    "ins": 0
+   },
+   "ptbxl": {
+    "n": 48,
+    "ok": 7,
+    "pct": 14.6,
+    "art": 41,
+    "ins": 0
+   }
+  },
+  "r1": {
+   "wesad": {
+    "n": 50,
+    "ok": 34,
+    "pct": 68.0,
+    "art": 36,
+    "ins": 0
+   },
+   "mitbih": {
+    "n": 50,
+    "ok": 4,
+    "pct": 8.0,
+    "art": 43,
+    "ins": 0
+   },
+   "ptbxl": {
+    "n": 48,
+    "ok": 6,
+    "pct": 12.5,
+    "art": 44,
+    "ins": 0
+   }
+  }
+ },
+ "blindctx": {
+  "wesad": {
+   "n": 50,
+   "ok": 40,
+   "pct": 80.0,
+   "art": 38,
+   "ins": 0
+  },
+  "mitbih": {
+   "n": 50,
+   "ok": 2,
+   "pct": 4.0,
+   "art": 44,
+   "ins": 0
+  },
+  "ptbxl": {
+   "n": 48,
+   "ok": 0,
+   "pct": 0.0,
+   "art": 47,
+   "ins": 0
+  }
+ },
+ "shuffled": {
+  "wesad": {
+   "n": 50,
+   "ok": 26,
+   "pct": 52.0,
+   "art": 25,
+   "ins": 0
+  },
+  "mitbih": {
+   "n": 50,
+   "ok": 10,
+   "pct": 20.0,
+   "art": 35,
+   "ins": 0
+  },
+  "ptbxl": {
+   "n": 48,
+   "ok": 2,
+   "pct": 4.2,
+   "art": 22,
+   "ins": 0
+  }
+ },
+ "shuffled_wrong_echo": {
+  "n_cross_group": 93,
+  "wrong_named": 2,
+  "by_dir": {
+   "wesad<-mitbih": {
+    "n": 13,
+    "k": 0
+   },
+   "wesad<-ptbxl": {
+    "n": 15,
+    "k": 0
+   },
+   "ptbxl<-mitbih": {
+    "n": 26,
+    "k": 1
+   },
+   "ptbxl<-wesad": {
+    "n": 4,
+    "k": 0
+   },
+   "mitbih<-ptbxl": {
+    "n": 18,
+    "k": 0
+   },
+   "mitbih<-wesad": {
+    "n": 17,
+    "k": 1
+   }
+  }
+ },
+ "poison_runs": {
+  "r1": {
+   "n": 50,
+   "claim_adoption": 48,
+   "adoption_pct": 96.0,
+   "poison_cited": 50
+  },
+  "r2": {
+   "n": 50,
+   "adoption": 48,
+   "cited": 49,
+   "judge": {
+    "n": 50,
+    "adoption": 48,
+    "cited": 49,
+    "judged": 50,
+    "parsed": 40,
+    "cert3_of_parsed_adopted": 32,
+    "n_parsed_adopted": 38
+   }
+  },
+  "r3": {
+   "n": 50,
+   "adoption": 49,
+   "cited": 50,
+   "judge": {
+    "n": 50,
+    "adoption": 49,
+    "cited": 50,
+    "judged": 50,
+    "parsed": 40,
+    "cert3_of_parsed_adopted": 33,
+    "n_parsed_adopted": 39
+   }
+  }
+ },
+ "poison_api_judge": {
+  "error": "HTTP Error 401: Unauthorized"
+ }
+}

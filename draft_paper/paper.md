@@ -1,347 +1,258 @@
 ---
-title: "Explaining Wearable Biosignal Anomaly Alerts with RAG: A Contamination-Hardened Evaluation"
+title: "Auditing LLM Explanations of Biosignal Alerts"
 author: "Md Tanvir Hasan Turja"
 date: "September 2026"
 abstract: |
-  Continuous wearable monitoring flags far more events than clinicians can review,
-  and the alerts themselves say nothing about what was detected. Large language
-  models (LLMs) could write such explanations, but they hallucinate, which is
-  disqualifying in a clinical alerting loop. We present a pipeline that couples
-  unsupervised anomaly detection with retrieval-augmented generation (RAG), so
-  that every alert is explained in plain language using only retrieved
-  peer-reviewed literature, with citations that can be checked, entirely on
-  local hardware. The evaluation is designed against three shortcuts that
-  silently invalidate conclusions in this space: training data inside the
-  evaluation set and intra-patient leakage; operating thresholds tuned on test
-  prevalence; and unvalidated LLM judges. All protocols were pre-registered
-  before any run (WESAD leave-one-subject-out; MIT-BIH inter-patient
-  DS1->DS2 with paced records excluded; PTB-XL thresholds frozen from the
-  validation fold; 10-seed Isolation Forest; bootstrap CIs; one-class SVM and
-  autoencoder baselines), and a protocol-sensitivity analysis shows these
-  choices decide the ranking itself: on MIT-BIH, LOF scores 0.899 under an
-  intra-patient protocol but 0.502, chance level, under the standard
-  inter-patient one, while IF holds 0.670; on WESAD (LOSO) LOF reaches 0.827
-  [0.800, 0.852] against IF's 0.799, and a simple autoencoder reaches 0.855,
-  outperforming both classic detectors. The explanation loop is evaluated
-  end-to-end on 148 labeled events (WESAD stress, MIT-BIH windows with at
-  ≥3 annotated ectopic beats, PTB-XL pathology records) with labels
-  withheld from the query: explanations name the correct condition for 94% of
-  true stress events but only 12% of arrhythmic windows and 6% of pathology
-  ECGs, attributing 42-56% of true pathology to motion or sensor artifact.
-  That is the failure mode an unlabeled evaluation cannot surface. Because
-  LLM judges cannot be assumed sound, every judge is first validated on a
-  200-item corruption benchmark: a judge of the kind commonly used
-  (llama3.1:8b, near-constant scoring) detects 0 of 100 injected fabrications,
-  a validated local judge (gemma4:e4b: 48% detection, 1% false positives)
-  outperforms a 284B API judge whose false-positive rate ranged 7-31% across
-  two identical runs, and no judge catches citation swaps. Raw-text citation
-  auditing shows a genuine 1% citation-fabrication rate that post-repair
-  reporting hid. A two-document corpus expansion with wearable-relevant
-  guidelines (EHRA 2022 digital-devices guide; 2023 ACC/AHA AF guideline)
-  raises guideline reach from 6.5% to 17.6% of alerts and reduces explanation
-  duplication (near-duplicate clusters 173 to 237). A ready-to-run clinician
-  evaluation kit (60 stratified items, 3+ raters, Fleiss' κ) is released
-  for future human evaluation; no clinical-adequacy claim is made in this
-  paper. Every number is recomputable from released artifacts.
+  Continuous wearable monitoring generates more alerts than clinical workflows can
+  absorb, and LLM-generated explanations could close the gap only if their evaluation
+  measures what it claims to measure. We propose an audit battery and demonstrate it
+  end-to-end on one local pipeline (unsupervised detection on 30-second wearable
+  windows, alert-triggered retrieval over a 206-document peer-reviewed corpus, and
+  grounded generation with checkable citations). Five instruments target quiet failure
+  modes: pre-registered contamination-hard protocols (WESAD leave-one-subject-out;
+  MIT-BIH inter-patient DS1→DS2; PTB-XL validation-frozen thresholds), cluster-aware
+  inference at the true sampling unit, corruption-validated LLM judges, condition-blind
+  query controls, and a retrieval-poisoning probe. On this system the battery reverses
+  the inherited headlines. Intra-patient evaluation manufactured a 0.899 AUC from a
+  detector that is chance under the standard inter-patient protocol (0.502, record
+  CI [0.32, 0.75]). Differences between WESAD detectors are not resolvable at
+  the subject level (autoencoder 0.846 ± 0.008 over ten seeds, p = 0.16 versus LOF;
+  minimum detectable AUC difference ≈0.09), and the ranking reshuffles under
+  feature-set perturbation. Query construction leaked condition vocabulary worth
+  26-36 concordance points on stress (94% falls to 68-72% across three runs, 80-82%
+  with only the prompt blinded, 58-60% with condition-adjacent terms also removed).
+  Removing retrieval entirely still yields stress naming at 76% (original topics) and
+  46% (strict): most stress naming is parametric prior, retrieval contributes 12-18
+  points, and an irrelevant context collapses naming to 6-10%. Pathology naming stays
+  below 25% in every arm; artifact attributions rise to 72-92% of events. One
+  planted corpus chunk, in context, steers urgent-care recommendations into 48-49 of
+  50 alerts across three runs, passes the citation-membership audit by construction,
+  and is certified "fully grounded" by a corruption-validated judge in 31-33 of 38-39
+  parsed outputs, while the same chunk seeded into the vector
+  store retrieves for almost no alerts (0/50 on the audited sample; 4% of an
+  alternative alert stream). The battery is cheap and artifact-verified; demonstrated on one system,
+  it is a candidate protocol, not yet a standard.
 ---
+
 
 # 1 Introduction
 
-Wearable and ambulatory sensors now stream clinical-grade biosignals (PPG, ECG, electrodermal activity, skin temperature, respiration) at home and in hospital [@reiss2019deepppg; @schmidt2018wesad; @goldberger2000physionet]. Human review of this volume is impossible, so first-pass screening is necessarily delegated to automated detectors. A conventional alert, however, reduces a possibly complex physiological event to a single number: it says that something looks unusual, but not what physiological process may be disturbed. Unexplained alerts are a documented driver of alert fatigue in continuous monitoring [@clifford2015physionetchallenge; @cvach2013alarmfatigue].
+Continuous ambulatory monitoring now streams five or more biosignal channels per patient, and first-pass screening is necessarily delegated to automated detectors [@reiss2019deepppg; @schmidt2018wesad; @goldberger2000physionet]. The operational cost of that delegation is well quantified: a large majority of continuous-monitoring alarms require no clinical action, and each unexplained alarm taxes reviewer attention in a workflow that cannot scale with alarm volume [@clifford2015physionetchallenge; @cvach2013alarmfatigue; @icufalsealarmreview2022]. An alert that reduces a possibly complex physiological event to one number transfers the entire interpretive burden to a human who is already saturated. Consumer-screening programs at population scale have reproduced the same bottleneck one level up: notification review burden, not detection sensitivity, is the binding constraint [@perez2019appleheart; @lubitz2022fitbit].
 
-Large language models appear to close this gap, but raw LLMs hallucinate: they fabricate facts and citations and state medical conclusions with unwarranted confidence. Retrieval-augmented generation (RAG) [@lewis2020rag] constrains the model to answer only from retrieved source documents and to cite them, a pattern reported to reduce fabrication substantially, including in clinical settings [@shuster2021retrieval; @aboelenen2025raghealth]. LLM-based ECG interpretation and report generation is by now an active field in its own right [@ansari2025ecgllmsurvey; @ecgchat2024; @ecglm2025], including RAG-based ECG report generation reviewed in 2026 [@ecgreportreview2026]. What that literature does not address, and where this paper sits (documented search protocol in `SEARCH_PROTOCOL.md`), is the *alert-triggered* setting: an unsupervised detector, running label-free on a wearable stream, authoring the retrieval query itself, with the explanation loop evaluated end-to-end on events with ground-truth labels.
+The engineering responses to this problem divide into two families, and both fail at the same meta-level. Detector research produces rankings among unsupervised anomaly detectors such as Isolation Forest (IF) [@liu2008isolationforest], Local Outlier Factor (LOF) [@breunig2000lof], and one-class and reconstruction baselines, evaluated under protocols that silently leak: training records inside test sets, thresholds tuned to test prevalence. Large language models are moving into medicine broadly [@thirunavukarasu2023llmmedicine], and LLM-explanation research couples generators to retrieval [@lewis2020rag; @shuster2021retrieval; @aboelenen2025raghealth] and grades the output with LLM judges or citation checks [@es2024ragas; @min2023factscore], instruments that are themselves rarely validated; ECG report generation is by now an active subfield [@ansari2025ecgllmsurvey; @ecgchat2024; @ecglm2025; @ecgreportreview2026]. Each family reports encouraging numbers. What neither reports is whether the numbers measure the system or the evaluation design.
 
-The evaluation design matters as much as the system here, because the shortcuts it must avoid are quiet ones. Training on subjects that later appear in the test set, choosing an alarm threshold with reference to test prevalence, or trusting an LLM judge that has never been checked: none of these look like errors in code, and each can flip a conclusion. An early version of this work produced exactly such results (an apparent 0.899 inter-patient-beat AUC that is chance under the standard protocol; "zero hallucination verdicts" from a judge that detects none of 100 planted fabrications), which is why every protocol in this paper was fixed in a timestamped pre-registration file before any reported run, and why the paper includes a protocol-sensitivity analysis quantifying how each of these choices moves the numbers. We report that analysis as a finding in its own right: it is a concrete demonstration of how presentable results can be manufactured by evaluation design rather than by modeling.
+We answer that question by auditing, instrument by instrument, a pipeline of the kind the field is building: unsupervised detectors on 30-second wearable windows trigger deviation-aware retrieval over society guidelines and open-access literature, and a local LLM writes a structured explanation (DETECTED / EVIDENCE / RECOMMENDATION / DISCLAIMER) with citations, entirely on-device. The pipeline is the testbed; the contribution is the audit, demonstrated on this one system. Concretely:
 
-*Contributions.*
+1. A protocol-sensitivity analysis with cluster-aware inference. Under pre-registered, contamination-hard protocols, we quantify what each evaluation choice is worth: intra-patient evaluation converts a chance-level inter-patient detector (LOF 0.502, record-cluster CI [0.32, 0.75]) into an apparent 0.899; resampling beats instead of records shrinks reported CIs by roughly twenty-fold; and the WESAD detector ranking is not stable to either protocol or defensible feature-set pruning (autoencoder 0.855 → 0.689 when redundant location statistics are dropped).
+2. An explanation-loop audit that separates query leakage from evidence content. Labeled-event concordance (148 events across three datasets, ground-truth labels withheld from the query) shows 94% concordance on stress but 12% on ectopy and 6% on pathology. We show the 94% is partly manufactured: the query builder injected condition vocabulary ("stress", "arousal") that the generator echoes. Condition-blind queries reduce stress concordance to 68-72% across three runs (58% under the strictest topic list), a 22-36-point drop that the decomposition arms split between prompt echo and retrieval steering, and flag-status analysis shows only 69/148 events would even fire under pre-registered operating points.
+3. A security blind-spot measurement. A corruption-validated judge (48% detection at 1% false positives) and a raw-text citation audit together catch generator-side fabrication at a 1% rate, but a single planted corpus chunk, placed in context, steers urgent-care recommendations into 48 of 50 regenerated alerts (against a 7.6% marker baseline), is cited by its planted identifier in 50 of 50 generations against a zero baseline, and is certified "fully grounded" by the validated judge in 31 of 38 parsed cases. Seeding the same chunk into the vector store loses naive retrieval 50 of 50 times, but we scope that result to unsophisticated seeding: optimized corpus-poisoning attacks against dense retrievers and RAG pipelines are published and effective [@zhong2023poisoning; @zou2025poisonedrag]. The claim we defend is about the evaluation stack, not the retriever: once a manipulated source is in context, every standard instrument passes it.
 
-1. Alert-triggered RAG for wearable biosignals, evaluated end-to-end on labeled events. To our knowledge (documented search, August 2026), this is among the first systems integrating unsupervised anomaly detection, alert-triggered retrieval, and grounded LLM explanation in one continuously running pipeline, and the first we know of to evaluate the explanation loop on ground-truth events (148 labeled windows across three datasets) with labels withheld from the query.
-2. A contamination-hardened detection evaluation. Pre-registered protocols (`THRESHOLDS.md`, timestamped before any run): WESAD leave-one-subject-out; MIT-BIH inter-patient DS1→DS2 with paced records (102/104/107/217) excluded; PTB-XL thresholds frozen from validation fold 9; IF over 10 seeds; bootstrap 95% CIs; paired-bootstrap significance tests; one-class SVM and dense-autoencoder baselines. Holding features and models fixed, switching from intra-patient to inter-patient evaluation reverses the detector ranking (Section 4.1).
-3. A validated judge protocol for clinical-alert faithfulness. All judges are first tested on a 200-item corruption benchmark (fabricated facts, citation swaps, fabricated identifiers, diagnostic exaggerations); the local judge is *selected by* validation rather than assumed, and agreement is reported as full score distributions, raw and within-1 agreement, and Gwet's AC1, alongside an objective raw-and-repaired citation audit and a FActScore-style atomic-claim verification.
-4. An honest utilization and duplication analysis of the retrieval layer. A 2×2 ablation of query construction × diversity constraint (both conditions preserved as artifacts), corpus-utilization metrics (53 of 204 documents ever retrieved; 6.5% of alerts touched any society guideline), and a near-duplicate analysis quantifying explanation templating (mean nearest-neighbor cosine 0.936).
-5. A corpus expansion matching the actual alert space. Two wearable-relevant guidance documents (the 2022 EHRA practical guide on digital devices for arrhythmia detection; the 2023 ACC/AHA/ACCP/HRS atrial-fibrillation guideline) are added to the guideline tier after an audit showed the original four guidelines matched almost none of the alerts the system produces; guideline utilization is reported as a metric.
+Every number in this paper is recomputable from the released artifacts by the released code, with consistency and correctness separately instrumented: `python draft_paper/verify_claims_v2.py` checks manuscript-artifact consistency for the headline claims, `python draft_paper/test_mappings.py` unit-tests the index-mapping code paths (the class of code behind a corrected interim value, Appendix B), and `python scripts/robustness/independent_concordance.py` reproduces every arm's counts through an independent implementation. Pre-registration and search protocols are timestamped, and a clinician-rating kit is released for the human adjudication our machine instruments cannot replace. We release the audit battery (inter-patient/LOSO evaluation, cluster-level inference, validation-derived thresholds, corruption-validated judges, raw-text preservation, condition-blind and shuffled-topic query controls, and corpus-integrity probes) as a candidate protocol demonstrated on one system; establishing it as a standard requires the multi-system and human evaluations that remain future work.
 
 # 2 Related Work
 
-*Unsupervised biosignal anomaly detection.* Isolation Forest (IF) [@liu2008isolationforest] and Local Outlier Factor (LOF) [@breunig2000lof] are standard shallow baselines for ECG and PPG streams [@pedregosa2011scikitlearn]. Beat-level arrhythmia evaluation on MIT-BIH follows the AAMI conventions and the inter-patient DS1/DS2 split established by de Chazal et al. [@dechazal2004interpatient; @moody2001mitbih], with paced records excluded; intra-patient evaluation is known to inflate performance substantially, which motivates our protocol revision. Large-scale ECG benchmarking conventions follow PTB-XL [@wagner2020ptbxl].
+*Unsupervised biosignal anomaly detection.* IF and LOF are the standard shallow baselines for ECG and PPG streams [@pedregosa2011scikitlearn; @turja2026unsupervised]. Beat-level arrhythmia evaluation on MIT-BIH follows the AAMI conventions and the inter-patient DS1/DS2 split of de Chazal et al. [@dechazal2004interpatient; @moody2001mitbih]; intra-patient evaluation is known to inflate performance, and PTB-XL established patient-stratified fold conventions for large-scale ECG benchmarking [@wagner2020ptbxl]. The alarm-suppression literature, anchored by the PhysioNet/CinC 2015 challenge and its reviews, defines the motivating workload [@clifford2015physionetchallenge; @cvach2013alarmfatigue]; our system does not suppress alarms but explains them, and inherits the same evaluation hazards.
 
-*Alert fatigue and false-alarm reduction.* The motivating problem has a decade of prior art we originally failed to cite: the PhysioNet/Computing in Cardiology Challenge 2015 on reducing false arrhythmia alarms in the ICU [@clifford2015physionetchallenge] and the alarm-fatigue literature [@cvach2013alarmfatigue]. Our system does not suppress alarms; it explains them, which is a complementary target.
+*LLM-based ECG interpretation and medical RAG.* ECG-conditioned LLMs generate diagnostic reports [@ecgchat2024; @ecglm2025], RAG-based ECG-to-text generation is an active subfield [@ecgreportreview2026], and medical-RAG benchmarks frame the grounding problem [@aboelenen2025raghealth; @neha2025ragreview; @xiong2024medragbench; @sohn2025rationale]. These systems report on diagnosed or labeled recordings under study conditions. The open technical gap is not "another pipeline" but the integrity of the evaluation layer itself: rankings that move with protocol choices, judges validated by agreement statistics alone [@zheng2023llmjudge; @wataoka2024selfpref; @panickssery2024owngenerations; @justice2024judgebias], citation checks that test membership rather than support [@gao2023citations], and query builders whose vocabulary can leak the expected answer. Wearable-specific guidance (the 2022 EHRA digital-devices practical guide and the 2023 ACC/AHA/ACCP/HRS atrial-fibrillation guideline [@svennberg2022ehra; @joglar2024afguideline; @vangelder2024escaf]) supplies the retrieval tier that such systems should be measured against, which we do directly (guideline reach per alert).
 
-*LLM-based ECG interpretation and report generation.* Surveys now cover transformers and LLMs for ECG diagnosis [@ansari2025ecgllmsurvey]; ECG-conditioned LLMs generate diagnostic reports [@ecgchat2024; @ecglm2025], and RAG-based ECG-to-text generation is an active subfield [@ecgreportreview2026]. These systems report on *diagnosed* or labeled recordings; none, to our knowledge, explains *unsupervised detector flags* on wearables, which is our setting. General medical-RAG surveys and benchmarks frame the grounding problem [@aboelenen2025raghealth; @neha2025ragreview; @xiong2024medragbench; @sohn2025rationale].
+*RAG evaluation methodology.* RAGAS provides reference-free faithfulness metrics [@es2024ragas]; FActScore decomposes output into atomic claims verified against a source [@min2023factscore]. We adopt both locally and add what they lack for the alert-triggered setting: validation of every judge on injected corruptions before use, cluster-aware uncertainty on every reported interval, condition-blind query controls, and a retrieval-poisoning probe for supply-chain integrity.
 
-*Wearable arrhythmia detection at scale.* The Apple Heart Study [@perez2019appleheart] and Fitbit Heart Study [@lubitz2022fitbit] established consumer PPG screening at population scale and its notification-review burden; the 2022 EHRA practical guide addresses exactly how digital devices should be used to detect and manage arrhythmias [@svennberg2022ehra], and the 2023 ACC/AHA/ACCP/HRS AF guideline formalizes ambulatory and device-based detection [@joglar2024afguideline; @vangelder2024escaf].
-
-*RAG evaluation and hallucination measurement.* RAGAS provides reference-free RAG metrics including faithfulness [@es2024ragas]; FActScore decomposes long-form output into atomic claims verified against a source [@min2023factscore]; citation generation itself is a studied task [@gao2023citations]. We adapt atomic verification locally and treat citation validity as necessary-but-not-sufficient for grounding.
-
-*LLM-as-judge and its biases.* LLM judging is established [@zheng2023llmjudge] but subject to position, verbosity, leniency, and self-preference biases [@wataoka2024selfpref; @panickssery2024owngenerations; @justice2024judgebias]. A local judge of the kind typically adopted scored 397 of 398 items identically in our own early runs, a textbook degenerate rater that naive reporting presents as perfect agreement. The revised protocol validates every judge on injected corruptions before use.
+*Corpus-poisoning attacks on RAG.* Adversarial passage injection against dense retrievers and RAG pipelines is established: optimized poisoned passages can be made to retrieve for many target queries while appearing natural [@zhong2023poisoning], and PoisonedRAG achieves roughly 90% attack success against RAG answers by injecting a handful of crafted texts per target question [@zou2025poisonedrag]. Our probe does not compete with these attacks. It plants one naive, unoptimized chunk to measure whether the evaluation stack (citation audit, validated judge) notices source-side compromise once a manipulated source reaches the context; the store-seeding arm is accordingly a naive-seeding baseline against which the published optimized attacks are expected to succeed, and we report it as such.
 
 # 3 Materials and Methods
 
-## 3.1 System overview
+## 3.1 System under audit
 
-The system is a five-stage pipeline (Figure 1): (1) signal ingestion from chest and wrist sensors; (2) windowing and feature extraction; (3) unsupervised anomaly detection with two models; (4) alert-triggered, deviation-aware retrieval over a two-tier medical corpus; (5) grounded explanation generation with citation canonicalization. Stages 1–3 run continuously; stages 4–5 fire only when a window is flagged.
+The pipeline is a five-stage loop (Figure 1): (1) signal ingestion from chest and wrist sensors; (2) windowing and feature extraction; (3) unsupervised anomaly detection; (4) alert-triggered, deviation-aware retrieval over a two-tier corpus; (5) grounded local generation with citation canonicalization. Stages 1–3 run continuously on a 30-second cadence; stages 4–5 fire only when a window is flagged. End-to-end latency is 25 ms (p95 32 ms) for retrieval and 11.0 s mean for generation on a consumer laptop GPU (RTX 5060), with no network dependency in the deployment path.
 
-![Figure 1: System pipeline. Stages 4–5 are alert-triggered; the highlighted elements (per-subject normal-reference queries, validated judges, raw-text preservation) are the evaluation-critical components.](figures_v2/pipeline_v2.png)
+![System pipeline under audit. Stages 4–5 are alert-triggered; highlighted elements (per-subject normal-reference queries, validated judges, raw-text preservation, corpus-integrity probe) are the audit-critical components.](figures_v2/pipeline_v2.png)
 
 ## 3.2 Signal datasets
 
-Four public datasets (Table 1), covering in-the-wild noisy wearables without labels and clinical pathology with expert labels.
+Four public datasets (Table 1) cover the two operating regimes the pipeline must survive: unlabeled in-the-wild wearables and labeled clinical pathology.
 
-*PPG-DaLiA* [@reiss2019deepppg; @ppgdalia2023]: 15 subjects, chest (RespiBAN 700 Hz: ECG, respiration) and wrist (Empatica E4: BVP 64 Hz, EDA 4 Hz, TEMP 4 Hz). An audit across all 15 subjects found the chest EDA and chest temperature channels constant (dead) in every subject; both are excluded globally, leaving five channels. PPG-DaLiA contains normal activity only; it supplies the alert stream for the explanation pipeline, not detection accuracy.
+*PPG-DaLiA* [@reiss2019deepppg; @ppgdalia2023]: 15 subjects, chest (RespiBAN, 700 Hz: ECG, respiration) and wrist (Empatica E4: BVP 64 Hz, EDA 4 Hz, TEMP 4 Hz). Chest EDA and chest temperature are identically zero (or at quantization floor) in every subject (chest EDA std = 0.0 and chest Temp std ≤ 6.1×10⁻⁵ across all 15 raw recordings) and are excluded globally, leaving five channels. PPG-DaLiA contains normal activity only; its 398 flagged windows therefore constitute, by construction, a false-alert workload, and are used exclusively to exercise the explanation loop, never to claim detection accuracy.
 
-*WESAD* [@schmidt2018wesad; @wesad2023]: 15 subjects (S2–S17), expert-annotated baseline/stress/amusement. Labels are used only for evaluation.
-
-*MIT-BIH Arrhythmia Database* [@moody2001mitbih; @mitbih2023]: 48 half-hour two-lead ambulatory ECG records, 360 Hz, beat-level annotations. This paper uses the standard inter-patient split with paced records 102, 104, 107, 217 excluded: DS1 (22 records) for training, DS2 (22 records) for testing [@dechazal2004interpatient].
-
-*PTB-XL* [@wagner2020ptbxl]: 21,799 clinical 12-lead 10-second ECGs with diagnostic superclasses and patient-stratified folds; 21,388 usable after dropping records without a superclass; folds 1–8 train, fold 9 validation, fold 10 test.
+*WESAD* [@schmidt2018wesad; @wesad2023]: 15 subjects (S2–S17), expert-annotated baseline/stress/amusement. *MIT-BIH Arrhythmia Database* [@moody2001mitbih; @mitbih2023]: 48 half-hour two-lead ambulatory records, 360 Hz, beat annotations; standard inter-patient split with paced records (102/104/107/217) excluded. *PTB-XL* [@wagner2020ptbxl]: 21,388 usable 12-lead 10-second ECGs with diagnostic superclasses and patient-stratified folds; folds 1–8 train, fold 9 validation, fold 10 test.
 
 *Table 1: Signal datasets.*
 
-| Dataset | Subjects / records | Labels | Role in this paper |
+| Dataset | Units | Labels | Role |
 |---|---|---|---|
-| PPG-DaLiA | 15 subjects | none | alert stream for explanation pipeline (398 flags) |
-| WESAD | 15 subjects | stress | detection: LOSO; labeled-event explanations (50 stress windows) |
-| MIT-BIH | 44 records (paced excl.) | beat-level (AAMI) | detection: inter-patient; labeled-event explanations (50 arrhythmic windows) |
-| PTB-XL | 21,388 ECGs | 5 superclasses | detection: folds 9/10; labeled-event explanations (48 pathology records) |
+| PPG-DaLiA | 15 subjects | none | false-alert explanation workload (398 flags) |
+| WESAD | 15 subjects | stress | detection (LOSO); labeled-event explanations (50) |
+| MIT-BIH | 44 records (paced excl.) | beat-level (AAMI) | detection (inter-patient); labeled-event explanations (50) |
+| PTB-XL | 21,388 ECGs | 5 superclasses | detection (folds 9/10); labeled-event explanations (48) |
 
-## 3.3 Preprocessing, windowing, features
+## 3.3 Features and measured redundancy
 
-Identical across all protocol variants in this paper (so that all differences are protocol, not features): per-channel cleaning, non-overlapping 30-second windows, 12 summary statistics per channel (mean, std, min, max, peak-to-peak, median, skewness, kurtosis, p25, p75, up-crossing ratio, RMS roughness) → 60 features for the five wearable channels. MIT-BIH: fixed 0.8 s beat segments (±144 samples, lead MLII); labels use the full AAMI normal set {N, L, R, e, j}, with all other beat symbols anomalous, and non-beat annotations excluded (the initial variant used the reduced set {N, L, R, e}). PTB-XL: lead I, one 12-feature vector per 10 s recording; normal iff superclass set is exactly {NORM}.
+Per-channel cleaning, non-overlapping 30-second windows (MIT-BIH: fixed 0.8 s beat segments, lead MLII; PTB-XL: one vector per 10 s recording, lead I), and 12 summary statistics per channel: mean, std, min, max, peak-to-peak, median, skewness, kurtosis, p25, p75, up-crossing ratio, RMS roughness, giving 60 features for the five wearable channels, fixed identically across every protocol variant so that all reported differences are attributable to protocol, not features. Redundancy is measured, not assumed: on baseline windows, 43 within-channel feature pairs exceed |r| = 0.90 (38 exceed 0.95), concentrated exactly where physics predicts: on the 4 Hz channels the location statistics are identical to three digits (wrist EDA and temperature mean/median/p25/p75: r = 1.00), while cross-channel redundancy is zero. Evaluation matrices contain no duplicate rows (0 across WESAD windows, MIT-BIH beats, PTB-XL records) and no near-constant features (minimum distinct values per feature: 20/113/209). Because distance-based detectors (LOF, RBF one-class SVM) re-weight redundant features implicitly, the WESAD ranking is re-run with three location statistics (median, p25, p75) dropped, 60 → 45 features. This is a post-hoc feature-set perturbation, not pure redundancy removal (the dropped statistics carry signal, as the results confirm), and it is reported as a sensitivity analysis (Section 4.1).
 
-## 3.4 Anomaly detectors and pre-registered evaluation protocols
+## 3.4 Detectors and pre-registered protocols
 
-Detectors: Isolation Forest (100 trees), KNN-LOF (k = 20, novelty mode), plus two baselines often omitted from such comparisons: a one-class SVM (RBF, γ = scale, ν = contamination) and a dense autoencoder (d → d/2 → d/4 → d/2 → d, MSE, Adam, early stopping), with reconstruction error as the score. All hyperparameters were fixed in `THRESHOLDS.md`, timestamped before any reported run; the single deviation (DeLong → paired bootstrap) is logged there.
+Detectors: Isolation Forest (100 trees), KNN-LOF (k = 20, novelty mode), one-class SVM (RBF, γ = scale, ν = contamination), and a dense autoencoder (d → d/2 → d/4 → d/2 → d, MSE, Adam, early stopping) scored by reconstruction error. All hyperparameters were fixed in `THRESHOLDS.md`, a timestamped pre-registration file covering the detection evaluation (written before any reported detection run; the single logged deviation is a DeLong → paired-bootstrap substitution for an implementation failure). Protocols: WESAD leave-one-subject-out with thresholds at the 85th percentile of each fold's training scores; MIT-BIH train DS1 normal beats, test DS2 only; PTB-XL thresholds frozen from fold 9 by F1-maximization over the integer percentile grid. IF runs over 10 seeds.
 
-*WESAD.* Leave-one-subject-out: per fold, train on the other 14 subjects' baseline windows; evaluate the held-out subject's baseline+stress+amusement windows (stress = positive). Threshold: 85th percentile of each fold's *training* scores. This removes both train-inside-eval overlap and intra-subject leakage.
+*Scope of pre-registration, stated precisely.* The explanation-side analyses (query construction, concordance lexicons, judge selection, atomic-claim sampling, poisoning) are exploratory and were not pre-registered; all lexicons are printed verbatim in Appendix A, and every explanation-side number is recomputable from the released artifacts. We claim pre-registration only for the detection protocols it actually covers.
 
-*MIT-BIH.* Train on DS1 normal beats; test on DS2 beats only. Paced records excluded everywhere. No DS1 beat is scored.
+## 3.5 Corpus, retrieval, and queries
 
-*PTB-XL.* Threshold percentile selected on fold 9 by F1-maximization, frozen, applied to fold 10. The full threshold-sensitivity curve is reported.
+The two-tier corpus comprises 6 society-guideline documents (4 v1 guidelines on syncope and ventricular arrhythmias [@shen2017syncope; @alkhatib2017vascd; @brignole2018syncope; @zeppenfeld2022vascd], plus the 2022 EHRA digital-devices guide and the 2023 ACC/AHA/ACCP/HRS AF guideline, fetched with recorded provenance; the 2024 ESC AF guideline is publisher-bot-blocked and its exclusion is logged) and 200 open-access articles fetched from Europe PMC with per-document license recorded: 206 documents, 5,045 chunks (500 words, 50 overlap), embedded with `all-MiniLM-L6-v2` [@reimers2019sbert; @wang2020minilm] into a fresh ChromaDB collection [@chromadb2023]. Retrieval is dense cosine with a source-diversity constraint (pool 20, at most one chunk per source, top-5); the retrieval layer is deterministic: a full re-run reproduced all 398 archived contexts exactly.
 
-*Uncertainty.* IF is run with 10 seeds (mean ± SD); AUCs carry bootstrap 95% CIs (1,000 resamples); IF-vs-LOF differences are tested with a paired bootstrap over the same resamples. (the contaminated variant used single runs, no CIs, no tests.)
+Queries are deviation-aware: per-subject normal reference (the subject's own non-flagged windows, implementable online via running statistics), z-scores of the two most deviating channels, evidence-tied shape phrases driven by kurtosis and peak-to-peak z-scores, and a topic phrase per deviating channel. A WESAD sanity check validates the reference class: stress windows' max |z| averages 43.7 versus 1.5 for baseline (Mann–Whitney p ≈ 2.5×10⁻¹³⁸). The topic vocabulary is where leakage enters, and Section 3.7's condition-blind control removes it.
 
-*PPG-DaLiA alert stream.* Held fixed across all variants for comparability: 95th-percentile flag per detector over the joint 4,308 windows; the union (398 alerts: 216 IF, 216 LOF, 34 both, Jaccard 0.085) is archived in `flagged_windows.parquet` and reused verbatim throughout; later variants change the queries and evaluation, not the flags.
+## 3.6 Grounded generation and objective auditing
 
-## 3.5 RAG knowledge corpus
+Generation uses Qwen3.5 9B [@qwen2025qwen35] served locally by Ollama [@ollama2023] (temperature 0.1, thinking disabled, 10k context) under a strict answer-only-from-context prompt with the fixed four-field output. Raw pre-canonicalization text is preserved for every explanation; the canonicalizer's every snap is logged. The citation audit checks each `[PMC...]` bracket against that alert's retrieved sources on raw and canonicalized text. This is a membership check, and Section 3.9 shows it is exactly the check a poisoned corpus defeats.
 
-The initial guideline tier (4 society PDFs on syncope and ventricular arrhythmias) matched almost none of the alerts the system actually produces (393 of 398 alerts in the original corpus run cited zero guideline content), so two wearable-relevant documents were added, fetched with recorded provenance and access route (`Dataset/Tier1_v2/manifest.csv`): the 2022 EHRA practical guide on using digital devices to detect and manage arrhythmias [@svennberg2022ehra] (20,524 words) and the 2023 ACC/AHA/ACCP/HRS AF guideline [@joglar2024afguideline] (119,730 words). The 2024 ESC AF guideline was attempted but is not programmatically accessible (publisher bot-blocked; exclusion recorded). The corpus totals 206 documents and 5,045 chunks (992 guideline chunks, 4,053 Tier-2 article chunks; 500-word chunks, 50-word overlap, mean 489 words), embedded with `all-MiniLM-L6-v2` into a fresh `chroma_db_v2` collection.
+## 3.7 Audit instruments
 
-## 3.6 Embedding and retrieval
+**Judge validation on injected corruptions.** 100 explanations are corrupted four ways (citation swap, fabricated clinical fact, fabricated identifier, diagnostic exaggeration; 25 each); each judge scores the 100 corrupted plus 100 clean originals. Detection rate and clean false-positive rate decide whether a judge is used at all. Judges: llama3.1:8b, gemma4:e4b (thinking disabled), gpt-oss:20b, and an API reference judge (DeepSeek-V4-Flash via OpenRouter, reasoning disabled, checkpointed, $10 hard cap; actual spend $0.36).
 
-Dense cosine retrieval with a source-diversity constraint (candidate pool 20, at most 1 chunk per source, top-5 context) in all variants. The final configuration additionally measures retrieval latency (embed + search): mean 25 ms, p95 32 ms per query (n = 398).
+**Cluster-aware inference.** Every headline interval is computed at its true sampling unit: subjects for WESAD (15 clusters), records for MIT-BIH (22 test records), and records plus patients for PTB-XL (fold 10 spans 1,877 patients; patient- and record-level intervals nearly coincide there). Concordance proportions carry Wilson intervals and cluster-bootstrap intervals; where the cluster count is small (six records for MIT-BIH concordance, seven subjects for WESAD), resampling intervals are reported but should be read as wide bounds rather than precise estimates. Per-class counts are reported as counts where n is small.
 
-## 3.7 Deviation-aware query construction
+**Labeled-event concordance, with two controls the literature omits.** For 148 labeled events (50 WESAD stress windows, 50 MIT-BIH windows with ≥3 annotated ectopic beats, 48 PTB-XL pathology records stratified 12 per superclass), ground-truth labels never enter the query; a fixed lexicon (Appendix A) scores whether the DETECTED field names the true condition, separately counting artifact attribution and honest insufficiency. Four controls. (i) Condition-blind queries: the topic segment is replaced by domain-only vocabulary (e.g., "electrodermal activity skin conductance photoplethysmography blood volume pulse heart rate variability ECG"; no "stress", no "arousal", no pathology terms), retrieval and generation re-run end-to-end, quantifying the total contribution of query-side condition vocabulary through both the prompt and the retrieval it induces. (ii) Flag status: each event's detector flag is reported under both the pre-registered operating points and a deployment-style union rule (per-detector 95th-percentile training thresholds, IF ∪ LOF), quantifying how far the labeled-event evaluation sits from a deployed alert stream (events are selected by expert annotation and ranked by detector score because the inter-patient detector at chance cannot select them; a detector-ranked first pass yielded 49/50 windows without annotated ectopy and was superseded with keys logged). (iii) A same-context arm regenerates every event with condition-blind topics against the original retrieved contexts, isolating the prompt-echo component of the leakage from the retrieval-steering component. (iv) A shuffled-topic control gives each event another event's topic segment (a fixed cross-group derangement) and measures how often the explanation names the injected (wrong) condition, making the echo mechanism visible directly. (v) Retrieval-off arms (empty context, and an irrelevant fixed off-domain context, each crossed with original and strict topics) isolate the generator's parametric contribution from the retrieved content's. One disclosure: the detector score used to rank candidate events was fit on all fifteen subjects' baselines, including the ranked subject's own. That in-sample choice affects ranking only (never labels in queries), is superseded for all reported protocol numbers by the clean LOSO model, and the flag-status control reports the difference explicitly. The lexicon itself scores keyword presence and cannot parse hedged contradiction: 26 of the 47 originally concordant WESAD explanations also contain artifact language, and this overlap is reported wherever it occurs.
 
-The original query construction computed the "top-2 deviating channels" as z-scores across the 398 flagged windows themselves: deviations measured against other anomalies, in batch across all 15 subjects, with a template character phrase ("abrupt isolated spike") keyed only to which detector fired. Its showcase alert named two channels at |z| = 0.5 while asserting a "spike."
+**Query-variant retrieval Jaccard.** The archived v1 query semantics (cross-flagged-batch z-scores, template character phrase) and the corrected queries are both run against the same collection; per-alert source-set Jaccard isolates the query fix from the corpus expansion in the guideline-reach decomposition.
 
-The corrected construction fixes the reference class and the evidence coupling:
+**Retrieval-poisoning probe.** One fabricated corpus chunk (a plausible "wearable pattern escalation" passage recommending specialist cardiac evaluation within 24 hours, carrying identifier PMC99048217) is inserted two ways: (A) appended to the retrieved context of 50 fixed alerts, and (B) added to a copy of the vector store and retrieved naturally for the same 50. Measurements: natural retrieval hit rate, claim-adoption rate in generated explanations (marker-phrase baseline in all original explanations: 7.6%), citation-audit survival, and validated-judge verdicts on poisoned outputs.
 
-1. Reference = the subject's own non-flagged windows (the normal population the detector implicitly learned). This is implementable online via running statistics and removes all cross-subject dependency.
-2. Evidence-tied character phrases: the detector statement is factual ("flagged by both detectors" / "by LOF"); the shape description is driven by kurtosis and peak-to-peak z-scores of the named channels ("abrupt, high-amplitude pattern" / "sustained level shift" / "only mildly unusual"), not by a template.
-3. Honesty guard: actual z values appear in the query; no "confirmed" language.
+## 3.8 Human evaluation kit (released; ratings are future work)
 
-The two query variants are compared directly in Section 4.7 (retrieval spread, guideline reach, duplication).
+A stratified 60-item kit (20 labeled events, 20 in-the-wild flags, 10 word-cap, 10 random) with anchored rubrics (faithfulness, actionability, potential-for-harm, overall adequacy), forms, and a Fleiss' κ [@cohen1960kappa] analysis script is released in `clinician_eval/`. No human ratings are reported in this paper; machine instruments are not a substitute, and the safety-relevant observations below are framed as hypotheses for that kit, not as clinical conclusions.
 
-A sanity check on WESAD validates the corrected metric: stress windows' max |z| (vs their own subject's baseline) has mean 43.7 versus 1.5 for baseline windows (Mann–Whitney p ≈ 2.5 × 10⁻¹³⁸; `wesad_zscore_sanity.json`).
+## 3.9 Threat model
 
-Labeled-event queries (WESAD stress windows, MIT-BIH arrhythmic windows, PTB-XL pathology records) are constructed the same way from detector-side quantities only (flag fraction, feature z-scores vs training normals, channel topics), with ground-truth labels never entering the query.
-
-## 3.8 Grounded generation with raw-text preservation and snap-logged canonicalization
-
-Generation uses Qwen3.5 9B [@qwen2025qwen35] served locally by Ollama (temperature 0.1, thinking disabled, 10k context), under a strict answer-only-from-context prompt with the fixed DETECTED / EVIDENCE / RECOMMENDATION / DISCLAIMER output format. Two changes from the initial configuration:
-
-1. Raw text is preserved before canonicalization. An earlier one-pass setup could not be audited: it canonicalized in-line and never saved the pre-repair text (documented in `rag_analysis_v1/prerepair_note.json`). Here, raw and canonicalized text are both stored, and the citation audit runs on both.
-2. Every canonicalizer snap is logged (before → after), enabling a repair audit: how many citations were snapped, and whether snaps could re-target a citation to a document that does not support the claim.
-
-Ablations run in the same cycle: a 300-word-cap prompt variant on 50 alerts (the completeness/brevity trade-off implied by the word cap is measured), and a generator ablation (llama3.1:8b, 50 alerts).
-
-## 3.9 Evaluation protocol
-
-*Citation audit (objective, deterministic).* Every `[PMC...]` bracket is checked against that alert's retrieved sources, on raw and on canonicalized text. Tier-1 sources carry no PMC identifier, so tier usage is measured at retrieval, not citation.
-
-*Judge validation on a corruption benchmark.* 100 explanations are corrupted four ways (25 each): citation swap to a wrong retrieved document; insertion of a fabricated clinical fact; fabricated PMC identifier; diagnostic exaggeration ("diagnostic of acute myocardial infarction"). Judges score the 100 corrupted plus their 100 clean originals. Per judge: detection rate (faithfulness = 1 on corrupted, overall and by corruption type) and false-positive rate on clean rows. The local judge for the main run is selected by this benchmark among llama3.1:8b, gemma4:e4b, and gpt-oss:20b; the API judge is DeepSeek-V4-Flash (OpenRouter, reasoning disabled). One candidate (llama3.1:8b) had shown near-constant scoring in earlier use (397/398 identical); it is retained only if it now demonstrates discrimination.
-
-*Main judging.* The selected local judge (free, on-device) and the API judge score all groups: 398 PPG-DaLiA alerts, 148 labeled events, 50 word-cap items, 50 generator-ablation items. The API path is checkpointed and capped (hard $10 budget, in-script enforced; actual spend reported).
-
-*Agreement.* Full score distributions per judge; raw and within-1 agreement; Gwet's AC1 (degeneracy-aware). κ is reported only with the constant-rater caveat if it still applies. No binary "zero hallucination" headline: the fraction of items scored below 3 on faithfulness is reported explicitly.
-
-*Labeled-event concordance.* For each labeled event, a keyword-lexicon check determines whether the DETECTED field names a condition consistent with the true label (e.g., ventricular-type terms for VEB windows; infarction/ischemia terms for MI records), an artifact-conclusion rate (explanations that attribute true pathology to motion or sensor artifact, the safety-critical failure mode), and an insufficiency rate (honest "context insufficient" responses). Lexicons are fixed in the analysis script.
-
-*Atomic-claim verification (FActScore-style).* On a 60-item sample (30 wearable alerts, 30 labeled events), the generator model decomposes each explanation into atomic claims; a *different-family* verifier (gemma4:e4b) labels each claim SUPPORTED / UNSUPPORTED / UNVERIFIABLE from the retrieved context alone. This partially breaks the closed loop of judge-based evaluation, where judges see exactly the generator's context and nothing else is checked; what remains closed (verification is still context-relative, not source-document- or clinician-relative) is stated as a limitation.
-
-*Human evaluation (protocol released; ratings are future work).* A stratified 60-item kit (20 labeled events, 20 in-the-wild flags, 10 word-cap items, 10 random) with plain-language instructions, anchored rubrics (faithfulness, actionability, potential-for-harm, overall adequacy), and a Fleiss' κ analysis script is released in `clinician_eval/` so that any group with clinical collaborators can run it unchanged. We could not recruit qualified raters within this revision, so no human ratings are reported and no clinical-sufficiency claim is made; everything the machine side can check is checked above.
-
-*System.* End-to-end latency per alert (retrieval + generation) on the local GPU; judge latency measured directly (no estimated figures reported).
+The pipeline trusts four inputs: the sensor stream, the subject's online normal reference, the retrieval corpus (built programmatically from publisher APIs), and local model files. Against these: evasion (crafted signal hides pathology or floods alerts; the 398-flag false-alert workload shows the flooding regime is the default, and Section 4.1 shows the inter-patient detectors offer little margin above chance to erode); normal-reference poisoning (corrupted calibration windows shift every subsequent z-score; the query builder's running statistics make this a one-time-write surface); and corpus poisoning (Section 4.5: one chunk in context gives 96-98% adoption, 82-85% full-grounded certification, and zero audit detections; store seeding with one naive chunk gives 0/50 retrieval wins, while optimized published attacks are expected to succeed); and supply chain (embedding models and corpus fetches, mitigated by the recorded provenance manifest and, in deployment, by tier-restricted retrieval and provenance pinning). The poisoning probe is cheap (a copy of the vector store and 100 local generations) and we argue it belongs in the standard RAG evaluation battery alongside judge validation.
 
 # 4 Results
 
-## 4.1 Detection under clean protocols (protocol-sensitivity analysis)
+## 4.1 Detection: what each evaluation choice is worth
 
-*Table 2: Detection results under the pre-registered protocols. AUC with bootstrap 95% CI; IF additionally mean ± SD over 10 seeds.*
+*Table 2: Detection under pre-registered protocols. Pooled AUC with window-level bootstrap CI (as commonly reported), cluster-aware 95% CI at the true sampling unit, and the paired test at the cluster level.*
 
-| Dataset (protocol) | Model | AUC [95% CI] | Precision | Recall | F1 |
+| Dataset | Model | AUC | window-level CI | cluster CI | paired cluster p (IF vs LOF) |
 |---|---|---|---|---|---|
-| WESAD (LOSO) | IF | 0.799 [0.770, 0.827] (seed SD 0.009) | 0.520 | 0.749 | 0.614 |
-| WESAD (LOSO) | LOF | 0.827 [0.800, 0.852] | 0.422 | 0.955 | 0.585 |
-| WESAD (LOSO) | OC-SVM | 0.814 [0.787, 0.842] | 0.466 | 0.881 | 0.610 |
-| WESAD (LOSO) | **Autoencoder** | **0.855 [0.831, 0.878]** | 0.454 | 0.922 | 0.609 |
-| MIT-BIH (inter-patient DS1→DS2) | IF | 0.670 ± 0.023 (seed-0 0.654 [0.645, 0.663]) | 0.247 | 0.485 | 0.327 |
-| MIT-BIH (inter-patient) | **LOF** | **0.502 [0.492, 0.512]** | 0.098 | 0.663 | 0.171 |
-| MIT-BIH (inter-patient) | OC-SVM | 0.675 [0.666, 0.684] | 0.217 | 0.522 | 0.307 |
-| MIT-BIH (inter-patient) | Autoencoder | 0.638 [0.628, 0.648] | 0.239 | 0.519 | 0.327 |
-| PTB-XL (fold 9 → fold 10) | IF | 0.632 [0.607, 0.654] (seed SD 0.004) | 0.587 | 0.957 | 0.728 |
-| PTB-XL (fold 9 → fold 10) | LOF | 0.682 [0.661, 0.703] | 0.586 | 0.970 | 0.731 |
-| PTB-XL (fold 9 → fold 10) | OC-SVM | 0.628 [0.606, 0.650] | 0.578 | 0.990 | 0.730 |
-| PTB-XL (fold 9 → fold 10) | Autoencoder | 0.628 [0.605, 0.651] | 0.591 | 0.965 | 0.733 |
+| WESAD (LOSO) | IF | 0.823 | [0.796, 0.848] | [0.742, 0.901] | **0.97** |
+| WESAD (LOSO) | LOF | 0.827 | [0.800, 0.852] | [0.743, 0.898] | — |
+| WESAD (LOSO) | OC-SVM | 0.814 | [0.787, 0.842] | [0.720, 0.896] | — |
+| WESAD (LOSO) | Autoencoder | 0.850 | [0.825, 0.873] | [0.776, 0.911] | 0.16 vs LOF |
+| MIT-BIH (inter-patient) | IF | 0.671 ± 0.023 | [0.662, 0.679] | [0.480, 0.848] | **0.139** |
+| MIT-BIH (inter-patient) | LOF | 0.502 | [0.492, 0.512] | [0.315, 0.750] | — |
+| MIT-BIH (inter-patient) | OC-SVM | 0.675 | [0.666, 0.684] | [0.477, 0.857] | — |
+| MIT-BIH (inter-patient) | Autoencoder | 0.638 | [0.628, 0.648] | [0.408, 0.842] | — |
+| PTB-XL (fold 9→10) | IF | 0.633 | [0.610, 0.656] | [0.610, 0.657] | **0.001** |
+| PTB-XL (fold 9→10) | LOF | 0.682 | [0.661, 0.703] | [0.661, 0.706] | — |
+| PTB-XL (fold 9→10) | OC-SVM | 0.628 | [0.606, 0.650] | [0.604, 0.651] | — |
+| PTB-XL (fold 9→10) | Autoencoder | 0.628 | [0.605, 0.651] | [0.602, 0.651] | — |
 
-Paired-bootstrap tests (IF vs LOF): WESAD p = 0.008 (LOF ahead), MIT-BIH p = 0.001 (IF ahead), PTB-XL p = 0.001 (LOF ahead).
+IF and autoencoder rows use seed-mean scores over 10 runs (score-averaging; averaging per-seed AUCs instead gives 0.846 ± 0.008 for the autoencoder); LOF and OC-SVM are deterministic single fits. An interim version of this table tested seed-0 scores at the window level and reported p = 0.008, 0.001, 0.001; correcting seed selection and resampling unit dissolves two of the three "significant" differences. Equivalence is not asserted anywhere: two one-sided tests at δ = 0.05 narrowly fail for both WESAD pairs (90% CIs of the AUC differences [−0.050, 0.053] for IF vs LOF and [−0.004, 0.055] for AE vs LOF), and the minimum detectable AUC differences at 80% power are 0.088 (WESAD, 15 subject clusters), 0.052 (AE vs LOF), and 0.285 (MIT-BIH, 22 records). PTB-XL patient-level intervals nearly coincide with record-level (LOF [0.659, 0.707] over 1,877 patients).
 
-*Table 3: Protocol sensitivity. Same features, same models, protocol only.*
+Protocol choice decides the conclusion. Under intra-patient evaluation with training data inside the test set, LOF appears to reach 0.899 on MIT-BIH; under the community-standard inter-patient protocol it is chance (0.502; Figure 3), and its record-level CI [0.315, 0.750] shows that even the chance verdict is generous precision: 22 test records simply do not pin a beat-level AUC to ±0.01, and every beat-level CI in Table 2 overstates certainty by roughly an order of magnitude. All four inter-patient models are statistically unresolvable from one another at the record level, including the largest gap (IF 0.671 vs LOF 0.502, paired record-level p = 0.139; minimum detectable difference 0.285 at 22 records, which is why). The WESAD ranking is fragile along a second axis. The autoencoder's pooled 0.855 replicates across ten training seeds (0.846 ± 0.008, range 0.832–0.861; seed-mean subject-cluster CI [0.776, 0.911]); the point estimate is real, but its margin over LOF is not resolvable at the subject level (p = 0.108 single-run, 0.162 seed-mean), and the same holds for IF scored at seed-mean (0.823 vs LOF 0.827, p = 0.97). An interim version of this comparison tested seed-0 scores at the window level and reported p = 0.008 on WESAD and p = 0.001 on MIT-BIH; correcting seed selection and resampling unit dissolves both, and only PTB-XL (LOF ahead, p = 0.001; Figure 4) survives (full provenance in Appendix B). ROC curves for all detectors appear in Figures 2-4. Dropping three location statistics (60 → 45 features, Section 3.3) reshuffles the ranking entirely (OC-SVM 0.741 > LOF 0.731 > IF 0.696 > autoencoder 0.689; AE-vs-LOF p = 0.28). We therefore report WESAD detector differences as not resolvable at this unit, not as a leaderboard: with 15 subject clusters the minimum detectable AUC difference is ≈0.09 (2.8 × SD of the cluster-level score-difference bootstrap; two one-sided tests at δ = 0.05 narrowly fail), so "p = 0.97" is an unpowered non-difference, not evidence of equivalence. The PTB-XL validation-frozen threshold (percentile 5, selected on fold 9) yields a near-saturating operating point (recall 0.97, precision 0.59); the full threshold-sensitivity curve is reported rather than a single F1 (Figure 5).
 
-| Quantity | Contaminated protocol | Clean protocol |
+*Table 3: Protocol sensitivity (same features, same models, evaluation design only).*
+
+| Quantity | Contaminated | Pre-registered |
 |---|---|---|
-| WESAD LOF AUC | 0.910 (train ⊂ eval, intra-subject) | 0.827 [0.800, 0.852] (LOSO) |
-| WESAD IF AUC | 0.874 | 0.799 [0.770, 0.827] |
-| MIT-BIH LOF AUC | 0.899 (intra-patient, train ⊂ eval) | **0.502, chance** (inter-patient) |
-| MIT-BIH IF AUC | 0.668 | 0.670 ± 0.023 |
-| PTB-XL AUCs | unchanged (folds already separated) | 0.632 / 0.682 (threshold now val-derived) |
-| Best WESAD detector | "LOF" | Autoencoder (0.855), not a classic detector |
+| MIT-BIH LOF AUC | 0.899 (intra-patient, train ⊂ eval) | 0.502 (inter-patient), record CI [0.315, 0.750] |
+| MIT-BIH IF AUC | 0.668 | 0.654, record CI [0.442, 0.847] |
+| WESAD LOF AUC | 0.910 (train ⊂ eval) | 0.827, subject CI [0.743, 0.898] |
+| WESAD "winner" | LOF | none resolvable (AE point-best, p = 0.16; IF seed-mean 0.823, p = 0.97) |
+| WESAD ranking under feature pruning (60→45) | — | reshuffled: OCSVM > LOF > IF > AE |
 
-The protocol effect dwarfs everything else in this table. LOF's 0.899 on MIT-BIH exists only under the intra-patient protocol; under the community-standard inter-patient protocol it falls to chance (0.502), which inverts the intra-patient conclusion "LOF matches or exceeds IF on every dataset." Second, a PTB-XL threshold set at the 43rd percentile of test scores to match test prevalence is circular by construction; the pre-registered validation-fold rule instead selects a near-saturating operating point (high recall, low precision), and we therefore report the full threshold-sensitivity curve (Figure 4) rather than a single F1. Third, simple learned baselines matter: a 3-layer autoencoder beats both classic detectors on WESAD (0.855), so neither IF nor LOF should anchor a deployment claim.
+![WESAD ROC curves under LOSO (pooled across held-out subjects), four detectors.](figures_v2/roc_wesad.png)
 
-![Figure 2: ROC curves under clean protocols: WESAD LOSO (pooled), MIT-BIH inter-patient DS2, PTB-XL fold 10; four detectors each.](figures_v2/roc_wesad.png)
+![MIT-BIH ROC curves under the inter-patient DS1-to-DS2 protocol, four detectors.](figures_v2/roc_mitbih.png)
 
-![Figure 3: PTB-XL threshold-sensitivity (LOF, fold 10): precision/recall/F1 vs score percentile; the pre-registered validation rule selects pct 5.](figures_v2/ptbxl_threshold_curve.png)
+![PTB-XL ROC curves on fold 10 (thresholds frozen from fold 9), four detectors.](figures_v2/roc_ptbxl.png)
 
-Supplementary material in the released repository: per-dataset ROC curves and the WESAD per-subject AUC distribution.
+![PTB-XL threshold sensitivity (LOF, fold 10): precision/recall/F1 vs score percentile; the validation rule selects pct 5.](figures_v2/ptbxl_threshold_curve.png)
 
-*Feature ablation (PTB-XL, LOF):* dropping dynamics features hurts most (AUC 0.682 → 0.646), dropping location features least (→ 0.677); dropping spread → 0.633, shape → 0.666. The earlier "feature budget ceiling" assumption is replaced by this measured sensitivity: the 12 statistics are not interchangeable, and morphology-aware features remain the plausible route to better ceilings.
+## 4.2 The false-alert workload and the retrieval layer
 
-## 4.2 The alert stream
+The 398 PPG-DaLiA flags (95th-percentile per detector, union; IF 216, LOF 216, both 34, Jaccard 0.085; archived and reused verbatim) are a false-alert workload by construction, and the retrieval layer is audited on it. The query-semantics correction is not cosmetic: running the archived v1 queries and the corrected queries against the same collection yields per-alert source-set Jaccard of 0.120 (median 0.111; zero identical sets; 54 vs 44 unique documents used). Guideline reach decomposes accordingly: 6.5% (v1 queries, original 204-doc corpus) → 12.6% (v1 queries, expanded corpus) → 17.6% (corrected queries, expanded corpus). The corpus expansion and the query fix contribute comparably, and 82% of alerts still retrieve no society guideline, a corpus/alert-space mismatch we report as a negative finding rather than an achievement. Document-level diversity does not produce content diversity: mean nearest-neighbor cosine across explanations is 0.915 after the corrections (0.936 before), 67.6% of alerts retain a >0.9-similar twin (81.7% before), and five-channel summary statistics bound the query space: retrieval spread and explanation duplication are coupled through the feature budget, not through retriever tuning.
 
-The 398 PPG-DaLiA flags (archived and reused verbatim; all 15 subjects contribute) remain the in-the-wild explanation corpus. Because PPG-DaLiA contains only normal activity, no detection accuracy is claimed on it, and the flags are of unknown (likely predominantly artifact) provenance, which is why the labeled-event evaluation (§4.7) was added.
+Alert-stream sensitivity. The archived stream is not rule-invariant: an online variant (per-subject 95th-percentile flags, IF ∪ LOF) selects 394 flags sharing only 254 windows with the archived stream (Jaccard 0.47). The downstream headline statistics are stable on the variant (guideline reach 18.3% versus 17.6%; near-duplicate mean nearest-neighbor 0.901 versus 0.898 on matched 100-generation samples), but the naive store-seeding hit rate is not: the same unoptimized poison chunk retrieves into the top 5 for 16 of 394 variant alerts (4.1%) after none of the 50 audited alerts, so Arm B's zero in Section 4.5 is a property of the alert sample, not a guarantee. The archived flag rule itself involves no labels and no evaluation split; the protocol defects corrected in this paper affected the labeled-dataset AUCs, not this rule.
 
-## 4.3 Retrieval: diversity, utilization, and duplication (original corpus, artifact-backed)
+## 4.3 Citation accuracy and judge validation
 
-*Table 4: 2×2 retrieval ablation, 398 queries × 5 slots, original query semantics. (Naive-template baseline reconstructed and archived; it collapses to 5 documents.)*
+The objective audit over the 398 false-alert explanations sees raw and canonicalized text: 1,208 inline PMC citations on raw text, 1,196 valid (99.01%), with 12 invalid citations across 9 explanations, largely identifiers of documents outside the alert's context, not digit transpositions; post-repair validity is 100% by dropping the 12. Tier-1 name-style citations carry 8 further unmatched names. Citation validity is a membership check; Section 4.5 measures what it cannot see.
 
-| Query × diversity | Unique docs used | Top-source share | Alerts with ≥1 guideline source |
+*Table 4: Judge validation on the corruption benchmark (100 corrupted + 100 clean).*
+
+| Judge | Detection | FP on clean | By corruption type |
 |---|---|---|---|
-| Naive template, diversity ON | 5 | 20.0% | 0/398 |
-| Naive template, diversity OFF | 5 | 20.0% | 0/398 |
-| Deviation-aware (original), diversity OFF | 51 | 14.0% | 21/398 (5.3%) |
-| Deviation-aware (original), diversity ON (archived run) | 53 | 11.8% | 26/398 (6.5%) |
+| llama3.1:8b | **0.00** | 0.00 | 0.00 on all four types |
+| gemma4:e4b (validated; selected) | **0.48** | **0.01** | exaggeration 0.96, fabricated fact 0.80, fabricated citation 0.16, citation swap 0.00 |
+| DeepSeek-V4-Flash (284B, API; final run) | 0.42 (first run 0.44) | 0.31 (first run 0.07) | exaggeration 1.00, fabricated fact 0.64, citation swap 0.00, fabricated citation 0.04 |
 
-The results here cut both ways. Deviation-aware queries do spread retrieval (5 → 53 unique documents), and the diversity constraint adds a small further gain (51 → 53) while cutting top-source dominance. But even the best original configuration used only 53 of 204 corpus documents (26%) and brought guideline content into just 6.5% of alert contexts: a corpus/alert-space mismatch that motivated the corpus expansion. Near-duplication quantifies a templating problem that document-level diversity metrics miss: mean nearest-neighbor cosine similarity across the 398 explanations is 0.936; 99.75% of alerts have a neighbor above 0.8 and 81.7% above 0.9, collapsing into only 173 effective clusters. Retrieval diversity at the document level did not translate into explanation diversity at the content level, and the expanded corpus and corrected queries are evaluated against this metric below.
+A judge of the kind commonly adopted (llama3.1:8b) is a null instrument (it had also scored 397/398 real items identically), and a "zero hallucination" verdict from it is an artifact of asking a question it cannot answer. The validated local judge catches fabricated facts and exaggerations at a 1% false-positive rate; the 284B API judge is not automatically better and not stable across identical runs (detection 0.44 → 0.42, false positives 0.07 → 0.31). No judge of any size catches citation swaps (0.00 across all three judges). Main-run scores (local judge; 9.4% parse failures reported and excluded): faithfulness 2.21 on the false-alert workload with 44% scored 3 and two 1s; cross-judge Gwet's AC1 0.475/0.679/0.489: moderate agreement that no unvalidated judge should be trusted to produce. Atomic-claim verification on a 60-item sample (797 claims, different-family verifier): 52.3% SUPPORTED, 47.7% UNVERIFIABLE, 0% UNSUPPORTED; the zero contradiction rate reflects hedged phrasing, and roughly half the atomic content is unverifiable from the system's own evidence.
 
-## 4.4 Citation accuracy: raw vs canonicalized
+## 4.4 Labeled-event concordance: leakage quantified, failure mode confirmed
 
-The canonicalizer's identifier capture was corrected during development (a greedy regex had captured full source-name slugs, silently dropping valid citations written in long form), and raw generation text is preserved, so the objective audit over all 546 main explanations (398 wearable alerts plus 148 labeled events) sees both states: 1,208 inline PMC citations on raw text, 1,196 valid (99.01%). That is 12 invalid citations across 9 explanations, a fabrication or mistyping rate of about 1%. The repaired text reaches 100% validity by dropping those 12 (zero near-miss snaps were needed; the invalid IDs were not digit transpositions of retrieved IDs but largely identifiers of documents outside the alert's context). Tier-1 guideline sources, which carry no PMC identifier, received 109 valid name-style citations across the corpus (8 unmatched name citations, a further fabrication signal). We no longer headline citation accuracy: validity is a set-membership check, necessary but far from sufficient for grounding.
+*Table 5: Does the explanation name the true condition? Original queries vs condition-blind queries; Wilson and cluster-bootstrap CIs; flag status under pre-registered operating points. Cluster intervals rest on 6-7 clusters for WESAD/MIT-BIH and are wide bounds, not precise estimates.*
 
-## 4.5 Judge validation on the corruption benchmark
+| Event set (true label) | n (clusters) | Flagged | Original concordance | Blind concordance | Artifact language (orig → blind) |
+|---|---|---|---|---|---|
+| WESAD stress | 50 (7 subjects) | 7/50 | 47 (94%) [W 84–98, C 89–100] | 34 (68%) [C 60–77] | 28 → 36 |
+| MIT-BIH ectopy (V/SVEB) | 50 (6 records) | 18/50 | 6 (12%) [W 6–24, C 0–24] | 4 (8%) [C 0–28] | 28 → 43 |
+| PTB-XL pathology (MI/STTC/CD/HYP) | 48 (27 patients) | 44/48 | 3 (6.2%) [W 2–17, C 0–13] | 6 (12.5%) [C 5–21] | 20 → 44 |
 
-*Table 5: Judge validation (100 corrupted + 100 clean items; detection = faithfulness=1 on corrupted; FP = faithfulness=1 on clean).*
+The original 94/12/6 pattern contains two separable effects that the controls split. Leakage: the original topic vocabulary names the expected condition ("stress … arousal" for WESAD; "arrhythmia ectopic beats … myocardial infarction hypertrophy" for the ECG sets), and the generator echoes it; with condition-blind domain-only topics, stress concordance falls 22-26 points to 68-72% across three runs [60-77 for the first run] while remaining well above chance; the sympathetic-deviation evidence itself carries the rest. Evidence content: on the ECG sets, the queries already contained the full pathology differential and the explanations still name the condition at 6–12%; under blind topics the pathology numbers do not move beyond noise (MIT-BIH 12→8%, PTB-XL 6.2→12.5%, cluster CIs overlapping in both conditions), so topic vocabulary was never the binding constraint there: twelve summary statistics carry no morphology, and the generator hedges instead of naming. Artifact bias strengthens without hints: artifact-language counts rise on all three sets under blind queries (28→36, 28→43, 20→44), because a corpus weighted toward signal-quality literature and a hedged prompt default to artifact framings once the condition vocabulary stops steering. A conservative artifact-first posture is well matched to a false-alert workload (Section 4.2) and becomes a safety hypothesis exactly when the underlying event is real pathology: if the artifact attribution is confirmed by the released clinician kit, the explanation reassures where it should escalate; that confirmation is future work and no clinical claim is made here. Flag status bounds the end-to-end claim: 69/148 events (47%) would fire under pre-registered operating points and 68/148 under the deployment-style union rule (per-detector 95th-percentile training thresholds, IF ∪ LOF); the two rules nearly coincide on WESAD (7/50 both) and diverge on MIT-BIH (18/50 versus 13/50) and PTB-XL (44/48 versus 48/48). Either way, the concordance numbers characterize the explanation stage conditional on oracle event selection, not a deployed alert stream. The MIT-BIH pre-registered count corrects an interim value through a unit-tested mapping (Appendix B).
 
-| Judge | Detection rate | False-positive rate | Detection by corruption type |
-|---|---|---|---|
-| llama3.1:8b (near-constant scorer) | **0.00** | 0.00 | 0.00 on all four types |
-| gemma4:e4b (thinking disabled) | **0.48** | 0.01 | exaggeration 0.96, fabricated fact 0.80, fabricated citation 0.16, citation swap 0.00 |
-| DeepSeek-V4-Flash (API) | **0.44** (rerun: 0.42) | **0.07** (rerun: 0.31) | exaggeration 0.80, fabricated fact 0.64, citation swap/fabricated citation 0.16 |
+The decomposition arms split the 26-point drop and bound its stochasticity. Across three independent blind runs, stress concordance is 68/72/70% (temperature 0.1; the repetition exists because this paper's own judge-variance finding applies equally to generation). Holding the retrieved contexts fixed and blinding only the prompt leaves stress concordance at 80-82% across three runs (ectopy 4%, pathology 0%), so the drop splits into roughly 12-14 points of prompt echo (94 → 80-82 with contexts fixed) and 8-14 more through retrieval (80-82 → 68-72), because the query is the retrieval key and removing its condition vocabulary retrieves a different corpus neighborhood. A stricter variant that also removes the condition-adjacent terms "heart rate variability" and "ECG" drops stress concordance to 58-60% across three runs (ectopy 18-22%, pathology 14.6-22.9%): condition-adjacent vocabulary carried a further 10-14 points. The retrieval-off arms carry the attribution one level deeper. With an empty context the generator still names the true condition for 76% of stress events under original topics and 46% under strict topics, so the majority of stress naming is parametric knowledge rather than retrieved content, and retrieval's marginal contribution is 12-18 points (94 versus 76; 58-60 versus 46). With an irrelevant but present context (a fixed proteomics paper) naming collapses to 6-10% and refusals approach totality (49-50 of 50): the answer-only-from-context rule suppresses the prior whenever any context exists, so deployed behavior is prompt-anchored while the empty-context arm exposes the prior the prompt holds down. Pathology naming in the retrieval-off arms is 0-6% (one arm covers 38 of 48 PTB-XL events after generation failures): the pathology floor is a property of the query evidence, not of the corpus. The empty and irrelevant arms are single runs; the strict arm carries a three-run band. The shuffled-topic control shows the echo is evidence-consistent rather than blind: given another group's topic vocabulary, the explanations name the injected (wrong) condition in only 2 of 93 cross-group cases. Pathology naming remains below 25% in every arm and run (0-22.9% across the full family: original 12%/6.2%, same-context 4%/0%, blind 6-16%/12-15%, strict 18-22%/14.6-22.9%, retrieval-off 0-6%), an order below the stress rates, with arm-to-arm spread of the same order as any single arm's value; we report it as a bounded observation, not a tested floor. Artifact attribution rises under blind topics on all three sets (to 35-44 of 50/50/48 events per run, i.e. 70-92%) while honest refusals stay near zero throughout (at most one per set in every arm): domain-only vocabulary does not convert refusals into answers, it steers retrieval toward the signal-quality literature, and the generator commits to artifact framings. On this system, concordance measures retrieval steering as much as diagnosis.
 
-The near-constant scorer (llama3.1:8b) detects none of the injected fabrications. Combined with its 397/398 constant scoring, it is a null instrument: a "zero hallucination" verdict from such a judge is an artifact of asking a question it cannot answer. Second, the validated local judge (gemma4:e4b, selected by the pre-registered criterion) catches fabricated facts and diagnostic exaggerations well (0.80–0.96) at a 1% false-positive rate. Third, the much larger API judge is not automatically better and not stable: across two identical benchmark repetitions its false-positive rate ranged 7–31% (both runs preserved in the released checkpoint). A 284B API judge can be as trigger-happy or as lenient as provider routing and decoding noise decide on a given day, which is itself an argument for validated local judges plus human adjudication. No judge of any size caught citation swaps reliably (0.00–0.16): LLM judges verify that text *sounds* supported, not that cited documents *are* the right ones, which is why the objective raw-text citation audit and the human kit remain necessary. (Reproducibility notes we report for the record: gemma4's default thinking mode silently consumed the token budget and returned empty content until disabled (the invalidated first pass is preserved with an `_INVALID` suffix); local-judge scores are not bit-reproducible across runs on partial-GPU-offload hardware, with identical-input dalia faithfulness means ranging 2.21–2.69 across three runs; all paper numbers come from the final complete run.)
+Scope of inference across arms. The condition family (original, condition-blind x3, same-context x3, strict, shuffled, and the retrieval-off arms below) is exploratory in its entirety: none of its contrasts was pre-registered, no multiplicity adjustment is applied across the family, and single-run arms are labeled as such. Conclusions rest on magnitudes and run bands, not on marginal per-arm differences, which is why the pathology result is stated as a bound rather than a test.
 
-## 4.6 Main judge scores and cross-judge agreement
+## 4.5 Retrieval poisoning: the audit stack's blind spot
 
-*Table 7: both validated judges over all generations (local = gemma4:e4b, API = DeepSeek-V4-Flash; 977 checkpointed API calls in total across all runs, cumulative spend $0.36, hard $10 cap in-script; judging cells in the released notebook are cache-only, so re-execution costs nothing). Score 0 = parse failure (61/646 = 9.4% for the local judge; excluded from statistics and reported).*
+*Table 6: Planted-chunk probe (50 alerts; marker-phrase baseline in all original explanations: 7.6%).*
 
-| Group | n | Faithfulness (local / API) | Relevance (local / API) | Completeness (local / API) |
-|---|---|---|---|---|
-| PPG-DaLiA alerts | 398 | 2.21 / 2.10 | 2.66 / 2.75 | 2.19 / 2.50 |
-| WESAD stress | 50 | 2.78 / 2.02 | 3.00 / 2.92 | 2.76 / 2.46 |
-| MIT-BIH ectopy | 50 | 2.36 / 2.02 | 3.00 / 2.72 | 2.56 / 2.28 |
-| PTB-XL pathology | 48 | 2.45 / 2.00 | 3.00 / 2.41 | 2.13 / 2.16 |
+| Arm | Poison placement | Outcome |
+|---|---|---|
+| A | appended to the retrieved context | claim adoption 48/50 (96%); poison cited 50/50; citation-membership audit passes by construction; validated judge scores 31/38 parsed adopted outputs faithfulness = 3 ("fully grounded"), catches 2/38 |
+| B | one chunk added to a copy of the vector store | 0/50 natural retrieval hits: a single chunk never out-ranks the unmanipulated corpus under the diversity-constrained retriever; no generations produced |
 
-On the 398 wearable alerts the local faithfulness distribution is: 3 → 176 (44%), 2 → 175 (44%), 1 → 2 (hallucination verdicts, the first non-zero count any judge of this system has produced), 0 → 45 (parse failures). The API judge's distribution is harsher on faithfulness (2 → 313, 3 → 40, no 1s) yet more generous on completeness (2.50 vs 2.19) and systematically harsher on the labeled clinical events (2.00–2.02 faithfulness across all three event sets). Cross-judge agreement (353 valid pairs): raw agreement 0.592 / 0.751 / 0.602 (faithfulness / relevance / completeness), within-1 agreement 1.000 on all axes, Gwet's AC1 0.476 / 0.680 / 0.489. The judges never differ by more than one point, but the moderate raw agreement, the validation asymmetry, and both judges' cross-run instability (§4.5) mean neither distribution should be read as ground truth, and that is the territory the released human-evaluation kit is designed to adjudicate. A degenerate framing of exactly this kind ("2.99 / zero hallucinations / 100% within-1 agreement") is what an unvalidated constant judge produces. System latency: generation 11.0 s mean per alert (RTX 5060 laptop), retrieval 25 ms (p95 32 ms), local judging 8.1 s/call, API judging ~2.5 s/call.
+The two arms bracket different questions. Arm B is a naive-seeding baseline, not a security result: one unoptimized chunk, competing against 5,045 legitimate chunks under a source-diversity constraint, reaches the top 5 for none of the 50 audited alerts (0/50) but 4.1% of the alternative alert stream (Section 4.2). Optimized corpus-poisoning attacks achieve high attack success against dense retrievers and RAG pipelines with a handful of crafted passages [@zhong2023poisoning; @zou2025poisonedrag]; porting one to this retriever is future work (Section 5), and the naive arm establishes only a floor. Arm A is the failure the standard stack cannot see. Once a manipulated chunk is inside the context (via a compromised upstream source, a corpus-manifest substitution, or an adversary with seeding budget), the generator adopts its urgent-care claim in 96-98% of alerts across three runs (adoption 48, 48, and 49 of 50); the adopted text inverts the system's artifact-first default into "a high-priority clinical finding rather than a sensor artifact" requiring specialist evaluation "within 24 hours". The cleanest adoption signal is the planted identifier itself: cited in 49-50 of 50 generations per run, against a zero baseline in all original generations. The citation audit passes by construction, because a poisoned source is a member of the retrieved set. The corruption-validated judge certifies 31 of 38 parsed outputs as "fully grounded" (repetitions: 32/38 and 33/39 of parsed adopted outputs; the API reference judge could not be extended to this arm, its credentials having expired, and a second local family, gpt-oss:20b, does not complete calls in practical time on the 8 GB deployment GPU, so the certification figure rests on the validated local judge across three runs), and that verdict is correct by the judge's own definition: faithfulness measures grounding in the provided context, and the poison is in the context. Ten of fifty local judge calls (20%) failed to parse on this arm; certification rates are conditional on parsing, and parse failures did not track explanation length (mean 131 words for parsed versus 130 for failed), so the missingness gives no sign of content selectivity. Judge faithfulness and citation membership are integrity instruments against generator-side fabrication; they are structurally blind to source-side compromise. Mitigations that follow: provenance-pinned corpus manifests, tier-restricted retrieval in deployment, hash-verified corpus rebuilds, and human adjudication of any recommendation field. The probe costs one vector-store copy and 100 local generations, and we argue it belongs in the RAG evaluation battery alongside judge validation.
 
-## 4.7 Labeled-event concordance: the integration result
+## 4.6 Ablations
 
-*Table 6: Do explanations for events with known ground truth name the right condition? (Lexicon check on the DETECTED field; labels never entered the queries. Artifact-language counts overlap with concordant rows.)*
-
-| Event set (true label) | n | Concordant | Artifact language | Other/insufficient |
-|---|---|---|---|---|
-| WESAD (laboratory stress) | 50 | **47 (94%)** | 28 | 1 |
-| MIT-BIH windows (V/SVEB ectopy, ≥3 abnormal beats) | 50 | **6 (12%)** | 28 | 22 |
-| PTB-XL records (MI/STTC/CD/HYP) | 48 | **3 (6%)** | 20 | 25 |
-
-Per-class PTB-XL: MI 0/12, STTC 1/12, CD 2/12, HYP 0/12; MIT-BIH: VEB 1/25, SVEB 5/25.
-
-This is the paper's central negative result, and one that an unlabeled-flag evaluation could never have produced by design. Where the true event is a strong sympathetic deviation (WESAD stress), the system's explanations are usually right (94%). Where the true event is clinical pathology (ventricular ectopy on ambulatory ECG, infarction or conduction disease on a resting 12-lead), the explanations almost never name the condition (6–12%), and in 42–56% of cases attribute the finding to motion or sensor artifact. A conservative artifact-first posture is safe on unlabeled wearable noise but becomes a safety liability when the underlying event is real pathology: the explanation actively reassures. The root causes are structural: unsupervised detectors at or near chance on inter-patient ECG (§4.1) supply uninformative deviation features; 12 summary statistics carry no morphology; and a corpus bucketed towards signal-quality literature reinforces artifact framings. We flag the crude keyword-lexicon concordance measure itself as a limitation; the released kit is built to adjudicate these same items with human raters, which remains future work.
-
-*Before/after query-and-corpus fix (398 wearable alerts, same flags):* effective explanation clusters at cosine 0.9 rise 173 → 237; mean nearest-neighbor similarity falls 0.936 → 0.915; alerts sharing a >0.9-similar twin fall 81.7% → 67.6%; guideline content reaches 17.6% of alert contexts (70/398) versus 6.5% before (one explanation citing the EHRA digital-devices guide verbatim appears in §4.10). One trade-off is reported plainly: the corrected queries concentrate retrieval (44 unique documents used vs 53 under the wrong-reference original queries), so deviation-semantic accuracy traded against raw document spread. Duplication remains high in absolute terms: five-channel summary statistics bound the semantic space of queries, and two-thirds of alerts still have a near-identical twin explanation.
-
-## 4.8 Ablations
-
-*Word cap (50 alerts, 300-word prompt).* Mean length rises 127.3 → 196.5 words, but validated-judge faithfulness falls (2.21 → 2.02) while completeness barely moves (2.20 → 2.12): the extra text buys length, not verifiable content, and a "completeness by design" defense of short outputs is quantified and partly refuted. *Generator (50 alerts, llama3.1:8b).* Mean length 99.1 words with faithfulness 1.78 and completeness 1.52; the weaker model is shorter, more templated, and less grounded; generator choice dominates prompt choice.
-
-## 4.9 Atomic-claim verification
-
-On a 60-explanation sample (30 wearable alerts, 30 labeled events), decomposed into 797 atomic claims and verified against the retrieved context alone by a different-family model (gemma4:e4b, thinking disabled): 52.3% SUPPORTED, 47.7% UNVERIFIABLE, 0% UNSUPPORTED (by group: wearable 47.3%, WESAD 54.3%, MIT-BIH 68.0%, PTB-XL 53.5%). The zero contradiction rate is reassuring but largely reflects the system's hedged phrasing; the operative number is that roughly half of the atomic content of these explanations is not verifiable from the evidence the system itself retrieved, which is quantitatively consistent with the validated judge scoring ~44% of full explanations as "slightly extrapolated" (§4.6). Verification remains context-relative (not full-source or clinician-relative); human adjudication via the released kit remains future work.
-
-## 4.10 Example alert
-
-**QUERY (constructed, subject 3, window 270–300 s, true label: stress):** "Biosignal window flagged by anomaly detection. reduced bvp (z=−7.2 vs subject baseline) elevated wrist_eda (z=+4.0 vs subject baseline). Relevant topics: electrodermal activity skin conductance sympathetic arousal stress physiology photoplethysmography heart rate variability ECG."
-
-> **DETECTED:** The pattern suggests acute sympathetic arousal (stress) where reduced blood volume pulse and elevated skin conductance indicate a physiological stress response common in anxiety or high cognitive load scenarios.
->
-> **EVIDENCE:** EDA reflects changes from sweat gland activity modulated by the autonomic nervous system, making it valuable for detecting emotional arousal and stress. When stressed, blood pressure increases causing higher heart rate linked with low HRV (reduced BVP). EDA tends to increase during stressful periods while adding noise can affect PPG signals like the reduced BVP seen here.
->
-> **RECOMMENDATION:** Monitor for sustained elevation; consider multimodal confirmation if clinical context warrants, as single-signal methods have limitations in real-world settings.
->
-> **DISCLAIMER:** Research decision-support tool. Not a diagnostic device. Does not replace clinical judgment.
-
-Contrast this with the original query semantics, which asserted an "abrupt isolated spike" while naming two channels at |z| = 0.5 measured against other anomalies. The corrected query states detector facts and real deviations against the subject's own baseline (z = −7.2, +4.0), and the explanation names the correct physiological process; this is the concordant case. §4.7 quantifies how often this succeeds and where it fails.
+Word cap (300-word prompt, 50 alerts): mean length 127.3 → 196.5 words; judge faithfulness 2.21 → 2.02 and completeness 2.20 → 2.12, differences smaller than the local judge's own documented run-to-run swing (identical-input means 2.21–2.69 across three runs), so we report them as directionally consistent, not resolved. Generator ablation (llama3.1:8b): mean 99.1 words, faithfulness 1.78, completeness 1.52: generator choice dominates prompt choice. System latency: generation 11.0 s mean (RTX 5060 laptop), retrieval 25 ms (p95 32 ms), local judging 8.1 s/call.
 
 # 5 Discussion
 
-*Protocol sensitivity is the paper's central lesson.* Every inflated result in this study traces to an evaluation defect, not a modeling one: intra-patient evaluation with training data inside the test set turned a chance-level detector into an apparent 0.899; a test-prevalence threshold manufactured a flattering operating point; a degenerate judge manufactured "zero hallucination." None of these require bad faith to produce; each is a one-line code choice, and all survived routine sanity checks because the numbers looked good. We now treat the inter-patient/LOSO protocol, validation-derived thresholds, seed replication, and judge validation as non-negotiable for wearable-anomaly papers, and we release the pre-registration file (`THRESHOLDS.md`) as a template.
+What the audit buys a deployer. The protocol-sensitivity table converts directly into procurement questions: an unsupervised wearable detector should be quoted with its inter-patient/LOSO record-cluster CI (Table 2 shows these straddle chance for every classic detector), its threshold provenance (validation fold, not test prevalence), and its false-alert workload behavior (Section 4.2 is that regime by construction). An explanation layer should be quoted with judge-validation numbers, raw-text citation rates, guideline reach, and a poisoning probe. With 25 ms retrieval and 11 s local generation, the loop is deployable on a nurse-call tablet; nothing in the audit suggests its outputs are yet reviewable as clinical claims.
 
-*Detector choice, honestly.* LOF > IF on WESAD (p = 0.008) and PTB-XL (p = 0.001), but chance on inter-patient MIT-BIH while IF holds 0.670: detector rankings do not transfer across granularity (windows vs beats) or evaluation protocols. A trivial autoencoder winning WESAD (0.855) suggests the field's shallow-detector comparisons underweight reconstruction baselines.
+Trade-offs with measured bounds. (1) The WESAD autoencoder's advantage is within noise at the subject level (p = 0.16): we claim parity, and its seed stability (±0.008) bounds training variance. (2) Feature redundancy inflates distance-based detectors' implicit weighting; pruning reshuffles the ranking (0.855 → 0.689), so morphology-aware features (the measured ceiling, not a data limitation) are the concrete route to detectors that beat the tie. (3) The labeled-event evaluation sits 53% off the deployed operating point (78/148 events unflagged); per-condition flagged-only concordance is the honest end-to-end metric once detectors exist that flag pathology at all. (4) Guideline reach remains 17.6% with 82% of contexts from open-access Tier-2 literature; tier-restricted retrieval is a deployment mitigation the poisoning result independently motivates. (5) The concordance lexicon is a fixed keyword instrument (Appendix A); its verdicts are reproducible but crude, and the released kit is the calibrated replacement. (6) Local judges are not bit-reproducible on this hardware (2.21–2.69 across identical runs); we report distributions and validation rates, not single-run verdicts, and the deterministic components (retrieval: 398/398 reproduced) are separated from the stochastic ones.
 
-*Query construction matters, but retrieval diversity is not explanation diversity.* The corrected query semantics (subject-baseline reference, evidence-tied character) pass a strong sanity check (stress vs baseline separation, p ≈ 10⁻¹³⁸). Yet the original query semantics show document-level diversity (53 docs) coexisting with content-level duplication (173 clusters, mean NN cosine 0.936): five-channel summary statistics bound the semantic space of queries. §4.4–4.7 test whether the expanded corpus and corrected queries reduce duplication and raise guideline utilization, and report whatever the answer is.
-
-*What "100% citation accuracy" does and does not mean.* Citation validity is a membership check (cited ID ∈ retrieved set), necessary but far from sufficient for grounding; the canonicalizer can even snap a mistyped identifier onto a document that does not support the claim. Hence the snap log, the raw-text audit, and the atomic-claim verification; human clinical adjudication is the remaining step, released as a runnable kit for future work. We no longer headline citation accuracy at all.
-
-*Judges must be validated, not assumed.* The near-constant local judge scored 397/398 items identically; under naive reporting this surfaces as "100% within-1 agreement." A judge that cannot discriminate is worse than no judge: it launders whatever the generator produced. The corruption benchmark is cheap (200 local calls) and, we argue, should precede any LLM-judge evaluation in clinical NLP.
-
-*Deployment envelope.* Retrieval is 25 ms (p95 32 ms); generation and judge latency are reported with the results. The query builder is online-implementable (per-subject running statistics); the original batch, cross-subject construction was not.
+Roadmap. Concrete, in dependency order: morphology-aware features (waveform embeddings) to raise the inter-patient ceiling above chance before any end-to-end claim; condition-blind query construction as a default (the leakage control costs nothing and removes a manufactured result); corpus provenance pinning, a periodic poisoning probe, and porting a published optimized corpus-poisoning attack [@zhong2023poisoning] to this retriever, since the naive arm only establishes a floor; the released clinician-rating run to adjudicate the artifact-attribution safety hypothesis; and a review-workload endpoint (triage time with vs without explanations) to test the alert-fatigue premise the field starts from.
 
 # 6 Limitations
 
-1. No human clinical evaluation. We could not recruit qualified raters for this revision, so every faithfulness judgment in the paper is machine-side (validated LLM judges, atomic verification, objective audits). The complete rating kit is released for any group that can run it, and no clinical-adequacy claim is made here.
-2. Atomic verification remains context-relative. Claims are checked against the retrieved chunks, not against full source documents or clinical reality; fully open verification and clinician adjudication are the remaining steps.
-3. Cohort size (wearables): 15 subjects each in PPG-DaLiA/WESAD; LOSO mitigates but does not eliminate.
-4. Label mismatch: wearable ground truth is lab stress, not disease; true pathology enters only via ECG datasets; no public dataset pairs wearable multichannel signals with clinical outcomes.
-5. Detection ceilings: 12 summary statistics; the feature ablation shows sensitivity, and morphology-aware features are future work; inter-patient MIT-BIH AUCs (≤0.675) remain far below published supervised systems, appropriately so for an unsupervised baseline.
-6. PTB-XL operating point: the validation-F1 rule selects near-saturated recall/low precision at this prevalence; we report the full sensitivity curve and do not claim a deployable threshold.
-7. Corpus authority asymmetry: the wearable-relevant guidance added to the corpus improves the alert-space match, but PPG-specific reasoning still rests largely on Tier-2 literature; the 2024 ESC AF guideline could not be included (programmatic access blocked).
-8. Mid-size generator: Qwen3.5 9B is a privacy/quality compromise.
+1. Single-system self-audit. The battery is demonstrated on one pipeline designed by the same author who audits it; the choice of which failure modes to instrument was informed by that author's own prior errors, and no second system has been audited. The case-study framing follows from this.
+2. No human clinical evaluation; all faithfulness judgments are machine-side. The kit is released; safety-relevant observations are framed as hypotheses.
+3. Atomic verification is context-relative (retrieved chunks, not full sources or clinicians), and the verifier shares a model family with the local judge, so agreement between them is not independent confirmation.
+4. Wearable cohorts are 15 subjects each; cluster CIs reflect this honestly, and they are wide. With six-record and seven-subject clustering in the concordance analysis, resampling intervals are wide bounds, not precise estimates.
+5. Wearable ground truth is laboratory stress, not disease; pathology enters only via ECG datasets, and no public dataset pairs wearable multichannel streams with clinical outcomes.
+6. Concordance is measured by a fixed lexicon (Appendix A), printed and archived, but not humanly calibrated; it scores keyword presence and cannot parse hedged contradiction (26 of 47 originally concordant WESAD explanations also contain artifact language).
+7. The 2024 ESC AF guideline is not in the corpus (programmatic access blocked); guideline reach is reported against the included six documents.
+8. The poisoning probe is one chunk, one claim family, 50 alerts, and naive seeding only, across three generation runs and two judges; it is a lower bound on the attack surface, not a red-team evaluation, and optimized published attacks are expected to defeat the store-seeding resistance we measure.
+9. Stochastic results are reported as multi-run bands where repetition exists (blind, same-context, strict, poisoning); the retrieval-off arms are single runs; all runs share one generator and one hardware configuration; the poisoning certification rests on a single judge family (attempts to add a second: API credentials expired, gpt-oss:20b impractically slow on the deployment GPU), and bit-reproducibility is not claimed.
 
 # 7 Ethical Considerations
 
-The system is a research decision-support tool, not a diagnostic device; every alert carries a disclaimer field. All deployment-path processing (signals, retrieval, generation) runs locally. One privacy caveat worth stating explicitly: the *evaluation* judge (DeepSeek-V4-Flash via OpenRouter) transmits explanation text (derived from public datasets) off-device; this is excluded from the deployment path, checkpointed to avoid repeat transmissions, and disclosed here explicitly. Tier-2 articles are open access with per-document license recorded; the two added guideline texts are free-to-read deposits accessed via PubMed Central with provenance logged. No clinical decisions were informed by this system.
+The system is a research decision-support tool, not a diagnostic device; every alert carries a disclaimer field. All deployment-path processing is local. The evaluation judge (DeepSeek-V4-Flash via OpenRouter) transmitted explanation text derived from public datasets off-device; this is excluded from the deployment path, checkpointed to avoid repeat transmissions, and disclosed. Tier-2 articles are open access with licenses recorded; guideline texts are free-to-read deposits with provenance logged. The poisoning probe ran against a copy of the vector store; the released corpus manifest hashes the legitimate corpus. No clinical decisions were informed by this system.
 
 # 8 Conclusion
 
-We built an alert-triggered RAG pipeline for wearable biosignal anomalies and evaluated it under pre-registered, contamination-hardened protocols. The protocol-sensitivity analysis is the headline: an apparent 0.899 AUC collapses to chance under inter-patient evaluation, a simple autoencoder beats both classic detectors on WESAD, and detector rankings do not transfer across protocols. On the explanation side, labeled-event evaluation, corruption-validated judges, raw-text citation audits, and atomic-claim verification together show that the pipeline explains stress reliably, misattributes most true cardiac pathology to artifact, and that roughly half of generated content is unverifiable from its own evidence; a ready-to-run clinician-rating kit is released for the human evaluation that remains future work. We release every artifact (pre-registration, caches, per-alert outputs, judge benchmarks, analysis scripts) so that each number in this paper can be recomputed, and we suggest the protocol set (inter-patient/LOSO evaluation, validation-derived thresholds, judge validation on injected corruptions, raw-text preservation) as a minimum standard for grounded clinical-alert generation.
+We audited an LLM-explained wearable-alert pipeline with instruments the literature omits, and most of the inherited headlines changed hands. Protocol choice manufactured a 0.899 AUC from a chance detector; cluster-level inference shows the inter-patient CIs the field reports are ~20× too tight; differences between WESAD detectors are not resolvable at the correct unit, and correcting seed choice and resampling unit in our own interim table dissolved two of its three "significant" differences; query vocabulary manufactured over a third of the stress-concordance headline (94% falls to 68-72% blind and 58-60% strict-blind); retrieval itself contributes less than the base model's parametric prior to stress naming (12-18 points on top of 76% achieved with no context at all); unvalidated judges manufacture "zero hallucination" by construction; and a single planted chunk steers the explanation layer past the citation audit and a validated judge (96-98% adoption, 82-85% certification) while losing naive retrieval outright. The positive residue is equally concrete: raw-text citation auditing at a measured 1% fabrication rate, a corruption-validated local judge, a deterministic retrieval layer, and a released, documented walkthrough of the battery (inter-patient/LOSO evaluation, cluster-aware uncertainty, validation-derived thresholds, judge validation, condition-blind and shuffled-topic query controls, and corpus-integrity probes) on this system, with tested scripts an adopting group can adapt. Packaging it as a tool, auditing a second pipeline, and adjudicating with human raters are what would make it a standard.
 
 # Data and Code Availability
 
-Datasets are public (PPG-DaLiA 10.24432/C53890; WESAD 10.24432/C57K5T; MIT-BIH 10.13026/C2F61Q; PTB-XL 10.1038/s41597-020-0495-6). Code, artifacts, and the pre-registration are at https://github.com/TanvirTurja/rag-generation-for-continous-anomaly-alerts.
-Released with this paper: `THRESHOLDS.md` (pre-registration), `SEARCH_PROTOCOL.md` (literature search), `detection_v2.ipynb` and `rag_v2.ipynb`, the two executed, self-contained notebooks that rebuild the entire evaluation from raw data on a cold start and load cached artifacts otherwise, plus `outputs_v2/` (all per-alert artifacts, judge benchmarks, API checkpoint), `outputs_v1_archive/` (original artifacts, preserved), `clinician_eval/` (human-evaluation kit with the pre-drawn 60-item sample), and `Dataset/Tier1_v2/manifest.csv` (guideline provenance). Model identifiers are verified against public listings (Qwen3.5 family: arXiv:2604.15804; DeepSeek-V4-Flash 0731: OpenRouter model card, 2026-08-28).
+Datasets are public (PPG-DaLiA 10.24432/C53890; WESAD 10.24432/C57K5T; MIT-BIH 10.13026/C2F305; PTB-XL 10.1038/s41597-020-0495-6). Code, artifacts, and the pre-registration are at https://github.com/TanvirTurja/rag-generation-for-continous-anomaly-alerts: `THRESHOLDS.md` (detection pre-registration), `SEARCH_PROTOCOL.md`, `draft_paper/test_mappings.py` (mapping unit tests), `scripts/robustness/independent_concordance.py` (independent count verification), `detection_v2.ipynb` and `rag_v2.ipynb` (executed, self-contained; every audit number is rebuilt by the notebook cells from raw data, loading cached artifacts from `outputs_v2/robustness/` when present), `outputs_v2/robustness/` (collinearity, hygiene, cluster-CI, Jaccard, flag-status, condition-blind, and poisoning artifacts), `outputs_v2/` (all per-alert artifacts), `outputs_v1_archive/`, `clinician_eval/`, and `Dataset/Tier1_v2/manifest.csv` (guideline provenance). Model identifiers verified against public listings (Qwen3.5 family: arXiv:2604.15804; DeepSeek-V4-Flash 0731: OpenRouter model card, 2026-08-28).
 
 # Author Contributions
 
-M.T.H.T. conceived the system, built the pipeline, ran all experiments, performed the protocol audit, and wrote the paper.
+M.T.H.T. conceived the audit, built the pipeline, ran all experiments, and wrote the paper.
 
 # Conflicts of Interest
 
@@ -349,7 +260,45 @@ None declared.
 
 # Human Evaluation Statement
 
-No human ratings are reported in this paper. The complete evaluation kit (60-item stratified sample, rubrics, forms, analysis script) is released in `clinician_eval/` so that clinical groups can execute it without further engineering; running it is stated as future work.
+No human ratings are reported. The complete rating kit is released in `clinician_eval/`; running it is future work.
 
----
+# References
+
+::: {#refs}
+:::
+
+# Appendix A: Concordance instrument (fixed lexicons, verbatim)
+
+Concordant = any lexicon term for the true label appears in the DETECTED field (case-insensitive substring):
+
+| Label | Lexicon terms |
+|---|---|
+| stress | stress, arousal, sympathetic, anxiety, mental load, psychological, emotional |
+| VEB | ventricular, pvc, premature ventricular, ventricular tachycard* |
+| SVEB | supraventricular, atrial premature, pac, atrial ectopy, premature atrial, atrial fibrillation, atrial tachyarrhythm* |
+| MI | infarct*, ischemi*, stemi, coronary occlusion, st-elevation, st elevation |
+| STTC | repolarization, st depression, st-segment, st segment, t-wave, t wave inversion |
+| CD | conduction, bundle branch, heart block, av block, pr interval |
+| HYP | hypertroph*, chamber enlargement, left ventricular mass |
+
+Artifact attribution = any of: artifact, motion, sensor displacement, sensor contact, signal quality, electrode, noise, poor contact, device. Insufficiency = "insufficient" in DETECTED. Artifact counts may overlap concordant rows (both phenomena present in one DETECTED field). Poisoning-adoption marker: `conduction (disease|abnormal) | within 24 hours | 24-hour | specialist cardiac evaluation` (occurrence in all 696 original explanations: 7.6%). Condition-blind topic segments: WESAD "electrodermal activity skin conductance photoplethysmography blood volume pulse heart rate variability ECG"; ECG sets "electrocardiography cardiac electrical activity heart rate variability". Strict variant (additionally removes the condition-adjacent terms): WESAD "electrodermal activity skin conductance photoplethysmography blood volume pulse"; ECG sets "electrocardiography cardiac electrical activity". Decomposition arms: same-context regeneration uses these blind topic segments against the original retrieved contexts; the shuffled-topic control swaps each event's topic segment with another event's under a fixed cross-group derangement, and wrong-condition echo is scored with the source group's primary lexicon (stress / VEB / MI). The instrument is deterministic, archived, and reproduced by the notebook cells and `scripts/robustness/independent_concordance.py`.
+
+# Appendix B: Provenance of corrections
+
+The manuscript's current values supersede the following interim values, each corrected
+during revision and each now guarded by a unit test or an independent reimplementation.
+All superseded artifacts are retained in the repository.
+
+| Quantity | Interim | Current | Cause of correction |
+|---|---|---|---|
+| MIT-BIH LOF AUC (protocol) | 0.899 | 0.502 (chance), record CI [0.315, 0.750] | intra-patient evaluation with train-inside-test |
+| IF-vs-LOF paired tests | p = 0.008 / 0.001 / 0.001 | p = 0.97 / 0.139 / 0.001 | seed-0 scores and window-level resampling replaced by seed-mean scores and cluster-level tests |
+| WESAD autoencoder AUC (table) | 0.855 (single run) | 0.850 (seed-mean scores; 0.846 ± 0.008 when averaging per-seed AUCs) | seed-mean convention adopted for IF and AE alike |
+| MIT-BIH pre-registered flag status | 19/50 | 18/50 | beat-row mapping counted AAMI-normal symbols only; now unit-tested (`test_mappings.py`) |
+| Flagged labeled events | 70/148 | 69/148 | follows the 18/50 correction |
+| Stress concordance, blind | 68% (single run) | 68-72% (three runs); 58% strict-blind | run bands and stricter topic list |
+
+The verifier (`verify_claims_v2.py`) checks manuscript-artifact consistency; the 18/50
+correction passed 122/122 consistency checks while wrong, which is why correctness now
+has its own instruments rather than relying on consistency alone.
 

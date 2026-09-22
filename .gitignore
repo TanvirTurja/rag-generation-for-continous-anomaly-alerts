@@ -11,6 +11,11 @@ chroma_db_v2/
 outputs_v2/cache/
 
 # private deliverables (not for publication)
-arxiv/
+draft_paper/
+medRxiv/
 PLAIN_ENGLISH.md
 endorsement_letters.md
+
+
+# private submission + workspace files
+medRxiv/

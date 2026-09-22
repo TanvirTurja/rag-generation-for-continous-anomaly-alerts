@@ -1,0 +1,169 @@
+{
+ "ragoff": {
+  "empty_original": {
+   "wesad": {
+    "n": 50,
+    "ok": 38,
+    "pct": 76.0,
+    "ins_any": 31
+   },
+   "mitbih": {
+    "n": 50,
+    "ok": 3,
+    "pct": 6.0,
+    "ins_any": 43
+   },
+   "ptbxl": {
+    "n": 38,
+    "ok": 0,
+    "pct": 0.0,
+    "ins_any": 36
+   }
+  },
+  "empty_strict": {
+   "wesad": {
+    "n": 50,
+    "ok": 23,
+    "pct": 46.0,
+    "ins_any": 39
+   },
+   "mitbih": {
+    "n": 50,
+    "ok": 0,
+    "pct": 0.0,
+    "ins_any": 45
+   },
+   "ptbxl": {
+    "n": 48,
+    "ok": 0,
+    "pct": 0.0,
+    "ins_any": 47
+   }
+  },
+  "irrelevant_original": {
+   "wesad": {
+    "n": 50,
+    "ok": 5,
+    "pct": 10.0,
+    "ins_any": 49
+   },
+   "mitbih": {
+    "n": 50,
+    "ok": 0,
+    "pct": 0.0,
+    "ins_any": 49
+   },
+   "ptbxl": {
+    "n": 48,
+    "ok": 1,
+    "pct": 2.1,
+    "ins_any": 48
+   }
+  },
+  "irrelevant_strict": {
+   "wesad": {
+    "n": 50,
+    "ok": 3,
+    "pct": 6.0,
+    "ins_any": 45
+   },
+   "mitbih": {
+    "n": 50,
+    "ok": 1,
+    "pct": 2.0,
+    "ins_any": 49
+   },
+   "ptbxl": {
+    "n": 48,
+    "ok": 0,
+    "pct": 0.0,
+    "ins_any": 40
+   }
+  }
+ },
+ "strict_runs": {
+  "r1": {
+   "wesad": {
+    "n": 50,
+    "ok": 29,
+    "pct": 58.0,
+    "art": 35
+   },
+   "mitbih": {
+    "n": 50,
+    "ok": 9,
+    "pct": 18.0,
+    "art": 38
+   },
+   "ptbxl": {
+    "n": 48,
+    "ok": 7,
+    "pct": 14.6,
+    "art": 38
+   }
+  },
+  "r2": {
+   "wesad": {
+    "n": 50,
+    "ok": 30,
+    "pct": 60.0,
+    "art": 36,
+    "ins_any": 1
+   },
+   "mitbih": {
+    "n": 50,
+    "ok": 11,
+    "pct": 22.0,
+    "art": 39,
+    "ins_any": 1
+   },
+   "ptbxl": {
+    "n": 48,
+    "ok": 11,
+    "pct": 22.9,
+    "art": 40,
+    "ins_any": 2
+   }
+  },
+  "r3": {
+   "wesad": {
+    "n": 50,
+    "ok": 30,
+    "pct": 60.0,
+    "art": 37,
+    "ins_any": 0
+   },
+   "mitbih": {
+    "n": 50,
+    "ok": 9,
+    "pct": 18.0,
+    "art": 38,
+    "ins_any": 1
+   },
+   "ptbxl": {
+    "n": 48,
+    "ok": 9,
+    "pct": 18.8,
+    "art": 40,
+    "ins_any": 0
+   }
+  }
+ },
+ "alt_stream": {
+  "n_alt": 394,
+  "n_v1": 398,
+  "overlap": 254,
+  "jaccard": 0.472,
+  "guideline_reach_pct": 18.3,
+  "unique_docs": 43,
+  "poison_B_hits": "16/394",
+  "near_dup_alt100": {
+   "mean_nn": 0.901,
+   "pct_gt09": 54.0
+  },
+  "near_dup_v1_100": {
+   "mean_nn": 0.898,
+   "pct_gt09": 49.0
+  }
+ }
+}

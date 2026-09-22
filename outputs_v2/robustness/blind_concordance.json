@@ -1,0 +1,50 @@
+{
+ "wesad": {
+  "n": 50,
+  "concordant": 34,
+  "pct": 68.0,
+  "wilson95": [
+   0.542,
+   0.792
+  ],
+  "cluster_ci95": [
+   0.604,
+   0.769
+  ],
+  "n_clusters": 7,
+  "artifact": 36,
+  "insufficient": 0
+ },
+ "mitbih": {
+  "n": 50,
+  "concordant": 4,
+  "pct": 8.0,
+  "wilson95": [
+   0.032,
+   0.188
+  ],
+  "cluster_ci95": [
+   0.0,
+   0.278
+  ],
+  "n_clusters": 6,
+  "artifact": 43,
+  "insufficient": 0
+ },
+ "ptbxl": {
+  "n": 48,
+  "concordant": 6,
+  "pct": 12.5,
+  "wilson95": [
+   0.059,
+   0.247
+  ],
+  "cluster_ci95": [
+   0.045,
+   0.205
+  ],
+  "n_clusters": 27,
+  "artifact": 44,
+  "insufficient": 0
+ }
+}

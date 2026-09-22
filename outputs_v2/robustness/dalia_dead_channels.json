@@ -1,0 +1,62 @@
+{
+ "S1": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 6.103515625e-05
+ },
+ "S10": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 3.0517578125e-05
+ },
+ "S11": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 3.0517578125e-05
+ },
+ "S12": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 3.0517578125e-05
+ },
+ "S13": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 3.0517578125e-05
+ },
+ "S14": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 3.0517578125e-05
+ },
+ "S15": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 3.0517578125e-05
+ },
+ "S2": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 3.0517578125e-05
+ },
+ "S3": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 0.0
+ },
+ "S4": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 3.0517578125e-05
+ },
+ "S5": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 3.0517578125e-05
+ },
+ "S6": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 6.103515625e-05
+ },
+ "S7": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 3.0517578125e-05
+ },
+ "S8": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 0.0
+ },
+ "S9": {
+  "chest_eda_std": 0.0,
+  "chest_temp_std": 3.0517578125e-05
+ }
+}
