@@ -1,6 +1,8 @@
 # Auditing LLM Explanations of Biosignal Alerts
 
-Code and artifacts for the paper *"Auditing LLM Explanations of Biosignal Alerts"* (Md Tanvir Hasan Turja, 2026).
+Code and artifacts for the paper *"Auditing LLM Explanations of Biosignal
+Alerts"* (Md Tanvir Hasan Turja, 2026). Preprint:
+[10.2139/ssrn.7508418](https://dx.doi.org/10.2139/ssrn.7508418).
 
 ## What this is
 
@@ -82,5 +84,17 @@ the legitimate corpus.
 
 ## Citation
 
-If you use this code, please cite the paper (bibtex in
-`draft_paper/references.bib`, entry to be finalized on publication).
+Turja, Md Tanvir Hasan, *Auditing LLM Explanations of Biosignal Alerts*
+(September 22, 2026). Available at SSRN:
+https://ssrn.com/abstract=7508418 or http://dx.doi.org/10.2139/ssrn.7508418
+
+```bibtex
+@article{turja2026auditing,
+  title   = {Auditing {LLM} Explanations of Biosignal Alerts},
+  author  = {Turja, Md Tanvir Hasan},
+  journal = {SSRN Electronic Journal},
+  year    = {2026},
+  doi     = {10.2139/ssrn.7508418},
+  url     = {https://ssrn.com/abstract=7508418}
+}
+```
